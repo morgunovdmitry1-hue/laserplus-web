@@ -29,13 +29,15 @@
   "dependencies": {
     "@astrojs/preact": "^5.1.2",
     "@astrojs/sitemap": "^3.7.2",
-    "@astrojs/tailwind": "^6.0.2",
+    "@sanity/client": "^7.22.0",
+    "@sanity/image-url": "^2.1.1",
     "astro": "^6.2.0",
     "preact": "^10.29.1",
     "tailwindcss": "^4.2.4"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@tailwindcss/vite": "^4.2.4",
     "@typescript-eslint/eslint-plugin": "^8.59.1",
     "@typescript-eslint/parser": "^8.59.1",
     "eslint": "^10.2.1",

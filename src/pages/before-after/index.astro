@@ -1,0 +1,244 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SchemaBreadcrumbs from '../../components/seo/SchemaBreadcrumbs.astro';
+
+const allCases = await getCollection('cases');
+
+const genderLabels: Record<string, string> = { female: 'Женские', male: 'Мужские' };
+const genderOrder = ['female', 'male'];
+const byGender = genderOrder
+  .map((g) => ({
+    gender: g,
+    label: genderLabels[g] ?? g,
+    cases: allCases.filter((c) => c.data.gender === g),
+  }))
+  .filter((g) => g.cases.length > 0);
+---
+
+<BaseLayout
+  title="Фото до и после лазерной эпиляции — Laser Plus Новосибирск"
+  description="Результаты лазерной эпиляции до и после: подмышки, голени, бикини, спина, лицо. Реальные клиенты клиники Laser Plus в Новосибирске."
+>
+  <div class="container">
+    <SchemaBreadcrumbs items={[{ name: 'До и после', href: '/before-after/' }]} />
+  </div>
+
+  <section class="ba-hero">
+    <div class="container">
+      <h1 data-reveal>Результаты: до и после</h1>
+      <p class="hero-desc" data-reveal data-reveal-delay="1">
+        Реальные результаты клиентов Laser Plus после курса лазерной эпиляции.
+        Фотографии публикуются с согласия клиентов.
+      </p>
+    </div>
+  </section>
+
+  <section class="ba-content">
+    <div class="container">
+      {byGender.length > 0 ? byGender.map(({ label, cases }, gi) => (
+        <div class="ba-group" data-reveal data-reveal-delay={String(gi + 1)}>
+          <h2 class="group-title">{label} зоны</h2>
+          <div class="cases-grid">
+            {cases.map((c, i) => (
+              <div class="case-card" data-reveal data-reveal-delay={String(Math.min((i % 3) + 1, 5))}>
+                <div class="case-images">
+                  <div class="case-image">
+                    <div class="image-label">До</div>
+                    <div class="image-placeholder" aria-label={`До: ${c.data.zone}`}>
+                      <span>{c.data.zone}</span>
+                      <span class="placeholder-hint">фото</span>
+                    </div>
+                  </div>
+                  <div class="case-divider" aria-hidden="true">→</div>
+                  <div class="case-image">
+                    <div class="image-label image-label--after">После</div>
+                    <div class="image-placeholder image-placeholder--after" aria-label={`После: ${c.data.zone}`}>
+                      <span>{c.data.zone}</span>
+                      <span class="placeholder-hint">фото</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="case-info">
+                  <h3 class="case-zone">{c.data.zone}</h3>
+                  <div class="case-meta">
+                    <span class="sessions-badge">{c.data.sessionsCompleted} процедур</span>
+                  </div>
+                  {c.data.story && <p class="case-story">{c.data.story}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )) : (
+        <div class="ba-empty">
+          <p>Фотографии результатов скоро будут добавлены.</p>
+          <p>Посмотрите <a href="/reviews/">отзывы клиентов</a> с описанием результатов.</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- Disclaimer -->
+  <section class="ba-disclaimer">
+    <div class="container">
+      <p>
+        Результаты индивидуальны и зависят от фототипа кожи, цвета и структуры волос,
+        соблюдения рекомендаций специалиста и пройденного количества процедур.
+        Фотографии опубликованы с согласия клиентов.
+      </p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="ba-cta">
+    <div class="container">
+      <div class="cta-box">
+        <div data-reveal>
+          <h2>Хотите такой же результат?</h2>
+          <p>Запишитесь на консультацию — специалист оценит Ваш случай и составит план курса.</p>
+        </div>
+        <a href="/booking/" class="btn-primary" data-reveal data-reveal-delay="2">Записаться онлайн</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .ba-hero {
+    padding: 2.5rem 0 3rem;
+    background: var(--color-bg-soft);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .ba-hero h1 { margin: 0 0 0.75rem; }
+  .hero-desc { font-size: 1.0625rem; color: var(--color-text-muted); margin: 0; max-width: 580px; line-height: 1.6; }
+
+  .ba-content { padding: 3.5rem 0; }
+  .ba-group { margin-bottom: 3.5rem; }
+  .group-title { font-size: 1.375rem; font-weight: 700; margin: 0 0 2rem; }
+
+  .cases-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  @media (min-width: 640px) { .cases-grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1024px) { .cases-grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .case-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    background: var(--color-bg);
+  }
+  .case-images {
+    display: flex;
+    gap: 0;
+    align-items: stretch;
+    position: relative;
+  }
+  .case-image { flex: 1; position: relative; }
+  .image-label {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    z-index: 1;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.5rem;
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+    border-radius: var(--radius-sm, 4px);
+  }
+  .image-label--after { background: color-mix(in srgb, var(--color-primary) 80%, transparent); }
+  .image-placeholder {
+    aspect-ratio: 3/4;
+    background: var(--color-bg-soft);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    text-align: center;
+    padding: 1rem;
+  }
+  .image-placeholder--after { background: color-mix(in srgb, var(--color-primary) 5%, var(--color-bg-soft)); }
+  .image-placeholder span { font-weight: 500; }
+  .placeholder-hint { font-size: 0.75rem; opacity: 0.6; }
+  .case-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    background: var(--color-bg);
+    border-left: 1px solid var(--color-border);
+    border-right: 1px solid var(--color-border);
+    flex-shrink: 0;
+  }
+  .case-info { padding: 1.25rem 1.5rem; border-top: 1px solid var(--color-border); }
+  .case-zone { font-size: 1rem; font-weight: 700; margin: 0 0 0.5rem; }
+  .case-meta { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.625rem; }
+  .sessions-badge {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 0.2rem 0.625rem;
+    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    color: var(--color-primary);
+    border-radius: 100px;
+  }
+  .case-story { font-size: 0.875rem; color: var(--color-text-muted); margin: 0; line-height: 1.55; }
+
+  .ba-empty {
+    padding: 4rem 0;
+    text-align: center;
+  }
+  .ba-empty p { font-size: 1rem; color: var(--color-text-muted); margin: 0 0 0.5rem; }
+  .ba-empty a { color: var(--color-primary); font-weight: 600; }
+
+  /* Disclaimer */
+  .ba-disclaimer {
+    padding: 1.5rem 0 2.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .ba-disclaimer p {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    max-width: 720px;
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  /* CTA */
+  .ba-cta { padding: 3.5rem 0 4.5rem; background: var(--color-bg-soft); border-top: 1px solid var(--color-border); }
+  .cta-box {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+  @media (min-width: 768px) { .cta-box { flex-direction: row; align-items: center; justify-content: space-between; } }
+  .cta-box h2 { font-size: clamp(1.25rem, 2.5vw, 1.625rem); margin: 0 0 0.5rem; }
+  .cta-box p { font-size: 0.9375rem; color: var(--color-text-muted); margin: 0; }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.875rem 2rem;
+    background: var(--color-primary);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background var(--transition-fast);
+  }
+  .btn-primary:hover { background: var(--color-primary-hover); color: #fff; }
+</style>

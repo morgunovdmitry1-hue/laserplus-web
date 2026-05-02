@@ -1,0 +1,293 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SchemaBreadcrumbs from '../../components/seo/SchemaBreadcrumbs.astro';
+
+const packages = await getCollection('packages');
+const featuredPackages = packages.filter((p) => p.data.featured);
+---
+
+<BaseLayout
+  title="Акции и скидки на лазерную эпиляцию — Laser Plus Новосибирск"
+  description="Актуальные акции и пакетные предложения клиники Laser Plus: Full Body, Мужской пакет, Семейный. Скидки до 24%. Новосибирск."
+>
+  <div class="container">
+    <SchemaBreadcrumbs items={[{ name: 'Акции', href: '/promotions/' }]} />
+  </div>
+
+  <section class="promo-hero">
+    <div class="container">
+      <h1 data-reveal>Акции и предложения</h1>
+      <p class="hero-desc" data-reveal data-reveal-delay="1">
+        Пакеты на несколько зон, скидки для пар и специальные предложения.
+        Курс выгоднее разовых процедур — всегда.
+      </p>
+    </div>
+  </section>
+
+  <!-- Packages -->
+  <section class="promo-packages">
+    <div class="container">
+      <h2 data-reveal>Пакетные предложения</h2>
+      <p class="section-desc" data-reveal data-reveal-delay="1">Курс на несколько зон — выгоднее розничной цены.</p>
+      <div class="packages-grid">
+        {packages.map((pkg, i) => {
+          const discount = pkg.data.oldPrice
+            ? Math.round((1 - pkg.data.price / pkg.data.oldPrice) * 100)
+            : null;
+          return (
+            <div class:list={['pkg-card', { 'pkg-card--featured': pkg.data.featured }]} data-reveal data-reveal-delay={String(Math.min(i + 1, 5))}>
+              {discount && (
+                <div class="pkg-badge">−{discount}%</div>
+              )}
+              <div class="pkg-header">
+                <h3>{pkg.data.title}</h3>
+                {pkg.data.subtitle && <p class="pkg-subtitle">{pkg.data.subtitle}</p>}
+              </div>
+              <div class="pkg-body">
+                <div class="pkg-price-row">
+                  <span class="pkg-price">{pkg.data.price.toLocaleString('ru-RU')} ₽</span>
+                  {pkg.data.oldPrice && (
+                    <span class="pkg-old-price">{pkg.data.oldPrice.toLocaleString('ru-RU')} ₽</span>
+                  )}
+                </div>
+                <p class="pkg-sessions">{pkg.data.sessions} процедур на каждую зону</p>
+                <ul class="pkg-zones">
+                  {pkg.data.zones.map((zone) => (
+                    <li>{zone}</li>
+                  ))}
+                </ul>
+              </div>
+              <a href="/booking/" class="pkg-cta">Записаться</a>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- Ongoing promos -->
+  <section class="promo-regular">
+    <div class="container">
+      <h2 data-reveal>Постоянные преимущества</h2>
+      <div class="promo-grid">
+        {[
+          {
+            title: 'Бесплатная консультация',
+            desc: 'Первый визит — всегда бесплатно. Специалист определяет фототип, подбирает аппарат и отвечает на вопросы. Без давления и обязательств.',
+            tag: 'Всегда',
+          },
+          {
+            title: 'Скидка при оплате курса',
+            desc: 'Оплатите курс из 6 или 8 процедур сразу — получите скидку 15–20% относительно разовой цены. Курс фиксируется по текущим ценам.',
+            tag: 'При оплате курса',
+          },
+          {
+            title: 'Семейная скидка',
+            desc: 'Запишитесь вместе с партнёром или подругой. Каждый выбирает свои зоны. Итоговая скидка 20% для каждого участника.',
+            tag: 'Для двоих',
+          },
+          {
+            title: 'Программа лояльности',
+            desc: 'Клиенты, прошедшие полный курс, получают приоритетную запись и скидку на поддерживающие процедуры.',
+            tag: 'Для постоянных',
+          },
+        ].map(({ title, desc, tag }, i) => (
+          <div class="promo-card" data-reveal data-reveal-delay={String(i + 1)}>
+            <div class="promo-tag">{tag}</div>
+            <h3>{title}</h3>
+            <p>{desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="promo-cta">
+    <div class="container">
+      <div class="cta-box">
+        <div data-reveal>
+          <h2>Узнайте актуальные предложения</h2>
+          <p>Запишитесь на консультацию — специалист расскажет о всех действующих акциях.</p>
+        </div>
+        <div class="cta-actions" data-reveal data-reveal-delay="2">
+          <a href="/booking/" class="btn-primary">Записаться онлайн</a>
+          <a href="/prices/" class="btn-outline">Все цены</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .promo-hero {
+    padding: 2.5rem 0 3rem;
+    background: var(--color-bg-soft);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .promo-hero h1 { margin: 0 0 0.75rem; }
+  .hero-desc { font-size: 1.0625rem; color: var(--color-text-muted); margin: 0; max-width: 560px; line-height: 1.6; }
+
+  /* Packages */
+  .promo-packages { padding: 3.5rem 0; }
+  .promo-packages h2 { margin: 0 0 0.5rem; }
+  .section-desc { font-size: 1rem; color: var(--color-text-muted); margin: 0 0 2.5rem; }
+
+  .packages-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  @media (min-width: 640px) { .packages-grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1024px) { .packages-grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .pkg-card {
+    position: relative;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg);
+  }
+  .pkg-card--featured {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 10%, transparent);
+  }
+  .pkg-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--color-primary);
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: 800;
+    padding: 0.25rem 0.625rem;
+    border-radius: 100px;
+    letter-spacing: 0.02em;
+  }
+  .pkg-header {
+    padding: 1.75rem 1.75rem 0;
+  }
+  .pkg-header h3 { font-size: 1.375rem; font-weight: 800; margin: 0 0 0.375rem; }
+  .pkg-subtitle { font-size: 0.9375rem; color: var(--color-text-muted); margin: 0; }
+  .pkg-body { padding: 1.25rem 1.75rem; flex: 1; }
+  .pkg-price-row { display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 0.375rem; }
+  .pkg-price { font-size: 1.75rem; font-weight: 800; color: var(--color-primary); letter-spacing: -0.03em; }
+  .pkg-old-price { font-size: 1rem; color: var(--color-text-muted); text-decoration: line-through; }
+  .pkg-sessions { font-size: 0.8125rem; color: var(--color-text-muted); margin: 0 0 1.25rem; }
+  .pkg-zones { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.375rem; }
+  .pkg-zones li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.9375rem;
+  }
+  .pkg-zones li::before {
+    content: '';
+    display: block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    flex-shrink: 0;
+    margin-top: 0.45em;
+  }
+  .pkg-cta {
+    display: block;
+    margin: 1.25rem 1.75rem 1.75rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-primary);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.9375rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    text-align: center;
+    transition: background var(--transition-fast);
+  }
+  .pkg-cta:hover { background: var(--color-primary-hover); color: #fff; }
+
+  /* Regular promos */
+  .promo-regular {
+    padding: 3.5rem 0;
+    background: var(--color-bg-soft);
+    border-top: 1px solid var(--color-border);
+  }
+  .promo-regular h2 { margin: 0 0 2rem; }
+  .promo-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  @media (min-width: 640px) { .promo-grid { grid-template-columns: 1fr 1fr; } }
+
+  .promo-card {
+    padding: 1.75rem;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+  .promo-tag {
+    display: inline-flex;
+    padding: 0.2rem 0.625rem;
+    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    color: var(--color-primary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 100px;
+    letter-spacing: 0.03em;
+    align-self: flex-start;
+  }
+  .promo-card h3 { font-size: 1.0625rem; font-weight: 700; margin: 0; }
+  .promo-card p { font-size: 0.9375rem; color: var(--color-text-muted); margin: 0; line-height: 1.6; }
+
+  /* CTA */
+  .promo-cta {
+    padding: 3.5rem 0 4.5rem;
+    background: var(--color-bg-soft);
+    border-top: 1px solid var(--color-border);
+  }
+  .cta-box {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+  @media (min-width: 768px) { .cta-box { flex-direction: row; align-items: center; justify-content: space-between; } }
+  .cta-box h2 { font-size: clamp(1.25rem, 2.5vw, 1.625rem); margin: 0 0 0.5rem; }
+  .cta-box p { font-size: 0.9375rem; color: var(--color-text-muted); margin: 0; }
+  .cta-actions { display: flex; gap: 0.875rem; flex-wrap: wrap; flex-shrink: 0; }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.875rem 2rem;
+    background: var(--color-primary);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background var(--transition-fast);
+  }
+  .btn-primary:hover { background: var(--color-primary-hover); color: #fff; }
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.875rem 2rem;
+    border: 1.5px solid var(--color-border-strong);
+    color: var(--color-text);
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: border-color var(--transition-fast), color var(--transition-fast);
+  }
+  .btn-outline:hover { border-color: var(--color-primary); color: var(--color-primary); }
+</style>

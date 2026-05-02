@@ -1,0 +1,459 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SchemaBreadcrumbs from '../components/seo/SchemaBreadcrumbs.astro';
+
+const devices = [
+  {
+    id: 'candela',
+    badge: 'Основная технология',
+    name: 'Candela GentlePro',
+    type: 'Александритовый лазер',
+    wavelength: '755 нм',
+    desc: 'Candela GentlePro — мировой стандарт лазерной эпиляции. Аппарат американского производства с системой охлаждения Dynamic Cooling Device (DCD): за 30 мс до каждого импульса кожа охлаждается микровзрывом хладагента.',
+    indications: [
+      'Светлая и смуглая кожа (фототипы I–IV)',
+      'Тёмные и коричневые волосы',
+      'Без загара (прошло более 2 недель)',
+      'Все зоны тела и лица',
+    ],
+    advantages: [
+      'Наивысшая эффективность на тёмных волосах',
+      'Минимальный дискомфорт благодаря DCD',
+      'Быстрая обработка больших зон',
+      'Доказанная клиническая эффективность',
+    ],
+    stats: [
+      { value: '95%',    label: 'снижение роста волос после курса' },
+      { value: '755 нм', label: 'оптимальная длина волны для меланина' },
+    ],
+  },
+  {
+    id: 'diode',
+    badge: 'Дополнительная технология',
+    name: 'InMotion D1',
+    type: 'Диодный лазер',
+    wavelength: '810 нм',
+    desc: 'Диодный лазер IN-MOTION — технология скользящего импульса. Рабочая головка движется по коже непрерывно, что позволяет работать со смуглой кожей и в период лёгкого загара.',
+    indications: [
+      'Смуглая и тёмная кожа (фототипы IV–VI)',
+      'Период лёгкого загара',
+      'Светлые и русые волосы',
+      'Чувствительная кожа',
+    ],
+    advantages: [
+      'Работает с загорелой кожей',
+      'Щадящий режим для чувствительных зон',
+      'Подходит для тёмных фототипов',
+      'Непрерывная система охлаждения',
+    ],
+    stats: [
+      { value: '810 нм',    label: 'глубже проникает в фолликул' },
+      { value: 'IN-MOTION', label: 'скользящий импульс, нет перегрева' },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Оборудование для лазерной эпиляции"
+  description="Александритовый лазер Candela GentlePro и диодный IN-MOTION D1. Сравнение оборудования, показания, эффективность. Laser Plus, Новосибирск."
+>
+  <div class="container">
+    <SchemaBreadcrumbs items={[{ name: 'Оборудование', href: '/technology/' }]} />
+  </div>
+
+  <section class="tech-hero">
+    <div class="container">
+      <h1 data-reveal>Оборудование клиники</h1>
+      <p class="hero-desc" data-reveal data-reveal-delay="1">
+        В клиниках Laser Plus используются два лазерных аппарата с разными длинами волн.
+        Выбор технологии зависит от типа кожи, цвета волос и степени загара.
+      </p>
+    </div>
+  </section>
+
+  <!-- Equipment cards -->
+  <section class="tech-compare">
+    <div class="container">
+      <div class="compare-grid">
+        {devices.map((d, i) => (
+          <div class="eq-card" data-reveal data-reveal-delay={String(i + 1)}>
+
+            <!-- Photo zone -->
+            <div class:list={['eq-photo', `eq-photo--${d.id}`]}>
+              <span class="eq-badge">{d.badge}</span>
+              <div class="eq-photo-title">
+                <p class="eq-type">{d.type}</p>
+                <h2 class="eq-name">{d.name}</h2>
+                <p class="eq-wave"><strong>{d.wavelength}</strong> длина волны</p>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <p class="eq-desc">{d.desc}</p>
+
+            <!-- Показания + Преимущества -->
+            <div class="eq-sections">
+              <div class="eq-section">
+                <h4>Показания</h4>
+                <ul>
+                  {d.indications.map((item) => <li>{item}</li>)}
+                </ul>
+              </div>
+              <div class="eq-section">
+                <h4>Преимущества</h4>
+                <ul>
+                  {d.advantages.map((item) => <li>{item}</li>)}
+                </ul>
+              </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="eq-stats">
+              {d.stats.map((s) => (
+                <div class="eq-stat">
+                  <strong>{s.value}</strong>
+                  <span>{s.label}</span>
+                </div>
+              ))}
+            </div>
+
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="tech-how">
+    <div class="container">
+      <h2 data-reveal>Как работает лазерная эпиляция</h2>
+      <div class="how-steps">
+        {[
+          { step: '01', title: 'Поглощение меланином', desc: 'Лазерный импульс поглощается меланином — пигментом волоса. Чем темнее волос, тем выше поглощение.' },
+          { step: '02', title: 'Нагрев фолликула', desc: 'Энергия импульса преобразуется в тепло и нагревает волосяной фолликул до температуры 70–80°C.' },
+          { step: '03', title: 'Деструкция клеток роста', desc: 'При такой температуре клетки, отвечающие за рост волоса, необратимо повреждаются.' },
+          { step: '04', title: 'Кожа не затрагивается', desc: 'Система охлаждения DCD защищает эпидермис. Соседние ткани не повреждаются — только фолликул.' },
+        ].map(({ step, title, desc }, i) => (
+          <div class="how-step" data-reveal data-reveal-delay={String(i + 1)}>
+            <div class="step-number" aria-hidden="true">{step}</div>
+            <div class="step-content">
+              <h3>{title}</h3>
+              <p>{desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="tech-faq">
+    <div class="container">
+      <h2 data-reveal>Частые вопросы об оборудовании</h2>
+      <div class="faq-list" data-reveal data-reveal-delay="1">
+        {[
+          { q: 'Какой лазер подойдёт именно мне?', a: 'Специалист определяет технологию на консультации — по фототипу кожи, цвету волос и наличию загара. В большинстве случаев используется александрит Candela.' },
+          { q: 'Больно ли делать лазерную эпиляцию?', a: 'Александрит Candela с системой DCD охлаждает кожу перед каждым импульсом. Большинство клиентов описывают ощущение как лёгкое пощипывание. Диодный IN-MOTION ещё мягче.' },
+          { q: 'Работает ли лазер на светлых волосах?', a: 'Александрит менее эффективен на очень светлых (русых, рыжих) и седых волосах: в них мало меланина. Диод справляется с русыми волосами лучше. Совсем белые волосы лазером не удаляются.' },
+          { q: 'Сколько процедур нужно?', a: 'Стандартный курс — 6–8 процедур с интервалом 4–6 недель. Волосы растут циклично, лазер воздействует только на волосы в активной фазе роста (анаген).' },
+        ].map(({ q, a }) => (
+          <details class="faq-item">
+            <summary>{q}</summary>
+            <p>{a}</p>
+          </details>
+        ))}
+      </div>
+      <a href="/faq/" class="link-faq">Все вопросы и ответы →</a>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="tech-cta">
+    <div class="container">
+      <div class="cta-box">
+        <div data-reveal>
+          <h2>Запишитесь на консультацию</h2>
+          <p>Специалист подберёт оборудование и составит план курса бесплатно.</p>
+        </div>
+        <a href="/booking/" class="btn-primary" data-reveal data-reveal-delay="2">Записаться онлайн</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .tech-hero {
+    padding: 2.5rem 0 3rem;
+    background: var(--color-bg-soft);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .tech-hero h1 { margin: 0 0 1rem; }
+  .hero-desc {
+    font-size: 1.0625rem;
+    color: var(--color-text-muted);
+    max-width: 680px;
+    margin: 0;
+    line-height: 1.65;
+  }
+
+  /* ── Equipment cards ── */
+  .tech-compare { padding: 3.5rem 0; }
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .eq-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (min-width: 1024px) {
+    .compare-grid {
+      grid-template-columns: 1fr 1fr;
+      column-gap: 1.5rem;
+      row-gap: 0;
+    }
+    .eq-card:nth-child(1) {
+      grid-column: 1;
+      grid-row: 1 / 5;
+      display: grid;
+      grid-template-rows: subgrid;
+    }
+    .eq-card:nth-child(2) {
+      grid-column: 2;
+      grid-row: 1 / 5;
+      display: grid;
+      grid-template-rows: subgrid;
+    }
+  }
+
+  /* Photo zone — same proportions for both */
+  .eq-photo {
+    position: relative;
+    height: 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.75rem 2rem;
+    overflow: hidden;
+  }
+  @media (min-width: 1024px) { .eq-photo { height: 300px; } }
+
+  .eq-photo--candela {
+    background:
+      linear-gradient(to top, rgba(13,35,51,0.72) 0%, rgba(13,35,51,0.1) 60%, transparent 100%),
+      linear-gradient(135deg, #4fa8bf 0%, #64B0C7 40%, #a8d8e8 100%);
+  }
+  .eq-photo--diode {
+    background:
+      linear-gradient(to top, rgba(13,35,51,0.72) 0%, rgba(13,35,51,0.1) 60%, transparent 100%),
+      linear-gradient(135deg, #1a3a52 0%, #0d2333 50%, #1e4d6b 100%);
+  }
+
+  .eq-badge {
+    position: absolute;
+    top: 1.25rem;
+    left: 1.5rem;
+    padding: 0.3rem 0.875rem;
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #fff;
+    letter-spacing: 0.02em;
+  }
+
+  .eq-photo-title { position: relative; z-index: 1; }
+  .eq-type {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.65);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 0.375rem;
+  }
+  .eq-name {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 0.5rem;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .eq-wave {
+    font-size: 0.875rem;
+    color: rgba(255,255,255,0.7);
+    margin: 0;
+  }
+  .eq-wave strong { color: var(--color-primary); font-weight: 700; }
+
+  .eq-desc {
+    font-size: 0.9375rem;
+    color: var(--color-text-muted);
+    line-height: 1.65;
+    margin: 0;
+    padding: 2rem 2rem 0;
+  }
+
+  .eq-sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem 2rem 0;
+  }
+  @media (max-width: 480px) {
+    .eq-sections { grid-template-columns: 1fr; }
+  }
+
+  .eq-section h4 {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+    margin: 0 0 0.75rem;
+  }
+  .eq-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .eq-section li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-text);
+    line-height: 1.5;
+  }
+  .eq-section li::before {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    flex-shrink: 0;
+    margin-top: 0.4em;
+  }
+
+  .eq-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 1.5rem;
+    padding: 1.25rem 2rem 2rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .eq-stat { display: flex; flex-direction: column; gap: 0.2rem; }
+  .eq-stat strong {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    line-height: 1;
+  }
+  .eq-stat span { font-size: 0.8125rem; color: var(--color-text-muted); }
+
+  /* How it works */
+  .tech-how { padding: 3.5rem 0; background: var(--color-bg-soft); border-top: 1px solid var(--color-border); }
+  .tech-how h2 { margin-bottom: 2.5rem; }
+  .how-steps { display: flex; flex-direction: column; }
+  .how-step {
+    display: flex;
+    gap: 1.75rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--color-border);
+    align-items: flex-start;
+  }
+  .how-step:last-child { border-bottom: none; }
+  .step-number {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--color-border);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 56px;
+    text-align: right;
+    letter-spacing: -0.03em;
+  }
+  .step-content h3 { font-size: 1.0625rem; font-weight: 700; margin: 0 0 0.5rem; }
+  .step-content p { font-size: 0.9375rem; color: var(--color-text-muted); margin: 0; line-height: 1.6; }
+
+  /* FAQ */
+  .tech-faq { padding: 3.5rem 0; }
+  .tech-faq h2 { margin-bottom: 1.5rem; }
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+  }
+  .faq-item { border-bottom: 1px solid var(--color-border); }
+  .faq-item:last-child { border-bottom: none; }
+  .faq-item summary {
+    padding: 1.125rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background var(--transition-fast);
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after {
+    content: '+';
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+    margin-left: 1rem;
+  }
+  .faq-item[open] summary::after { content: '−'; }
+  .faq-item summary:hover { background: var(--color-bg-soft); }
+  .faq-item p { padding: 0 1.5rem 1.25rem; margin: 0; font-size: 0.9375rem; color: var(--color-text-muted); line-height: 1.65; }
+  .link-faq { font-size: 0.9375rem; font-weight: 600; color: var(--color-primary); text-decoration: none; }
+
+  /* CTA */
+  .tech-cta { padding: 3.5rem 0 4.5rem; background: var(--color-bg-soft); border-top: 1px solid var(--color-border); }
+  .cta-box {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+  @media (min-width: 768px) {
+    .cta-box { flex-direction: row; align-items: center; justify-content: space-between; }
+  }
+  .cta-box h2 { font-size: clamp(1.25rem, 2.5vw, 1.625rem); margin: 0 0 0.5rem; }
+  .cta-box p { font-size: 0.9375rem; color: var(--color-text-muted); margin: 0; }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.875rem 2rem;
+    background: var(--color-primary);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background var(--transition-fast);
+  }
+  .btn-primary:hover { background: var(--color-primary-hover); color: #fff; }
+</style>

@@ -1,0 +1,71 @@
+---
+import { SITE, CLINICS, SOCIAL } from '../../consts';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${SITE.url}/#organization`,
+      name: SITE.name,
+      url: SITE.url,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${SITE.url}/images/logo.svg`,
+      },
+      contactPoint: {
+        '@type': 'ContactPoint',
+        telephone: SITE.phone,
+        contactType: 'customer service',
+        areaServed: 'RU',
+        availableLanguage: 'Russian',
+      },
+      sameAs: [SOCIAL.vk, SOCIAL.telegram],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE.url}/#website`,
+      url: SITE.url,
+      name: SITE.name,
+      publisher: { '@id': `${SITE.url}/#organization` },
+      inLanguage: 'ru-RU',
+    },
+    ...CLINICS.map((clinic) => ({
+      '@type': ['MedicalBusiness', 'MedicalClinic', 'LocalBusiness'],
+      '@id': `${SITE.url}/contacts/${clinic.id}/#localbusiness`,
+      name: `${SITE.name} — ${clinic.name}`,
+      parentOrganization: { '@id': `${SITE.url}/#organization` },
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: clinic.address,
+        addressLocality: 'Новосибирск',
+        addressRegion: 'Новосибирская область',
+        addressCountry: 'RU',
+      },
+      telephone: clinic.phone,
+      url: `${SITE.url}/contacts/${clinic.id}/`,
+      openingHoursSpecification: [
+        {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+          opens: clinic.workingHours.weekdays.split('–')[0],
+          closes: clinic.workingHours.weekdays.split('–')[1],
+        },
+        {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: ['Saturday', 'Sunday'],
+          opens: clinic.workingHours.weekends.split('–')[0],
+          closes: clinic.workingHours.weekends.split('–')[1],
+        },
+      ],
+      areaServed: {
+        '@type': 'City',
+        name: 'Новосибирск',
+      },
+      medicalSpecialty: 'Dermatology',
+    })),
+  ],
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

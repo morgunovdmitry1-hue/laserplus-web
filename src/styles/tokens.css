@@ -1,0 +1,87 @@
+/* Design tokens — Laser Plus */
+:root {
+  /* ── Brand palette ── */
+  --color-primary: #64B0C7;
+  --color-primary-hover: #4ea0b8;
+  --color-primary-dark: #357a92;
+  --color-primary-light: #eef8fb;
+  --color-primary-subtle: #f5fbfd;
+
+  /* ── Surfaces ── */
+  --color-bg: #ffffff;
+  --color-bg-soft: #f7fbfc;
+  --color-bg-tinted: #eef8fb;
+  --color-bg-dark: #0d2333;
+  --color-bg-dark-soft: #132d40;
+
+  /* ── Text ── */
+  --color-text: #112030;
+  --color-text-muted: #567080;
+  --color-text-light: #8aa8b5;
+  --color-text-inverse: #ffffff;
+
+  /* ── UI ── */
+  --color-border: #d9ecf2;
+  --color-border-strong: #aed3df;
+
+  /* ── Semantic ── */
+  --color-success: #059669;
+  --color-warning: #d97706;
+  --color-error: #dc2626;
+
+  /* ── Typography ── */
+  --font-display: 'Trebuchet MS', Trebuchet, 'Gill Sans MT', 'Gill Sans', Arial, sans-serif;
+  --font-sans: 'Ubuntu', system-ui, -apple-system, sans-serif;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+
+  --leading-tight: 1.15;
+  --leading-snug: 1.35;
+  --leading-normal: 1.6;
+
+  /* ── Spacing ── */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* ── Layout ── */
+  --container-max: 1240px;
+  --container-padding-mobile: 1.25rem;
+  --container-padding-tablet: 2rem;
+  --container-padding-desktop: 3rem;
+
+  /* ── Borders ── */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+
+  /* ── Shadows ── */
+  --shadow-xs: 0 1px 2px 0 rgb(17 32 48 / 0.06);
+  --shadow-sm: 0 1px 4px 0 rgb(17 32 48 / 0.08), 0 1px 2px -1px rgb(17 32 48 / 0.06);
+  --shadow-md: 0 4px 12px -2px rgb(17 32 48 / 0.1), 0 2px 4px -2px rgb(17 32 48 / 0.06);
+  --shadow-lg: 0 12px 24px -4px rgb(17 32 48 / 0.1), 0 4px 8px -4px rgb(17 32 48 / 0.06);
+  --shadow-primary: 0 4px 16px -2px rgb(100 176 199 / 0.35);
+
+  /* ── Transitions ── */
+  --transition-fast: 150ms ease;
+  --transition-base: 220ms ease;
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}

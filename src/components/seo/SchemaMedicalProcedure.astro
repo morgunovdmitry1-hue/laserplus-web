@@ -1,0 +1,72 @@
+---
+import { SITE } from '../../consts';
+
+interface Props {
+  title: string;
+  slug: string;
+  description: string;
+  price: { single: number; course6?: number; course8?: number };
+  clinicIds: string[];
+  rating?: { value: number; count: number };
+}
+
+const { title, slug, description, price, clinicIds, rating } = Astro.props;
+
+const offers = [
+  {
+    '@type': 'Offer',
+    name: 'Разовая процедура',
+    price: price.single,
+    priceCurrency: 'RUB',
+    availability: 'https://schema.org/InStock',
+  },
+  ...(price.course6
+    ? [
+        {
+          '@type': 'Offer',
+          name: 'Курс 6 процедур',
+          price: price.course6,
+          priceCurrency: 'RUB',
+          availability: 'https://schema.org/InStock',
+        },
+      ]
+    : []),
+  ...(price.course8
+    ? [
+        {
+          '@type': 'Offer',
+          name: 'Курс 8 процедур',
+          price: price.course8,
+          priceCurrency: 'RUB',
+          availability: 'https://schema.org/InStock',
+        },
+      ]
+    : []),
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': ['MedicalProcedure', 'Service'],
+  '@id': `${SITE.url}/services/${slug}/#procedure`,
+  name: title,
+  description,
+  url: `${SITE.url}/services/${slug}/`,
+  provider: clinicIds.map((id) => ({
+    '@id': `${SITE.url}/contacts/${id}/#localbusiness`,
+  })),
+  offers,
+  ...(rating
+    ? {
+        aggregateRating: {
+          '@type': 'AggregateRating',
+          ratingValue: rating.value,
+          reviewCount: rating.count,
+          bestRating: 5,
+          worstRating: 1,
+        },
+      }
+    : {}),
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

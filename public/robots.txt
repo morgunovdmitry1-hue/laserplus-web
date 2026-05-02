@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Disallow: /lp/
+Disallow: /account/
+Disallow: /api/
+
+Sitemap: https://laserplusnsk.ru/sitemap-index.xml

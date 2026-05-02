@@ -1,0 +1,242 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SchemaBreadcrumbs from '../components/seo/SchemaBreadcrumbs.astro';
+
+const services = await getCollection('services');
+
+const categoryOrder = ['basic', 'intimate', 'face', 'premium'];
+const categoryLabels: Record<string, string> = {
+  basic: 'Основные зоны',
+  intimate: 'Интимные зоны',
+  face: 'Лицо и шея',
+  premium: 'Премиум зоны',
+};
+
+const femaleByCategory = categoryOrder.map((cat) => ({
+  category: cat,
+  label: categoryLabels[cat] ?? cat,
+  services: services
+    .filter((s) => s.data.gender !== 'male' && s.data.category === cat)
+    .sort((a, b) => a.data.price.single - b.data.price.single),
+})).filter((g) => g.services.length > 0);
+
+const maleServices = services
+  .filter((s) => s.data.gender !== 'female')
+  .sort((a, b) => a.data.price.single - b.data.price.single);
+---
+
+<BaseLayout
+  title="Цены на лазерную эпиляцию"
+  description="Актуальные цены на лазерную эпиляцию в Новосибирске. Все зоны для женщин и мужчин, стоимость курсов. Записаться онлайн."
+>
+  <div class="container">
+    <SchemaBreadcrumbs items={[{ name: 'Цены', href: '/prices/' }]} />
+  </div>
+
+  <section class="prices-page">
+    <div class="container">
+      <div class="page-header">
+        <h1 data-reveal>Цены на лазерную эпиляцию</h1>
+        <p data-reveal data-reveal-delay="1">Прозрачные тарифы без скрытых платежей. Курсовые пакеты выгоднее разовых процедур.</p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs" role="tablist">
+        <button role="tab" aria-selected="true" aria-controls="panel-f" id="tab-f" class="tab active">
+          Женские услуги
+        </button>
+        <button role="tab" aria-selected="false" aria-controls="panel-m" id="tab-m" class="tab">
+          Мужские услуги
+        </button>
+      </div>
+
+      <!-- Female -->
+      <div id="panel-f" role="tabpanel" aria-labelledby="tab-f">
+        {femaleByCategory.map(({ label, services: srvs }, i) => (
+          <div class="price-group" data-reveal data-reveal-delay={String(Math.min(i + 1, 5))}>
+            <h2 class="group-title">{label}</h2>
+            <div class="price-table">
+              <div class="price-table-head">
+                <span>Зона</span>
+                <span>1 процедура</span>
+                <span class="hide-mobile">Курс 6</span>
+                <span class="hide-mobile">Курс 8</span>
+                <span></span>
+              </div>
+              {srvs.map((s) => (
+                <div class="price-table-row">
+                  <a href={`/services/${s.id}/`} class="zone-name">{s.data.title.replace('Лазерная эпиляция ', '')}</a>
+                  <span class="price-val">{s.data.price.single.toLocaleString('ru-RU')} ₽</span>
+                  <span class="price-val hide-mobile">
+                    {s.data.price.course6 ? s.data.price.course6.toLocaleString('ru-RU') + ' ₽' : '—'}
+                  </span>
+                  <span class="price-val hide-mobile">
+                    {s.data.price.course8 ? s.data.price.course8.toLocaleString('ru-RU') + ' ₽' : '—'}
+                  </span>
+                  <a href={`/booking/?service=${s.id}`} class="book-link">Записаться</a>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+        {femaleByCategory.length === 0 && (
+          <p class="empty">Прайс-лист скоро появится</p>
+        )}
+      </div>
+
+      <!-- Male -->
+      <div id="panel-m" role="tabpanel" aria-labelledby="tab-m" hidden>
+        {maleServices.length > 0 ? (
+          <div class="price-group" data-reveal data-reveal-delay="1">
+            <h2 class="group-title">Мужские зоны</h2>
+            <div class="price-table">
+              <div class="price-table-head">
+                <span>Зона</span>
+                <span>1 процедура</span>
+                <span class="hide-mobile">Курс 6</span>
+                <span class="hide-mobile">Курс 8</span>
+                <span></span>
+              </div>
+              {maleServices.map((s) => (
+                <div class="price-table-row">
+                  <a href={`/services/${s.id}/`} class="zone-name">{s.data.title.replace('Лазерная эпиляция ', '')}</a>
+                  <span class="price-val">{s.data.price.single.toLocaleString('ru-RU')} ₽</span>
+                  <span class="price-val hide-mobile">
+                    {s.data.price.course6 ? s.data.price.course6.toLocaleString('ru-RU') + ' ₽' : '—'}
+                  </span>
+                  <span class="price-val hide-mobile">
+                    {s.data.price.course8 ? s.data.price.course8.toLocaleString('ru-RU') + ' ₽' : '—'}
+                  </span>
+                  <a href={`/booking/?service=${s.id}`} class="book-link">Записаться</a>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <p class="empty">Мужской прайс-лист скоро появится</p>
+        )}
+      </div>
+
+      <p class="prices-note">
+        Цены действительны для обеих клиник. Оплата: наличные, карты, СБП.
+        При покупке курса — скидка 15–20%. Уточняйте актуальные акции при записи.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const tabs = document.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+  const panels = document.querySelectorAll<HTMLElement>('[role="tabpanel"]');
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const target = tab.getAttribute('aria-controls');
+      tabs.forEach((t) => { t.setAttribute('aria-selected', 'false'); t.classList.remove('active'); });
+      panels.forEach((p) => p.setAttribute('hidden', ''));
+      tab.setAttribute('aria-selected', 'true');
+      tab.classList.add('active');
+      document.getElementById(target ?? '')?.removeAttribute('hidden');
+    });
+  });
+</script>
+
+<style>
+  .prices-page { padding: 1rem 0 4rem; }
+  .page-header { margin-bottom: 2.5rem; }
+  .page-header h1 { margin: 0 0 0.75rem; }
+  .page-header p { font-size: 1.0625rem; color: var(--color-text-muted); margin: 0; }
+
+  .tabs {
+    display: flex;
+    border-bottom: 2px solid var(--color-border);
+    margin-bottom: 2.5rem;
+  }
+  .tab {
+    padding: 0.75rem 1.5rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+  }
+  .tab.active { color: var(--color-primary); border-bottom-color: var(--color-primary); }
+
+  .price-group { margin-bottom: 2.5rem; }
+  .group-title { font-size: 1.25rem; margin: 0 0 1rem; }
+
+  .price-table {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .price-table-head, .price-table-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 0;
+    padding: 0.75rem 1.25rem;
+    align-items: center;
+  }
+  @media (min-width: 768px) {
+    .price-table-head, .price-table-row {
+      grid-template-columns: 1fr 140px 120px 120px 100px;
+    }
+  }
+  .price-table-head {
+    background: var(--color-bg-soft);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .price-table-row {
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    transition: background var(--transition-fast);
+  }
+  .price-table-row:last-child { border-bottom: none; }
+  .price-table-row:hover { background: var(--color-bg-soft); }
+
+  .zone-name {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-text);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+  .zone-name:hover { color: var(--color-primary); }
+  .price-val { font-size: 0.9375rem; font-weight: 600; }
+  .hide-mobile { display: none; }
+  @media (min-width: 768px) { .hide-mobile { display: block; } }
+  .book-link {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .book-link:hover { text-decoration: underline; }
+
+  .prices-note {
+    margin-top: 2rem;
+    font-size: 0.9375rem;
+    color: var(--color-text-muted);
+    padding: 1rem 1.25rem;
+    background: var(--color-bg-soft);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--color-border-strong);
+  }
+  .empty {
+    padding: 3rem;
+    text-align: center;
+    color: var(--color-text-muted);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-lg);
+  }
+</style>

@@ -1,0 +1,287 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SchemaBreadcrumbs from '../../components/seo/SchemaBreadcrumbs.astro';
+
+const allServices = await getCollection('services');
+const maleServices = allServices.filter((s) => s.data.gender !== 'female');
+const categoryLabels: Record<string, string> = {
+  basic: 'Основные зоны',
+  intimate: 'Интимные зоны',
+  face: 'Лицо',
+  premium: 'Крупные зоны',
+};
+const categoryOrder = ['basic', 'face', 'premium', 'intimate'];
+const byCategory = categoryOrder.map((cat) => ({
+  cat,
+  label: categoryLabels[cat] ?? cat,
+  services: maleServices.filter((s) => s.data.category === cat).sort((a, b) => a.data.price.single - b.data.price.single),
+})).filter((g) => g.services.length > 0);
+---
+
+<BaseLayout
+  title="Лазерная эпиляция для мужчин"
+  description="Лазерная эпиляция для мужчин в Новосибирске. Спина, грудь, борода, ноги. Александрит Candela GentlePro. Без боли, без вросших волос."
+>
+  <div class="container">
+    <SchemaBreadcrumbs items={[{ name: 'Мужчинам', href: '/men/' }]} />
+  </div>
+
+  <section class="men-hero">
+    <div class="container">
+      <div class="men-hero-inner">
+        <div class="men-hero-content">
+          <div class="men-badge">Мужская лазерная эпиляция</div>
+          <h1 data-reveal>Лазерная эпиляция<br /><span class="accent">для мужчин</span></h1>
+          <p data-reveal data-reveal-delay="1">
+            Растущий спрос — спорт, эстетика, профессии с публичной активностью.
+            Александрит Candela эффективен на любых мужских зонах, включая тёмные жёсткие волосы.
+          </p>
+          <ul class="men-benefits" data-reveal data-reveal-delay="2">
+            <li>Без раздражения после бритья</li>
+            <li>Без вросших волос</li>
+            <li>Результат с первой процедуры</li>
+            <li>Специалисты с опытом работы с мужскими зонами</li>
+          </ul>
+          <a href="/booking/?gender=male" class="btn-men" data-reveal data-reveal-delay="3">Записаться онлайн</a>
+        </div>
+        <div class="men-hero-visual" aria-hidden="true">
+          <div class="men-placeholder">Фото мужской процедуры</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="men-services">
+    <div class="container">
+      <h2 data-reveal>Мужские услуги и цены</h2>
+      {byCategory.map(({ label, services }, ci) => (
+        <div class="men-category" data-reveal data-reveal-delay={String(Math.min(ci + 1, 5))}>
+          <h3 class="cat-title">{label}</h3>
+          <div class="men-grid">
+            {services.map((s) => (
+              <a href={`/services/${s.id}/`} class="men-card">
+                <div class="men-card-body">
+                  <h4>{s.data.title.replace('Лазерная эпиляция ', '').replace(' (мужская)', '').replace(' (мужской)', '').replace(' (мужские)', '')}</h4>
+                  <div class="men-card-meta">
+                    <span class="duration">{s.data.duration} мин</span>
+                    <span class="sessions">{s.data.sessionsRequired} процедур</span>
+                  </div>
+                </div>
+                <div class="men-card-price">
+                  <span class="single">от {s.data.price.single.toLocaleString('ru-RU')} ₽</span>
+                  {s.data.price.course6 && (
+                    <span class="course">курс {s.data.price.course6.toLocaleString('ru-RU')} ₽</span>
+                  )}
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+      {maleServices.length === 0 && <p class="empty">Услуги скоро появятся</p>}
+    </div>
+  </section>
+
+  <!-- Why men section -->
+  <section class="men-why">
+    <div class="container">
+      <h2 data-reveal>Почему мужчины выбирают лазерную эпиляцию</h2>
+      <div class="why-grid">
+        {[
+          { title: 'Спорт и фитнес', desc: 'Спортсменам важна гигиена и аэродинамика. Лазер — навсегда, без ежедневного ухода.' },
+          { title: 'Внешний вид', desc: 'Ухоженная кожа спины, груди и плеч — признак заботы о себе, а не слабости.' },
+          { title: 'Без раздражений', desc: 'Бритьё спины — неудобно и ненадёжно. Лазер избавляет от проблемы раз и навсегда.' },
+          { title: 'Публичные профессии', desc: 'Медицина, шоу-бизнес, модели — чистая кожа входит в профессиональный стандарт.' },
+        ].map(({ title, desc }, i) => (
+          <div class="why-item" data-reveal data-reveal-delay={String(i + 1)}>
+            <h4>{title}</h4>
+            <p>{desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="men-cta">
+    <div class="container">
+      <div class="men-cta-box">
+        <div data-reveal>
+          <h2>Мужской пакет — спина + грудь + плечи</h2>
+          <p>Три ключевые зоны, курс 6 процедур — скидка 17% от розничной цены.</p>
+        </div>
+        <div class="men-cta-actions" data-reveal data-reveal-delay="2">
+          <a href="/booking/?gender=male" class="btn-men">Записаться</a>
+          <a href="/prices/" class="btn-men-outline">Все цены</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .men-hero {
+    padding: 2.5rem 0 4rem;
+    background: var(--color-bg-soft);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .men-hero-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+  @media (min-width: 1024px) { .men-hero-inner { grid-template-columns: 1fr 1fr; } }
+
+  .men-badge {
+    display: inline-flex;
+    padding: 0.3rem 0.875rem;
+    background: color-mix(in srgb, var(--color-text) 8%, transparent);
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    border-radius: 100px;
+    margin-bottom: 1rem;
+    letter-spacing: 0.03em;
+  }
+  .men-hero-content h1 {
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin: 0 0 1.25rem;
+  }
+  .accent { color: var(--color-primary); }
+  .men-hero-content > p {
+    font-size: 1.0625rem;
+    color: var(--color-text-muted);
+    line-height: 1.65;
+    margin: 0 0 1.75rem;
+    max-width: 500px;
+  }
+  .men-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+  .men-benefits li {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+  }
+  .men-benefits li::before {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    flex-shrink: 0;
+  }
+  .men-placeholder {
+    aspect-ratio: 4/3;
+    background: var(--color-bg);
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+  }
+
+  /* Services */
+  .men-services { padding: 3.5rem 0; }
+  .men-services h2 { margin-bottom: 2rem; }
+  .men-category { margin-bottom: 2.5rem; }
+  .cat-title { font-size: 1.125rem; margin: 0 0 1rem; color: var(--color-text-muted); font-weight: 600; }
+
+  .men-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1px;
+    background: var(--color-border);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  @media (min-width: 640px) { .men-grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1024px) { .men-grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .men-card {
+    background: var(--color-bg);
+    padding: 1.25rem 1.5rem;
+    text-decoration: none;
+    transition: background var(--transition-fast);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+  .men-card:hover { background: var(--color-bg-soft); }
+  .men-card h4 { font-size: 0.9375rem; font-weight: 600; color: var(--color-text); margin: 0 0 0.375rem; }
+  .men-card-meta { display: flex; gap: 0.75rem; }
+  .men-card-meta span { font-size: 0.8125rem; color: var(--color-text-muted); }
+  .men-card-price { text-align: right; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.125rem; }
+  .men-card-price .single { font-size: 0.9375rem; font-weight: 700; color: var(--color-text); }
+  .men-card-price .course { font-size: 0.8125rem; color: var(--color-text-muted); }
+
+  /* Why */
+  .men-why { padding: 3.5rem 0; background: var(--color-bg-soft); border-top: 1px solid var(--color-border); }
+  .men-why h2 { margin-bottom: 2rem; }
+  .why-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+  @media (min-width: 640px) { .why-grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1024px) { .why-grid { grid-template-columns: repeat(4, 1fr); } }
+  .why-item { padding: 1.5rem; background: var(--color-bg); border-radius: var(--radius-lg); border: 1px solid var(--color-border); }
+  .why-item h4 { font-size: 1rem; font-weight: 700; margin: 0 0 0.625rem; }
+  .why-item p { font-size: 0.9375rem; color: var(--color-text-muted); margin: 0; line-height: 1.55; }
+
+  /* CTA */
+  .men-cta { padding: 3.5rem 0 4.5rem; background: var(--color-bg-dark); }
+  .men-cta-box {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+  @media (min-width: 768px) { .men-cta-box { flex-direction: row; align-items: center; justify-content: space-between; } }
+  .men-cta-box h2 { color: #fff; font-size: clamp(1.25rem, 2.5vw, 1.625rem); margin: 0 0 0.5rem; }
+  .men-cta-box p { color: rgba(255,255,255,0.65); font-size: 0.9375rem; margin: 0; }
+  .men-cta-actions { display: flex; gap: 0.875rem; flex-wrap: wrap; flex-shrink: 0; }
+
+  /* Buttons */
+  .btn-men {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.875rem 2rem;
+    background: var(--color-primary);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: background var(--transition-fast);
+  }
+  .btn-men:hover { background: var(--color-primary-hover); color: #fff; }
+  .btn-men-outline {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.875rem 2rem;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: border-color var(--transition-fast);
+  }
+  .btn-men-outline:hover { border-color: rgba(255,255,255,0.7); color: #fff; }
+  .empty { text-align: center; padding: 3rem; color: var(--color-text-muted); }
+</style>

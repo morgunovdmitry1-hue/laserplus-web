@@ -1,0 +1,31 @@
+---
+import { getCollection, render } from 'astro:content';
+import ClinicPageLayout from '../../layouts/ClinicPageLayout.astro';
+
+export async function getStaticPaths() {
+  const clinics = await getCollection('clinics');
+  return clinics.map((entry) => ({
+    params: { clinic: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+---
+
+<ClinicPageLayout
+  clinicId={entry.id}
+  name={d.name}
+  address={d.address}
+  phone={d.phone}
+  metro={d.metro}
+  metroDistance={d.metroDistance}
+  parking={d.parking}
+  workingHours={d.workingHours}
+  equipment={d.equipment}
+  geo={d.geo}
+>
+  <Content />
+</ClinicPageLayout>

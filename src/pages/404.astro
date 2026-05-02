@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { NAV_LINKS } from '../consts';
+---
+
+<BaseLayout
+  title="Страница не найдена"
+  description="Страница не найдена. Вернитесь на главную или выберите раздел."
+  noindex={true}
+>
+  <section class="not-found">
+    <div class="container">
+      <div class="not-found-inner">
+        <div class="error-code" aria-hidden="true">404</div>
+        <h1>Страница не найдена</h1>
+        <p>Возможно, Вы перешли по устаревшей ссылке или страница была перемещена.</p>
+        <div class="not-found-actions">
+          <a href="/" class="btn-primary">На главную</a>
+          <a href="/services/" class="btn-secondary">Все услуги</a>
+        </div>
+        <nav class="not-found-nav" aria-label="Полезные разделы">
+          <p class="nav-label">Популярные разделы:</p>
+          <ul>
+            {NAV_LINKS.map(({ href, label }) => (
+              <li><a href={href}>{label}</a></li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found { padding: 5rem 0 6rem; text-align: center; }
+  .not-found-inner { max-width: 520px; margin: 0 auto; }
+  .error-code {
+    font-size: clamp(5rem, 15vw, 9rem);
+    font-weight: 900;
+    line-height: 1;
+    color: var(--color-border);
+    letter-spacing: -0.05em;
+    margin-bottom: 1rem;
+    user-select: none;
+  }
+  .not-found h1 { font-size: clamp(1.5rem, 3vw, 2rem); margin: 0 0 1rem; }
+  .not-found > .container > div > p {
+    font-size: 1.0625rem;
+    color: var(--color-text-muted);
+    margin: 0 0 2.5rem;
+    line-height: 1.6;
+  }
+  .not-found-actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.875rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+  .btn-primary, .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.75rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+  }
+  .btn-primary { background: var(--color-primary); color: var(--color-text-inverse); }
+  .btn-primary:hover { background: var(--color-primary-hover); color: var(--color-text-inverse); }
+  .btn-secondary { border: 1.5px solid var(--color-border-strong); color: var(--color-text); }
+  .btn-secondary:hover { border-color: var(--color-primary); color: var(--color-primary); }
+
+  .not-found-nav { text-align: left; display: inline-block; }
+  .nav-label { font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-muted); margin: 0 0 0.75rem; }
+  .not-found-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 2rem;
+  }
+  .not-found-nav a {
+    font-size: 0.9375rem;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  .not-found-nav a:hover { text-decoration: underline; }
+</style>

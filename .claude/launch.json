@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "laserplus-dev",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["dev"],
+      "port": 4321,
+      "cwd": "/Users/mr.wane/Claude сайты/laserplus-web"
+    }
+  ]
+}

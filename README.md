@@ -1,43 +1,55 @@
-# Astro Starter Kit: Minimal
+# Laser Plus — сайт клиник лазерной эпиляции
 
-```sh
-pnpm create astro@latest -- --template minimal
+Сайт сети клиник лазерной эпиляции Laser Plus в Новосибирске.
+[laserplusnsk.ru](https://laserplusnsk.ru)
+
+## Стек
+
+- [Astro](https://astro.build/) — фреймворк
+- [TypeScript](https://www.typescriptlang.org/) strict mode
+- [Tailwind CSS 4](https://tailwindcss.com/)
+- [Preact](https://preactjs.com/) — интерактивные острова
+- [pnpm](https://pnpm.io/)
+- [Cloudflare Pages](https://pages.cloudflare.com/) — хостинг
+
+## Запуск
+
+```bash
+pnpm install
+pnpm dev       # localhost:4321
+pnpm build
+pnpm preview
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Разработка
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```bash
+pnpm lint         # ESLint
+pnpm lint:fix     # ESLint с автоисправлением
+pnpm format       # Prettier
+pnpm typecheck    # TypeScript + Astro check
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Структура
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+```
+src/
+├── components/
+│   ├── layout/    # Header, Footer
+│   ├── ui/        # Button, Card, Accordion
+│   ├── sections/  # секции страниц
+│   ├── booking/   # YClients виджет
+│   ├── forms/     # формы
+│   ├── seo/       # Schema.org компоненты
+│   └── islands/   # Preact острова (.tsx)
+├── content/       # Astro Content Collections
+├── layouts/       # BaseLayout, ServicePageLayout...
+├── pages/         # роутинг
+├── styles/        # global.css, tokens.css
+└── consts.ts      # константы сайта
+```
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Деплой
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Push в `main` → автодеплой на Cloudflare Pages.
+PR → preview `{branch}.laserplus.pages.dev`.

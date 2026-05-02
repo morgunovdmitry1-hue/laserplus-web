@@ -1,0 +1,326 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import SchemaBreadcrumbs from '../components/seo/SchemaBreadcrumbs.astro';
+import SchemaLocalBusiness from '../components/seo/SchemaLocalBusiness.astro';
+import { SITE } from '../consts';
+
+interface Props {
+  clinicId: string;
+  name: string;
+  address: string;
+  phone: string;
+  metro?: string;
+  metroDistance?: number;
+  parking: boolean;
+  workingHours: { weekdays: string; weekends: string };
+  equipment: string[];
+  geo: { lat: number; lng: number };
+}
+
+const {
+  clinicId,
+  name,
+  address,
+  phone,
+  metro,
+  metroDistance,
+  parking,
+  workingHours,
+  equipment,
+  geo,
+} = Astro.props;
+
+const metaTitle = `Лазерная эпиляция на ${name} в Новосибирске — ${SITE.name}`;
+const metaDescription = `Клиника лазерной эпиляции ${SITE.name} на ${address}. Александрит Candela GentlePro. Запись онлайн.`;
+---
+
+<BaseLayout title={metaTitle} description={metaDescription}>
+  <SchemaLocalBusiness
+    slot="head"
+    clinicId={clinicId}
+    name={name}
+    address={address}
+    phone={phone}
+    workingHours={workingHours}
+    geo={geo}
+    equipment={equipment}
+  />
+
+  <div class="container">
+    <SchemaBreadcrumbs
+      items={[
+        { name: 'Контакты', href: '/contacts/' },
+        { name: name, href: `/contacts/${clinicId}/` },
+      ]}
+    />
+  </div>
+
+  <!-- Hero -->
+  <section class="clinic-hero">
+    <div class="container">
+      <div class="clinic-hero-inner">
+        <div class="clinic-hero-content">
+          <div class="clinic-tag">Клиника Laser Plus</div>
+          <h1>{name}</h1>
+          <address class="clinic-address-block">
+            <div class="address-row">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+              <span>{address}, Новосибирск</span>
+            </div>
+            {metro && (
+              <div class="address-row">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="2" y="9" width="20" height="12" rx="2"/><path d="M7 9V5a5 5 0 0 1 10 0v4"/><line x1="12" y1="13" x2="12" y2="17"/>
+                </svg>
+                <span>м. {metro}{metroDistance ? ` — ${metroDistance} м` : ''}</span>
+              </div>
+            )}
+            {parking && (
+              <div class="address-row">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/>
+                </svg>
+                <span>Есть парковка</span>
+              </div>
+            )}
+          </address>
+          <div class="clinic-hours">
+            <div class="hours-row">
+              <span>Пн–Пт:</span>
+              <strong>{workingHours.weekdays}</strong>
+            </div>
+            <div class="hours-row">
+              <span>Сб–Вс:</span>
+              <strong>{workingHours.weekends}</strong>
+            </div>
+          </div>
+          <div class="clinic-hero-actions">
+            <a href={'tel:' + phone.replace(/\D/g, '')} class="btn-phone">{phone}</a>
+            <a href={`/booking/?clinic=${clinicId}`} class="btn-booking-clinic">Записаться онлайн</a>
+          </div>
+        </div>
+        <div class="clinic-map-placeholder" aria-label="Карта клиники">
+          <div class="map-inner">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            <span>Яндекс.Карты</span>
+            <small>{address}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Equipment -->
+  <section class="clinic-equipment">
+    <div class="container">
+      <h2>Оборудование</h2>
+      <div class="equipment-grid">
+        {equipment.map((item) => (
+          <div class="equipment-item">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="3"/><path d="M12 1v4m0 14v4M4.22 4.22l2.83 2.83m9.9 9.9l2.83 2.83M1 12h4m14 0h4M4.22 19.78l2.83-2.83m9.9-9.9l2.83-2.83"/>
+            </svg>
+            <span>{item}</span>
+          </div>
+        ))}
+      </div>
+      <a href="/technology/" class="link-tech">Подробнее о технологиях →</a>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <section class="clinic-content">
+    <div class="container">
+      <div class="prose">
+        <slot />
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="clinic-cta">
+    <div class="container">
+      <div class="cta-box">
+        <div>
+          <h2>Запишитесь в клинику на {name}</h2>
+          <p>Выберите удобное время и услугу — онлайн, без звонков.</p>
+        </div>
+        <a href={`/booking/?clinic=${clinicId}`} class="btn-booking-clinic btn-booking-clinic--lg">
+          Записаться онлайн
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Hero */
+  .clinic-hero {
+    padding: 2rem 0 3rem;
+    background: var(--color-bg-soft);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .clinic-hero-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  @media (min-width: 1024px) {
+    .clinic-hero-inner { grid-template-columns: 1fr 1fr; gap: 3rem; }
+  }
+
+  .clinic-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    color: var(--color-primary);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    border-radius: 100px;
+    margin-bottom: 0.875rem;
+  }
+  .clinic-hero-content h1 { font-size: clamp(1.75rem, 3.5vw, 2.5rem); margin: 0 0 1.5rem; }
+
+  .clinic-address-block {
+    font-style: normal;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    margin-bottom: 1.5rem;
+  }
+  .address-row {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-size: 0.9375rem;
+    color: var(--color-text-muted);
+  }
+  .address-row svg { flex-shrink: 0; color: var(--color-primary); }
+
+  .clinic-hours {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.75rem;
+    padding: 1rem 1.25rem;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    width: fit-content;
+  }
+  .hours-row { display: flex; gap: 0.5rem; align-items: center; font-size: 0.9375rem; }
+  .hours-row span { color: var(--color-text-muted); }
+  .hours-row strong { font-weight: 600; }
+
+  .clinic-hero-actions {
+    display: flex;
+    gap: 0.875rem;
+    flex-wrap: wrap;
+  }
+  .btn-phone {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    border: 1.5px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--color-text);
+    text-decoration: none;
+    transition: border-color var(--transition-fast), color var(--transition-fast);
+  }
+  .btn-phone:hover { border-color: var(--color-primary); color: var(--color-primary); }
+
+  .btn-booking-clinic {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.75rem;
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: background var(--transition-fast);
+  }
+  .btn-booking-clinic:hover { background: var(--color-primary-hover); color: var(--color-text-inverse); }
+  .btn-booking-clinic--lg { padding: 1rem 2.25rem; font-size: 1.0625rem; flex-shrink: 0; }
+
+  /* Map placeholder */
+  .clinic-map-placeholder {
+    aspect-ratio: 4/3;
+    background: var(--color-bg);
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .map-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-muted);
+    text-align: center;
+  }
+  .map-inner span { font-weight: 600; }
+  .map-inner small { font-size: 0.8125rem; }
+
+  /* Equipment */
+  .clinic-equipment { padding: 3rem 0; }
+  .clinic-equipment h2 { margin-bottom: 1.5rem; }
+  .equipment-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .equipment-item {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.625rem 1rem;
+    background: var(--color-bg-soft);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: 0.9375rem;
+    font-weight: 500;
+  }
+  .equipment-item svg { color: var(--color-primary); flex-shrink: 0; }
+  .link-tech {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  /* Content */
+  .clinic-content { padding: 0 0 3rem; }
+  .prose { max-width: 760px; line-height: 1.7; }
+  .prose :global(h2) { font-size: 1.375rem; margin: 2rem 0 0.875rem; }
+  .prose :global(p) { margin: 0 0 1rem; color: var(--color-text); }
+  .prose :global(ul) { margin: 0 0 1rem; padding-left: 1.5rem; }
+  .prose :global(li) { margin-bottom: 0.375rem; }
+  .prose :global(strong) { font-weight: 700; }
+
+  /* CTA */
+  .clinic-cta { padding: 3rem 0 4rem; background: var(--color-bg-soft); border-top: 1px solid var(--color-border); }
+  .cta-box {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+  @media (min-width: 768px) {
+    .cta-box { flex-direction: row; align-items: center; justify-content: space-between; }
+  }
+  .cta-box h2 { font-size: clamp(1.25rem, 2.5vw, 1.625rem); margin: 0 0 0.5rem; }
+  .cta-box p { font-size: 1rem; color: var(--color-text-muted); margin: 0; }
+</style>

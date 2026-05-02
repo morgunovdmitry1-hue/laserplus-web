@@ -1,0 +1,74 @@
+---
+import { SITE } from '../../consts';
+
+interface Props {
+  clinicId: string;
+  name: string;
+  address: string;
+  phone: string;
+  workingHours: { weekdays: string; weekends: string };
+  geo: { lat: number; lng: number };
+  equipment: string[];
+  rating?: { value: number; count: number };
+}
+
+const { clinicId, name, address, phone, workingHours, geo, equipment, rating } = Astro.props;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': ['MedicalBusiness', 'MedicalClinic', 'LocalBusiness'],
+  '@id': `${SITE.url}/contacts/${clinicId}/#localbusiness`,
+  name: `${SITE.name} — ${name}`,
+  url: `${SITE.url}/contacts/${clinicId}/`,
+  telephone: phone,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: address,
+    addressLocality: 'Новосибирск',
+    addressRegion: 'Новосибирская область',
+    postalCode: '630000',
+    addressCountry: 'RU',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: geo.lat,
+    longitude: geo.lng,
+  },
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      opens: workingHours.weekdays.split('–')[0],
+      closes: workingHours.weekdays.split('–')[1],
+    },
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Saturday', 'Sunday'],
+      opens: workingHours.weekends.split('–')[0],
+      closes: workingHours.weekends.split('–')[1],
+    },
+  ],
+  medicalSpecialty: 'Dermatology',
+  availableService: equipment.map((eq) => ({
+    '@type': 'MedicalDevice',
+    name: eq,
+  })),
+  areaServed: {
+    '@type': 'City',
+    name: 'Новосибирск',
+  },
+  ...(rating
+    ? {
+        aggregateRating: {
+          '@type': 'AggregateRating',
+          ratingValue: rating.value,
+          reviewCount: rating.count,
+          bestRating: 5,
+          worstRating: 1,
+        },
+      }
+    : {}),
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

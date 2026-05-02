@@ -1,0 +1,328 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import SchemaBreadcrumbs from '../components/seo/SchemaBreadcrumbs.astro';
+import SchemaMedicalProcedure from '../components/seo/SchemaMedicalProcedure.astro';
+
+interface Props {
+  title: string;
+  slug: string;
+  description: string;
+  metaTitle: string;
+  metaDescription: string;
+  price: { single: number; course6?: number; course8?: number };
+  duration: number;
+  sessionsRequired: string;
+  technologies: string[];
+  availableIn: string[];
+  gender: string;
+}
+
+const {
+  title,
+  slug,
+  description,
+  metaTitle,
+  metaDescription,
+  price,
+  duration,
+  sessionsRequired,
+  technologies,
+  availableIn,
+} = Astro.props;
+
+const techLabels: Record<string, string> = {
+  alexandrite: 'Александрит Candela',
+  diode: 'Диод IN-MOTION',
+};
+---
+
+<BaseLayout title={metaTitle} description={metaDescription}>
+  <SchemaMedicalProcedure
+    slot="head"
+    title={title}
+    slug={slug}
+    description={description}
+    price={price}
+    clinicIds={availableIn}
+  />
+
+  <div class="container">
+    <SchemaBreadcrumbs items={[{ name: 'Услуги', href: '/services/' }, { name: title, href: `/services/${slug}/` }]} />
+  </div>
+
+  <!-- Hero -->
+  <section class="service-hero">
+    <div class="container">
+      <div class="service-hero-inner">
+        <div class="service-hero-content">
+          <h1>{title}</h1>
+          <p class="service-hero-desc">{description}</p>
+          <div class="service-meta">
+            <div class="meta-item">
+              <span class="meta-label">Длительность</span>
+              <strong>{duration} мин</strong>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Курс</span>
+              <strong>{sessionsRequired} процедур</strong>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Цена</span>
+              <strong>от {price.single.toLocaleString('ru-RU')} ₽</strong>
+            </div>
+          </div>
+          <div class="service-tech">
+            {technologies.map((t) => (
+              <span class="tech-badge">{techLabels[t] ?? t}</span>
+            ))}
+          </div>
+          <a href={`/booking/?service=${slug}`} class="btn-booking-hero">
+            Записаться на процедуру
+          </a>
+        </div>
+        <div class="service-price-card">
+          <h3>Стоимость</h3>
+          <div class="price-list">
+            <div class="price-row">
+              <span>1 процедура</span>
+              <strong>{price.single.toLocaleString('ru-RU')} ₽</strong>
+            </div>
+            {price.course6 && (
+              <div class="price-row price-row--featured">
+                <span>Курс 6 процедур</span>
+                <div class="price-col">
+                  <strong>{price.course6.toLocaleString('ru-RU')} ₽</strong>
+                  <span class="price-save">экономия {(price.single * 6 - price.course6).toLocaleString('ru-RU')} ₽</span>
+                </div>
+              </div>
+            )}
+            {price.course8 && (
+              <div class="price-row">
+                <span>Курс 8 процедур</span>
+                <div class="price-col">
+                  <strong>{price.course8.toLocaleString('ru-RU')} ₽</strong>
+                  <span class="price-save">экономия {(price.single * 8 - price.course8).toLocaleString('ru-RU')} ₽</span>
+                </div>
+              </div>
+            )}
+          </div>
+          <a href={`/booking/?service=${slug}`} class="btn-booking-card">Записаться онлайн</a>
+          <p class="price-note">Консультация специалиста — бесплатно</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <section class="service-content">
+    <div class="container">
+      <div class="service-content-inner">
+        <div class="service-body prose">
+          <slot />
+        </div>
+        <aside class="service-sidebar">
+          <div class="sidebar-card">
+            <h4>Доступно в клиниках</h4>
+            <ul>
+              {availableIn.map((id) => (
+                <li>
+                  <a href={`/contacts/${id}/`}>
+                    {id === 'krasny-prospekt' ? 'Красный Проспект, 94' : 'Октябрьская / Сакко и Ванцетти'}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div class="sidebar-card sidebar-cta">
+            <p>Остались вопросы? Запишитесь на бесплатную консультацию</p>
+            <a href={`/booking/?service=${slug}`} class="btn-booking-sidebar">Записаться</a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Hero */
+  .service-hero {
+    padding: 2rem 0 3rem;
+    background: var(--color-bg-soft);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .service-hero-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  @media (min-width: 1024px) {
+    .service-hero-inner {
+      grid-template-columns: 1fr 340px;
+      gap: 3rem;
+    }
+  }
+  .service-hero-content h1 {
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    margin: 0 0 1rem;
+  }
+  .service-hero-desc {
+    font-size: 1.0625rem;
+    color: var(--color-text-muted);
+    line-height: 1.65;
+    margin: 0 0 1.75rem;
+  }
+  .service-meta {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+  }
+  .meta-item { display: flex; flex-direction: column; gap: 0.25rem; }
+  .meta-label { font-size: 0.8125rem; color: var(--color-text-muted); }
+  .meta-item strong { font-size: 1.0625rem; font-weight: 700; }
+
+  .service-tech {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.75rem;
+  }
+  .tech-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    color: var(--color-primary);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    border-radius: 100px;
+  }
+
+  /* Price card */
+  .service-price-card {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: 1.75rem;
+    box-shadow: var(--shadow-md);
+  }
+  .service-price-card h3 { font-size: 1.125rem; margin: 0 0 1.25rem; }
+
+  .price-list { display: flex; flex-direction: column; gap: 0; margin-bottom: 1.5rem; }
+  .price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.875rem 0;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.9375rem;
+    gap: 1rem;
+  }
+  .price-row:last-child { border-bottom: none; }
+  .price-row--featured {
+    background: color-mix(in srgb, var(--color-primary) 5%, transparent);
+    margin: 0 -1.75rem;
+    padding: 0.875rem 1.75rem;
+    border-left: 3px solid var(--color-primary);
+  }
+  .price-col { display: flex; flex-direction: column; align-items: flex-end; gap: 0.125rem; }
+  .price-row strong { font-size: 1rem; font-weight: 700; }
+  .price-save { font-size: 0.75rem; color: var(--color-success); font-weight: 600; }
+  .price-note { font-size: 0.8125rem; color: var(--color-text-muted); text-align: center; margin: 0.75rem 0 0; }
+
+  /* Buttons */
+  .btn-booking-hero {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.875rem 2rem;
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: background var(--transition-fast);
+  }
+  .btn-booking-hero:hover { background: var(--color-primary-hover); color: var(--color-text-inverse); }
+
+  .btn-booking-card, .btn-booking-sidebar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    font-weight: 700;
+    font-size: 0.9375rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: background var(--transition-fast);
+  }
+  .btn-booking-card:hover, .btn-booking-sidebar:hover {
+    background: var(--color-primary-hover);
+    color: var(--color-text-inverse);
+  }
+
+  /* Content */
+  .service-content { padding: 3rem 0 4rem; }
+  .service-content-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  @media (min-width: 1024px) {
+    .service-content-inner {
+      grid-template-columns: 1fr 280px;
+      gap: 3rem;
+    }
+  }
+
+  /* Prose styles */
+  .prose { line-height: 1.7; }
+  .prose :global(h2) {
+    font-size: 1.5rem;
+    margin: 2.5rem 0 1rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .prose :global(h2:first-child) { border-top: none; margin-top: 0; }
+  .prose :global(h3) { font-size: 1.125rem; margin: 1.75rem 0 0.75rem; }
+  .prose :global(p) { margin: 0 0 1rem; color: var(--color-text); }
+  .prose :global(ul), .prose :global(ol) {
+    margin: 0 0 1rem;
+    padding-left: 1.5rem;
+  }
+  .prose :global(li) { margin-bottom: 0.375rem; }
+  .prose :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.25rem 0;
+    font-size: 0.9375rem;
+  }
+  .prose :global(th), .prose :global(td) {
+    padding: 0.625rem 0.875rem;
+    border: 1px solid var(--color-border);
+    text-align: left;
+  }
+  .prose :global(th) {
+    background: var(--color-bg-soft);
+    font-weight: 600;
+  }
+  .prose :global(tr:nth-child(even) td) { background: var(--color-bg-soft); }
+
+  /* Sidebar */
+  .sidebar-card {
+    background: var(--color-bg-soft);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  .sidebar-card h4 { font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-muted); margin: 0 0 0.75rem; }
+  .sidebar-card ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+  .sidebar-card a { font-size: 0.9375rem; color: var(--color-primary); text-decoration: none; }
+  .sidebar-cta { background: color-mix(in srgb, var(--color-primary) 6%, transparent); border-color: color-mix(in srgb, var(--color-primary) 20%, transparent); }
+  .sidebar-cta p { font-size: 0.9375rem; color: var(--color-text); margin: 0 0 1rem; line-height: 1.5; }
+</style>

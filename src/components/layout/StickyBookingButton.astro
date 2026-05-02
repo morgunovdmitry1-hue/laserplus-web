@@ -1,0 +1,86 @@
+---
+interface Props {
+  service?: string;
+  clinic?: string;
+}
+const { service, clinic } = Astro.props;
+
+const href = '/booking/' +
+  (service || clinic
+    ? '?' + new URLSearchParams({ ...(service ? { service } : {}), ...(clinic ? { clinic } : {}) }).toString()
+    : '');
+---
+
+<div class="sticky-booking" id="sticky-booking" aria-live="polite">
+  <a href={href} class="sticky-btn" aria-label="Записаться на лазерную эпиляцию">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+    </svg>
+    <span>Записаться</span>
+  </a>
+</div>
+
+<script>
+  const btn = document.getElementById('sticky-booking');
+  let lastScroll = 0;
+
+  // Show after scrolling 300px, hide when back at top
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      btn?.classList.toggle('is-visible', !entry.isIntersecting);
+    },
+    { rootMargin: '-300px 0px 0px 0px' }
+  );
+
+  const hero = document.querySelector('.hero, .service-hero, .clinic-hero');
+  if (hero) {
+    observer.observe(hero);
+  } else {
+    // Fallback: show after scroll
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      btn?.classList.toggle('is-visible', y > 300);
+      lastScroll = y;
+    }, { passive: true });
+  }
+</script>
+
+<style>
+  .sticky-booking {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 40;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: transform var(--transition-slow), opacity var(--transition-slow);
+    pointer-events: none;
+  }
+  @media (min-width: 1024px) {
+    .sticky-booking { display: none; }
+  }
+  .sticky-booking.is-visible {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .sticky-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: 100px;
+    text-decoration: none;
+    box-shadow: 0 4px 20px rgb(30 64 175 / 0.35);
+    transition: background var(--transition-fast), box-shadow var(--transition-fast);
+  }
+  .sticky-btn:hover {
+    background: var(--color-primary-hover);
+    color: var(--color-text-inverse);
+    box-shadow: 0 6px 24px rgb(30 64 175 / 0.45);
+  }
+</style>
