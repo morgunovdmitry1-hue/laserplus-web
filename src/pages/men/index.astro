@@ -17,22 +17,60 @@ const byCategory = categoryOrder.map((cat) => ({
   label: categoryLabels[cat] ?? cat,
   services: maleServices.filter((s) => s.data.category === cat).sort((a, b) => a.data.price.single - b.data.price.single),
 })).filter((g) => g.services.length > 0);
+
+const cardPrice = (p: number) => Math.round(p * 0.6 / 10) * 10;
+
+const displayNames: Record<string, string> = {
+  'men-areoly':        'Ареолы',
+  'men-boroda':        'Борода / лицо',
+  'men-byodra':        'Бёдра',
+  'men-dorozhka':      'Дорожка на животе',
+  'men-goleni':        'Голени',
+  'men-grud':          'Грудь',
+  'men-kisti-ruk':     'Кисти рук',
+  'men-lico':          'Лицо полностью',
+  'men-mezhyagod':     'Межъягодичная полоска',
+  'men-nogi':          'Ноги полностью',
+  'men-paltsy-nog':    'Пальцы ног',
+  'men-plechi':        'Плечи',
+  'men-podborodok':    'Подбородок',
+  'men-podmyshki':     'Подмышки',
+  'men-poyasnitsa':    'Поясница',
+  'men-predplechya':   'Предплечья',
+  'men-ruki':          'Руки полностью',
+  'men-shey':          'Шея',
+  'men-spina':         'Спина полностью',
+  'men-verhnyaya-guba':'Верхняя губа',
+  'men-yagodicy':      'Ягодицы',
+  'men-zhivot':        'Живот полностью',
+};
+
+const shortTitle = (id: string, t: string) =>
+  displayNames[id] ??
+  t.replace('Лазерная эпиляция ', '').replace(/ \(мужск[аиой]+\)/g, '');
 ---
 
 <BaseLayout
   title="Лазерная эпиляция для мужчин"
   description="Лазерная эпиляция для мужчин в Новосибирске. Спина, грудь, борода, ноги. Александрит Candela GentlePro. Без боли, без вросших волос."
 >
+  <link rel="preload" as="image" href="/men-hero.webp" slot="head" />
+  <link rel="preload" as="image" href="/men-consult.webp" slot="head" />
+  <link rel="preload" as="image" href="/men-portrait.webp" slot="head" />
   <div class="container">
     <SchemaBreadcrumbs items={[{ name: 'Мужчинам', href: '/men/' }]} />
   </div>
 
   <section class="men-hero">
+    <svg class="men-hero-waves" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+      <path d="M -30 120 Q 200 60 480 180 Q 660 240 830 180" stroke="var(--color-primary)" stroke-opacity="0.08" stroke-width="10" stroke-linecap="round" fill="none"/>
+      <path d="M -30 420 Q 250 350 540 460 Q 700 520 830 475" stroke="var(--color-primary)" stroke-opacity="0.13" stroke-width="10" stroke-linecap="round" fill="none"/>
+    </svg>
     <div class="container">
       <div class="men-hero-inner">
         <div class="men-hero-content">
           <div class="men-badge">Мужская лазерная эпиляция</div>
-          <h1 data-reveal>Лазерная эпиляция<br /><span class="accent">для мужчин</span></h1>
+          <h1 data-reveal>Лазерная эпиляция<br /><span class="accent">для мужчин</span> со скидкой 40% на первый визит</h1>
           <p data-reveal data-reveal-delay="1">
             Растущий спрос — спорт, эстетика, профессии с публичной активностью.
             Александрит Candela эффективен на любых мужских зонах, включая тёмные жёсткие волосы.
@@ -45,8 +83,21 @@ const byCategory = categoryOrder.map((cat) => ({
           </ul>
           <a href="/booking/?gender=male" class="btn-men" data-reveal data-reveal-delay="3">Записаться онлайн</a>
         </div>
-        <div class="men-hero-visual" aria-hidden="true">
-          <div class="men-placeholder">Фото мужской процедуры</div>
+        <div class="men-bento" aria-hidden="true">
+          <!-- Top: процедура -->
+          <div class="mb-top">
+            <div class="mb-img mb-img--main"></div>
+            <span class="mb-pill">Мужская эпиляция</span>
+          </div>
+          <!-- Bottom row -->
+          <div class="mb-bottom">
+            <div class="mb-card mb-card--consult">
+              <div class="mb-img mb-img--consult"></div>
+            </div>
+            <div class="mb-card mb-card--portrait">
+              <div class="mb-img mb-img--portrait"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -55,32 +106,79 @@ const byCategory = categoryOrder.map((cat) => ({
   <!-- Services -->
   <section class="men-services">
     <div class="container">
-      <h2 data-reveal>Мужские услуги и цены</h2>
-      {byCategory.map(({ label, services }, ci) => (
-        <div class="men-category" data-reveal data-reveal-delay={String(Math.min(ci + 1, 5))}>
-          <h3 class="cat-title">{label}</h3>
-          <div class="men-grid">
-            {services.map((s) => (
-              <a href={`/services/${s.id}/`} class="men-card">
-                <div class="men-card-body">
-                  <h4>{s.data.title.replace('Лазерная эпиляция ', '').replace(' (мужская)', '').replace(' (мужской)', '').replace(' (мужские)', '')}</h4>
-                  <div class="men-card-meta">
-                    <span class="duration">{s.data.duration} мин</span>
-                    <span class="sessions">{s.data.sessionsRequired} процедур</span>
-                  </div>
-                </div>
-                <div class="men-card-price">
-                  <span class="single">от {s.data.price.single.toLocaleString('ru-RU')} ₽</span>
-                  {s.data.price.course6 && (
-                    <span class="course">курс {s.data.price.course6.toLocaleString('ru-RU')} ₽</span>
-                  )}
-                </div>
-              </a>
-            ))}
-          </div>
+      <div class="ms-head" data-reveal>
+        <h2>Мужские услуги и цены</h2>
+        <div class="ms-tabs" role="tablist">
+          <button class="ms-tab ms-tab--active" role="tab" aria-selected="true" aria-controls="ms-diode" id="mstab-diode">
+            <span class="ms-tab-main">Диодный</span>
+            <span class="ms-tab-sub">In-Motion D1</span>
+          </button>
+          <button class="ms-tab" role="tab" aria-selected="false" aria-controls="ms-alex" id="mstab-alex">
+            <span class="ms-tab-main">Александрит</span>
+            <span class="ms-tab-sub">Candela GentlePro</span>
+          </button>
         </div>
-      ))}
-      {maleServices.length === 0 && <p class="empty">Услуги скоро появятся</p>}
+      </div>
+
+      <!-- Panel: Диодный -->
+      <div id="ms-diode" role="tabpanel" aria-labelledby="mstab-diode">
+        {byCategory.map(({ label, services }, ci) => (
+          <div class="ms-category" data-reveal data-reveal-delay={String(Math.min(ci + 1, 4))}>
+            <h3 class="ms-cat-title">{label}</h3>
+            <div class="ms-list">
+              <div class="ms-list-header">
+                <span class="ms-lh-name">Услуга</span>
+                <span class="ms-lh-price">Цена</span>
+                <span class="ms-lh-sep">/</span>
+                <span class="ms-lh-card">По карте −40%</span>
+                <span></span>
+              </div>
+              {services.map((s) => {
+                const price = s.data.price.diode ?? s.data.price.single;
+                return (
+                  <a href={`/services/${s.id}/`} class="ms-row">
+                    <span class="ms-row-name">{shortTitle(s.id, s.data.title)}</span>
+                    <span class="ms-row-price">{price.toLocaleString('ru-RU')} ₽</span>
+                    <span class="ms-row-sep">/</span>
+                    <span class="ms-row-card">{cardPrice(price).toLocaleString('ru-RU')} ₽</span>
+                    <span class="ms-row-arrow" aria-hidden="true">→</span>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Panel: Александрит -->
+      <div id="ms-alex" role="tabpanel" aria-labelledby="mstab-alex" hidden>
+        {byCategory.map(({ label, services }, ci) => (
+          <div class="ms-category" data-reveal data-reveal-delay={String(Math.min(ci + 1, 4))}>
+            <h3 class="ms-cat-title">{label}</h3>
+            <div class="ms-list">
+              <div class="ms-list-header">
+                <span class="ms-lh-name">Услуга</span>
+                <span class="ms-lh-price">Цена</span>
+                <span class="ms-lh-sep">/</span>
+                <span class="ms-lh-card">По карте −40%</span>
+                <span></span>
+              </div>
+              {services.map((s) => {
+                const price = s.data.price.single;
+                return (
+                  <a href={`/services/${s.id}/`} class="ms-row">
+                    <span class="ms-row-name">{shortTitle(s.id, s.data.title)}</span>
+                    <span class="ms-row-price">{price.toLocaleString('ru-RU')} ₽</span>
+                    <span class="ms-row-sep">/</span>
+                    <span class="ms-row-card">{cardPrice(price).toLocaleString('ru-RU')} ₽</span>
+                    <span class="ms-row-arrow" aria-hidden="true">→</span>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 
@@ -109,8 +207,7 @@ const byCategory = categoryOrder.map((cat) => ({
     <div class="container">
       <div class="men-cta-box">
         <div data-reveal>
-          <h2>Мужской пакет — спина + грудь + плечи</h2>
-          <p>Три ключевые зоны, курс 6 процедур — скидка 17% от розничной цены.</p>
+          <h2>Лазерная эпиляция для мужчин<br />со скидкой 40% на первый визит</h2>
         </div>
         <div class="men-cta-actions" data-reveal data-reveal-delay="2">
           <a href="/booking/?gender=male" class="btn-men">Записаться</a>
@@ -126,6 +223,20 @@ const byCategory = categoryOrder.map((cat) => ({
     padding: 2.5rem 0 4rem;
     background: var(--color-bg-soft);
     border-bottom: 1px solid var(--color-border);
+    position: relative;
+    overflow: hidden;
+  }
+  .men-hero-waves {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .men-hero .container {
+    position: relative;
+    z-index: 1;
   }
   .men-hero-inner {
     display: grid;
@@ -185,23 +296,148 @@ const byCategory = categoryOrder.map((cat) => ({
     background: var(--color-primary);
     flex-shrink: 0;
   }
-  .men-placeholder {
-    aspect-ratio: 4/3;
-    background: var(--color-bg);
-    border: 2px dashed var(--color-border);
-    border-radius: var(--radius-xl);
+  /* ── Men bento ── */
+  .men-bento {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-text-muted);
-    font-size: 0.875rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .mb-top {
+    position: relative;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    height: 340px;
+  }
+  @media (min-width: 1024px) { .mb-top { height: 380px; } }
+
+  .mb-img {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+  }
+  .mb-img--main    { background-image: url('/men-hero.webp');    background-position: center 45%; }
+  .mb-img--consult { background-image: url('/men-consult.webp'); background-position: center 40%; }
+  .mb-img--portrait{ background-image: url('/men-portrait.webp'); background-position: center 30%; }
+
+  .mb-pill {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    padding: 0.3rem 0.875rem;
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    border-radius: 100px;
+    border: 1px solid rgba(255,255,255,0.25);
+  }
+
+  .mb-bottom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .mb-card {
+    position: relative;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    height: 160px;
+  }
+  @media (min-width: 1024px) { .mb-card { height: 180px; } }
+
+  .mb-label {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.4);
   }
 
   /* Services */
-  .men-services { padding: 3.5rem 0; }
-  .men-services h2 { margin-bottom: 2rem; }
-  .men-category { margin-bottom: 2.5rem; }
-  .cat-title { font-size: 1.125rem; margin: 0 0 1rem; color: var(--color-text-muted); font-weight: 600; }
+  .men-services {
+    padding: 3.5rem 0;
+    background: var(--color-bg);
+  }
+
+  /* Head + tabs */
+  .ms-head { display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 2rem; }
+  @media (min-width: 768px) { .ms-head { flex-direction: row; align-items: flex-end; justify-content: space-between; } }
+  .ms-head h2 { margin: 0; }
+
+  .ms-tabs { display: flex; gap: 0.5rem; }
+  .ms-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+    padding: 0.625rem 1rem;
+    background: var(--color-bg);
+    border: 1.5px solid var(--color-border);
+    border-radius: 100px;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+  }
+  .ms-tab:hover { border-color: var(--color-primary); }
+  .ms-tab--active {
+    border-color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 8%, white);
+  }
+  .ms-tab-main { font-size: 0.9rem; font-weight: 600; color: var(--color-text); line-height: 1; }
+  .ms-tab--active .ms-tab-main { color: var(--color-primary); }
+  .ms-tab-sub { font-size: 0.7rem; color: var(--color-text-muted); line-height: 1; }
+
+  /* Category */
+  .ms-category { margin-bottom: 2rem; }
+  .ms-cat-title { font-size: 1rem; margin: 0 0 0.75rem; color: var(--color-text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  /* Price list */
+  .ms-list { border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .ms-list-header {
+    display: grid;
+    grid-template-columns: 1fr 110px 18px 120px 28px;
+    padding: 0.5rem 1.25rem;
+    background: var(--color-bg-soft);
+    border-bottom: 2px solid var(--color-border);
+  }
+  .ms-lh-name, .ms-lh-price, .ms-lh-sep, .ms-lh-card {
+    font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-text-muted);
+  }
+  .ms-lh-price { text-align: right; }
+  .ms-lh-sep { text-align: center; color: var(--color-border); }
+  .ms-lh-card { text-align: right; color: color-mix(in srgb, var(--color-primary) 75%, black); }
+
+  .ms-row {
+    display: grid;
+    grid-template-columns: 1fr 110px 18px 120px 28px;
+    align-items: center;
+    padding: 0.875rem 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+    text-decoration: none;
+    color: var(--color-text);
+    background: var(--color-bg);
+    transition: background var(--transition-fast);
+  }
+  .ms-row:last-child { border-bottom: none; }
+  .ms-row:hover { background: var(--color-bg-soft); }
+  .ms-row-name { font-size: 0.9375rem; font-weight: 500; padding-right: 1rem; }
+  .ms-row-price { font-size: 0.9375rem; font-weight: 700; text-align: right; white-space: nowrap; }
+  .ms-row-sep { font-size: 0.875rem; color: var(--color-text-muted); text-align: center; }
+  .ms-row-card { font-size: 0.9375rem; font-weight: 700; text-align: right; white-space: nowrap; color: var(--color-primary); }
+  .ms-row-arrow { font-size: 0.875rem; color: var(--color-text-muted); text-align: right; transition: transform var(--transition-fast), color var(--transition-fast); }
+  .ms-row:hover .ms-row-arrow { transform: translateX(3px); color: var(--color-primary); }
+
+  @media (max-width: 600px) {
+    .ms-list-header, .ms-row { grid-template-columns: 1fr 88px 14px 96px 22px; padding-inline: 1rem; }
+    .ms-row-name { font-size: 0.875rem; }
+    .ms-row-price, .ms-row-card { font-size: 0.875rem; }
+  }
 
   .men-grid {
     display: grid;
@@ -265,7 +501,7 @@ const byCategory = categoryOrder.map((cat) => ({
     color: #fff;
     font-weight: 700;
     font-size: 1rem;
-    border-radius: var(--radius-md);
+    border-radius: 100px;
     text-decoration: none;
     transition: background var(--transition-fast);
   }
@@ -278,10 +514,29 @@ const byCategory = categoryOrder.map((cat) => ({
     color: #fff;
     font-weight: 600;
     font-size: 1rem;
-    border-radius: var(--radius-md);
+    border-radius: 100px;
     text-decoration: none;
     transition: border-color var(--transition-fast);
   }
   .btn-men-outline:hover { border-color: rgba(255,255,255,0.7); color: #fff; }
   .empty { text-align: center; padding: 3rem; color: var(--color-text-muted); }
 </style>
+
+<script>
+  const tabs = document.querySelectorAll<HTMLButtonElement>('.ms-tab');
+  const panels = document.querySelectorAll<HTMLElement>('#ms-diode, #ms-alex');
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const target = tab.getAttribute('aria-controls');
+      tabs.forEach((t) => {
+        t.setAttribute('aria-selected', 'false');
+        t.classList.remove('ms-tab--active');
+      });
+      panels.forEach((p) => p.setAttribute('hidden', ''));
+      tab.setAttribute('aria-selected', 'true');
+      tab.classList.add('ms-tab--active');
+      document.getElementById(target ?? '')?.removeAttribute('hidden');
+    });
+  });
+</script>

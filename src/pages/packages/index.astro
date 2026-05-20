@@ -1,0 +1,270 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SchemaBreadcrumbs from '../../components/seo/SchemaBreadcrumbs.astro';
+
+const categories = [
+  {
+    label: 'Лицо',
+    services: [
+      { name: 'Верхняя губа',     price: 1800, c3: 3500,  c5: 5000,  c10: 9000  },
+      { name: 'Лицо полностью',   price: 5400, c3: 10500, c5: 14900, c10: 27000 },
+    ],
+  },
+  {
+    label: 'Тело',
+    services: [
+      { name: 'Подмышки',         price: 2100, c3: 4100,  c5: 5800,  c10: 10500 },
+    ],
+  },
+  {
+    label: 'Бикини',
+    services: [
+      { name: 'Бикини классическое', price: 2500, c3: 4900,  c5: 6900,  c10: 12500 },
+      { name: 'Глубокое бикини',     price: 3400, c3: 6600,  c5: 9400,  c10: 17000 },
+      { name: 'Тотальное бикини',    price: 4400, c3: 8600,  c5: 12100, c10: 22000 },
+    ],
+  },
+  {
+    label: 'Ноги',
+    services: [
+      { name: 'Голени',           price: 5900,  c3: 11500, c5: 16200, c10: 29500 },
+      { name: 'Ноги полностью',   price: 11600, c3: 22600, c5: 31900, c10: 58000 },
+    ],
+  },
+];
+
+const fmt = (n: number) => n.toLocaleString('ru-RU');
+---
+
+<BaseLayout
+  title="Абонементы процедур — Александритовый лазер Candela — Laser Plus"
+  description="Абонементы на лазерную эпиляцию александритом Candela GentlePro в Новосибирске. Скидка до 50% при покупке курса. Фиксированная цена на 12 месяцев."
+>
+  <div class="container">
+    <SchemaBreadcrumbs items={[{ name: 'Абонементы', href: '/packages/' }]} />
+  </div>
+
+  <section class="pkg-hero">
+    <svg class="pkg-waves" viewBox="0 0 1200 400" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+      <path d="M -50 80 Q 200 20 500 120 Q 750 200 1000 100 Q 1150 50 1280 120" stroke="var(--color-primary)" stroke-opacity="0.07" stroke-width="10" stroke-linecap="round" fill="none"/>
+      <path d="M -50 320 Q 250 260 580 340 Q 820 400 1060 310 Q 1180 270 1280 340" stroke="var(--color-primary)" stroke-opacity="0.1" stroke-width="10" stroke-linecap="round" fill="none"/>
+    </svg>
+    <div class="container">
+      <div class="pkg-hero-inner" data-reveal>
+        <p class="section-label">Абонементы процедур</p>
+        <h1>Александритовый лазер<br />Candela Gentle Pro</h1>
+        <div class="pkg-info-row">
+          <div class="pkg-info-block">
+            <p class="pkg-info-label">Абонемент процедур</p>
+            <p class="pkg-info-text">Абонемент фиксирует цену и действует 12 месяцев. Оплата единоразовая. Сеансы используются на одну зону.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pkg-table-section">
+    <div class="container">
+      <div class="pkg-table-wrap" data-reveal>
+        <table class="pkg-table">
+          <thead>
+            <tr>
+              <th class="col-service">Услуга</th>
+              <th class="col-price">Цена</th>
+              <th class="col-course">3 сеанса<br /><span class="discount-label">скидка −35%</span></th>
+              <th class="col-course">5 сеансов<br /><span class="discount-label">скидка −45%</span></th>
+              <th class="col-course">10 сеансов<br /><span class="discount-label">скидка −50%</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            {categories.map(({ label, services }) => (
+              <>
+                <tr class="category-row">
+                  <td colspan="5">{label}</td>
+                </tr>
+                {services.map(s => (
+                  <tr class="service-row">
+                    <td class="td-name">{s.name}</td>
+                    <td class="td-price">{fmt(s.price)}</td>
+                    <td class="td-course">{fmt(s.c3)}</td>
+                    <td class="td-course">{fmt(s.c5)}</td>
+                    <td class="td-course td-course--last">{fmt(s.c10)}</td>
+                  </tr>
+                ))}
+              </>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pkg-cta" data-reveal>
+        <a href="/booking/" class="btn-pkg">Записаться</a>
+      </div>
+
+      <div class="pkg-conditions" data-reveal>
+        <p><strong>Условия:</strong> Пакет действует 12 месяцев с момента покупки. Возврат за неиспользованные сеансы — по полной стоимости использованных.</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .pkg-hero {
+    padding: 2rem 0 3rem;
+    background: var(--color-bg-soft);
+    border-bottom: 1px solid var(--color-border);
+    position: relative;
+    overflow: hidden;
+  }
+  .pkg-waves {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  .pkg-hero-inner {
+    position: relative;
+    max-width: 700px;
+  }
+  .pkg-hero-inner h1 {
+    font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+    margin: 0.5rem 0 1.5rem;
+  }
+  .pkg-info-row {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .pkg-info-block {
+    max-width: 480px;
+  }
+  .pkg-info-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    margin: 0 0 0.375rem;
+  }
+  .pkg-info-text {
+    font-size: 0.9375rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* Table */
+  .pkg-table-section {
+    padding: 3rem 0 5rem;
+  }
+  .pkg-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    margin-bottom: 2rem;
+  }
+  .pkg-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+  }
+
+  .pkg-table thead tr {
+    background: var(--color-bg-soft);
+    border-bottom: 2px solid var(--color-border);
+  }
+  .pkg-table thead th {
+    padding: 0.875rem 1.25rem;
+    text-align: left;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+  .discount-label {
+    display: block;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    text-transform: none;
+    letter-spacing: 0;
+    margin-top: 0.2rem;
+  }
+  .col-service { min-width: 160px; }
+  .col-price   { min-width: 90px; }
+  .col-course  { min-width: 110px; }
+
+  .category-row td {
+    padding: 1rem 1.25rem 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    background: var(--color-bg-soft);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .service-row {
+    border-bottom: 1px solid var(--color-border);
+    transition: background var(--transition-fast);
+  }
+  .service-row:last-child { border-bottom: none; }
+  .service-row:hover { background: color-mix(in srgb, var(--color-primary) 3%, transparent); }
+
+  .td-name {
+    padding: 0.875rem 1.25rem;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+  .td-price {
+    padding: 0.875rem 1.25rem;
+    font-weight: 700;
+    color: var(--color-text);
+    white-space: nowrap;
+  }
+  .td-course {
+    padding: 0.875rem 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+  .td-course--last {
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+
+  .pkg-cta {
+    margin-bottom: 1.5rem;
+  }
+  .btn-pkg {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.875rem 2.5rem;
+    background: var(--color-primary);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: background var(--transition-fast);
+    box-shadow: var(--shadow-primary);
+  }
+  .btn-pkg:hover { background: var(--color-primary-hover); color: #fff; }
+
+  .pkg-conditions {
+    padding: 1.125rem 1.5rem;
+    background: var(--color-bg-soft);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+  }
+  .pkg-conditions p {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.6;
+  }
+</style>

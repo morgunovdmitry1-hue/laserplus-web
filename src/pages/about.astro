@@ -6,7 +6,7 @@ import { CLINICS } from '../consts';
 
 <BaseLayout
   title="О клинике Laser Plus — медицинская лицензия, оборудование, команда"
-  description="Laser Plus — сеть клиник лазерной эпиляции в Новосибирске с 2017 года. Медицинская лицензия, Candela GentlePro, 7 опытных специалистов. Два адреса."
+  description="Laser Plus — сеть клиник лазерной эпиляции в Новосибирске с 2018 года. Медицинская лицензия, Candela GentlePro, 7 опытных специалистов. Два адреса."
 >
   <div class="container">
     <SchemaBreadcrumbs items={[{ name: 'О клинике', href: '/about/' }]} />
@@ -14,10 +14,14 @@ import { CLINICS } from '../consts';
 
   <!-- Hero -->
   <section class="about-hero">
+    <svg class="about-hero-waves" viewBox="0 0 1200 400" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+      <path d="M -50 80 Q 200 20 500 120 Q 750 200 1000 100 Q 1150 50 1280 120" stroke="var(--color-primary)" stroke-opacity="0.07" stroke-width="10" stroke-linecap="round" fill="none"/>
+      <path d="M -50 320 Q 250 260 580 340 Q 820 400 1060 310 Q 1180 270 1280 340" stroke="var(--color-primary)" stroke-opacity="0.1" stroke-width="10" stroke-linecap="round" fill="none"/>
+    </svg>
     <div class="container">
       <div class="about-hero-inner">
         <div class="about-hero-content">
-          <div class="about-badge">С 2017 года в Новосибирске</div>
+          <div class="about-badge">Работаем с 2018 года в Новосибирске</div>
           <h1 data-reveal>Клиника<br /><span class="accent">Laser Plus</span></h1>
           <p data-reveal data-reveal-delay="1">
             Специализированная сеть клиник лазерной эпиляции. Мы не делаем маникюр, массаж и «всё подряд» —
@@ -26,11 +30,11 @@ import { CLINICS } from '../consts';
         </div>
         <div class="about-hero-stats">
           <div class="big-stat" data-reveal data-reveal-delay="1">
-            <strong>7+</strong>
+            <strong>8+</strong>
             <span>лет опыта</span>
           </div>
           <div class="big-stat" data-reveal data-reveal-delay="2">
-            <strong>5 000+</strong>
+            <strong>8 000+</strong>
             <span>клиентов</span>
           </div>
           <div class="big-stat" data-reveal data-reveal-delay="3">
@@ -38,8 +42,8 @@ import { CLINICS } from '../consts';
             <span>клиники</span>
           </div>
           <div class="big-stat" data-reveal data-reveal-delay="4">
-            <strong>7</strong>
-            <span>специалистов</span>
+            <strong>Большой парк</strong>
+            <span>оборудования</span>
           </div>
         </div>
       </div>
@@ -53,15 +57,14 @@ import { CLINICS } from '../consts';
         <div class="license-main">
           <h2 data-reveal>Медицинская лицензия</h2>
           <p data-reveal data-reveal-delay="1">
-            Laser Plus работает по медицинской лицензии на осуществление медицинской деятельности.
-            Лазерная эпиляция — медицинская процедура, и именно так мы к ней относимся.
+            Laser Plus работает по медицинской лицензии. Лазерная эпиляция — медицинская процедура, и именно так мы к ней относимся.
           </p>
           <p data-reveal data-reveal-delay="2">
             Лицензия означает: проверенное оборудование, сертифицированные специалисты,
             соблюдение санитарных норм и полная юридическая ответственность за результат.
           </p>
           <div class="license-detail" data-reveal data-reveal-delay="3">
-            <div class="license-badge-block">
+            <a href="/license/" class="license-badge-block">
               <div class="badge-icon" aria-hidden="true">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
@@ -69,9 +72,9 @@ import { CLINICS } from '../consts';
               </div>
               <div>
                 <strong>Лицензия Министерства здравоохранения</strong>
-                <p>Новосибирская область</p>
+                <p>Новосибирская область — посмотреть документы</p>
               </div>
-            </div>
+            </a>
           </div>
         </div>
         <div class="license-side">
@@ -94,48 +97,87 @@ import { CLINICS } from '../consts';
     <div class="container">
       <h2 data-reveal>Оборудование</h2>
       <p class="section-desc" data-reveal data-reveal-delay="1">
-        Два лазерных аппарата — для разных типов кожи и задач.
-        Подбор технологии происходит на консультации.
+        Два лазерных аппарата — для разных типов кожи и задач. Подбор технологии происходит на консультации.
       </p>
-      <div class="equipment-grid">
-        <div class="equipment-card equipment-card--primary" data-reveal data-reveal-delay="1">
-          <div class="equip-header">
-            <div class="equip-label">Основной аппарат</div>
-            <h3>Candela GentlePro</h3>
-            <div class="equip-type">Александритовый лазер · 755 нм</div>
+      <div class="aeq-grid">
+
+        <!-- Candela -->
+        <div class="aeq-card" data-reveal data-reveal-delay="1">
+          <div class="aeq-photo aeq-photo--candela">
+            <div class="aeq-photo-title">
+              <p class="aeq-type">Александритовый лазер</p>
+              <h3 class="aeq-name">Candela GentlePro</h3>
+              <p class="aeq-wave">Топ премиум</p>
+            </div>
           </div>
-          <div class="equip-body">
-            <p>
-              Американский лазер класса «золотой стандарт» — именно такой стоит в ведущих клиниках мира.
-              Система охлаждения DCD защищает кожу перед каждым импульсом.
-            </p>
-            <ul>
-              <li>Наивысшая эффективность на тёмных волосах</li>
-              <li>Кожа I–IV фототипа без загара</li>
-              <li>Минимальный дискомфорт</li>
-            </ul>
-            <a href="/technology/" class="equip-link">Подробнее о технологии →</a>
+          <div class="aeq-desc-wrap">
+            <p class="aeq-desc">Мы работаем на оригинальном лазере Candela (США) — это золотой стандарт в мире лазерной эпиляции. Не корейский аналог, не китайская копия — а оригинал, на котором обучают специалистов по всему миру.</p>
+            <p class="aeq-desc">Ключевое отличие — система охлаждения. Мы используем медицинский фреон, который охлаждает кожу до −30°C прямо в момент вспышки. Именно это делает процедуру комфортной и безопасной.</p>
+          </div>
+          <div class="aeq-sections">
+            <div class="aeq-section">
+              <h4>Показания</h4>
+              <ul>
+                <li>Светлая и смуглая кожа (фототипы I–IV)</li>
+                <li>Светлые, тёмные и коричневые волосы</li>
+                <li>Без загара (прошло более 2 недель)</li>
+                <li>Все зоны тела и лица</li>
+              </ul>
+            </div>
+            <div class="aeq-section">
+              <h4>Преимущества</h4>
+              <ul>
+                <li>Наивысшая эффективность даже на светлых волосах</li>
+                <li>Минимальный дискомфорт благодаря охлаждению фреоном</li>
+                <li>Быстрая обработка больших зон</li>
+                <li>Доказанная клиническая эффективность</li>
+              </ul>
+            </div>
+          </div>
+          <div class="aeq-stats">
+            <div class="aeq-stat"><strong>95%</strong><span>нежелательных волосков убирает за один курс</span></div>
+            <div class="aeq-stat"><strong>5–7</strong><span>процедур стандартный курс</span></div>
           </div>
         </div>
-        <div class="equipment-card" data-reveal data-reveal-delay="2">
-          <div class="equip-header equip-header--alt">
-            <div class="equip-label">Дополнительный аппарат</div>
-            <h3>IN-MOTION D1</h3>
-            <div class="equip-type">Диодный лазер · 810 нм</div>
+
+        <!-- In-Motion D1 -->
+        <div class="aeq-card" data-reveal data-reveal-delay="2">
+          <div class="aeq-photo aeq-photo--diode">
+            <div class="aeq-photo-title">
+              <p class="aeq-type">Диодный лазер</p>
+              <h3 class="aeq-name">In-Motion D1</h3>
+              <p class="aeq-wave">Проверенная классика</p>
+            </div>
           </div>
-          <div class="equip-body">
-            <p>
-              Диодный лазер со скользящим импульсом. Идеально для смуглой и тёмной кожи,
-              периода лёгкого загара и чувствительных зон.
-            </p>
-            <ul>
-              <li>Фототипы IV–VI</li>
-              <li>Работает с загорелой кожей</li>
-              <li>Щадящий режим</li>
-            </ul>
-            <a href="/technology/" class="equip-link">Сравнить технологии →</a>
+          <div class="aeq-desc-wrap">
+            <p class="aeq-desc">Диодный лазер IN-MOTION — универсальный диодный лазер. Подходит для начала курса лазерной эпиляции. Технология скользящего импульса — движения по коже непрерывно, что позволяет работать со смуглой кожей и в период лёгкого загара.</p>
+          </div>
+          <div class="aeq-sections">
+            <div class="aeq-section">
+              <h4>Показания</h4>
+              <ul>
+                <li>Смуглая и тёмная кожа (фототипы IV–VI)</li>
+                <li>Период лёгкого загара</li>
+                <li>Светлые, русые и тёмные волосы</li>
+                <li>Чувствительная кожа</li>
+              </ul>
+            </div>
+            <div class="aeq-section">
+              <h4>Преимущества</h4>
+              <ul>
+                <li>Работает с загорелой кожей</li>
+                <li>Щадящий режим для чувствительных зон</li>
+                <li>Подходит для тёмных фототипов</li>
+                <li>Непрерывная система охлаждения</li>
+              </ul>
+            </div>
+          </div>
+          <div class="aeq-stats">
+            <div class="aeq-stat"><strong>8–10</strong><span>процедур стандартный курс</span></div>
+            <div class="aeq-stat"><strong>1</strong><span>заметный результат после первого сеанса</span></div>
           </div>
         </div>
+
       </div>
     </div>
   </section>
@@ -143,17 +185,18 @@ import { CLINICS } from '../consts';
   <!-- Team -->
   <section class="about-team">
     <div class="container">
-      <h2 data-reveal>Наши специалисты</h2>
+      <h2 data-reveal>Наши мастера</h2>
       <p class="section-desc" data-reveal data-reveal-delay="1">
-        7 сертифицированных мастеров лазерной эпиляции. Каждый прошёл обучение и имеет опыт
-        работы на аппаратах Candela и IN-MOTION не менее 3 лет.
+        Каждый прошёл обучение и имеет опыт работы на оборудовании Candela и IN-MOTION не менее 3х лет.
+      </p>
+      <p class="section-desc" data-reveal data-reveal-delay="2">
+        Каждый мастер имеет медицинское образование и регулярно проходит аттестацию по повышению квалификации.
       </p>
       <div class="team-qualities">
         {[
-          { title: 'Сертификация', desc: 'Все специалисты имеют медицинское образование или сертификат специалиста по аппаратной косметологии.' },
-          { title: 'Опыт', desc: 'Минимальный опыт работы с лазерным оборудованием — 3 года. Средний по команде — 5 лет.' },
-          { title: 'Обучение', desc: 'Регулярное обучение: обновления протоколов, новые зоны и особые случаи кожи.' },
-          { title: 'Консультация', desc: 'Перед каждым курсом — консультация: определение фототипа, подбор аппарата, режима и плана процедур.' },
+          { title: 'Сертификация', desc: 'Все мастера имеют медицинское образование и сертификат о прохождении обучения для работы на оборудовании.' },
+          { title: 'Обучение', desc: 'Регулярное обучение: обновления протоколов, новые зоны и особые случаи работы с кожей.' },
+          { title: 'Консультация', desc: 'Перед каждым курсом — бесплатная консультация: определение фототипа, подбор оборудования и плана процедур.' },
         ].map(({ title, desc }, i) => (
           <div class="team-quality" data-reveal data-reveal-delay={String(i + 1)}>
             <h4>{title}</h4>
@@ -168,22 +211,48 @@ import { CLINICS } from '../consts';
   <section class="about-clinics">
     <div class="container">
       <h2 data-reveal>Наши адреса</h2>
-      <div class="clinics-list">
+      <div class="ac-grid">
         {CLINICS.map((clinic, i) => (
-          <div class="clinic-row" data-reveal data-reveal-delay={String(i + 1)}>
-            <div class="clinic-info">
+          <div class="ac-card" data-reveal data-reveal-delay={String(i + 1)}>
+            <div class="ac-map">
+              <iframe
+                src={`https://yandex.ru/map-widget/v1/?ll=${clinic.geo.lng},${clinic.geo.lat}&z=16&ol=biz&oid=${clinic.yandexOrgId}`}
+                width="100%"
+                height="100%"
+                frameborder="0"
+                loading="lazy"
+                title={`Карта — клиника ${clinic.name}`}
+                allowfullscreen
+              />
+            </div>
+            <div class="ac-card-top">
               <h3>{clinic.name}</h3>
               <address>
-                <p>{clinic.address}</p>
-                <p class="metro">м. {clinic.metro}</p>
+                <p class="ac-address">{clinic.address}</p>
+                <p class="ac-metro">м. {clinic.metro}</p>
               </address>
-              <div class="hours">
-                <span>Пн–Пт: {clinic.workingHours.weekdays}</span>
-                <span>Сб–Вс: {clinic.workingHours.weekends}</span>
-              </div>
             </div>
-            <div class="clinic-actions">
-              <a href={`tel:${clinic.phone.replace(/\D/g, '')}`} class="clinic-phone">{clinic.phone}</a>
+            <div class="ac-hours">
+              {clinic.workingHours.weekdays === clinic.workingHours.weekends ? (
+                <div class="ac-hour-row">
+                  <span class="ac-hour-days">Ежедневно</span>
+                  <span class="ac-hour-time">{clinic.workingHours.weekdays}</span>
+                </div>
+              ) : (
+                <>
+                  <div class="ac-hour-row">
+                    <span class="ac-hour-days">Пн–Пт</span>
+                    <span class="ac-hour-time">{clinic.workingHours.weekdays}</span>
+                  </div>
+                  <div class="ac-hour-row">
+                    <span class="ac-hour-days">Сб–Вс</span>
+                    <span class="ac-hour-time">{clinic.workingHours.weekends}</span>
+                  </div>
+                </>
+              )}
+            </div>
+            <div class="ac-card-bottom">
+              <a href={`tel:${clinic.phone.replace(/\D/g, '')}`} class="ac-phone">{clinic.phone}</a>
               <a href="/booking/" class="btn-primary">Записаться</a>
             </div>
           </div>
@@ -199,9 +268,8 @@ import { CLINICS } from '../consts';
       <div class="values-grid">
         {[
           { title: 'Честность', desc: 'Не обещаем результата, которого нет. Если лазер в Вашем случае не даст эффекта — скажем об этом на консультации.' },
-          { title: 'Безопасность', desc: 'Медицинская лицензия — не формальность. Это обязательства, стандарты и ответственность за каждую процедуру.' },
-          { title: 'Специализация', desc: 'Только лазерная эпиляция. Не пытаемся быть всем сразу — делаем одно дело лучше всех.' },
-          { title: 'Долгосрочный результат', desc: 'Курс, а не разовые процедуры. Мы заинтересованы в том, чтобы Вы больше не возвращались — это лучший отзыв.' },
+          { title: 'Безопасность', desc: 'Медицинская лицензия — не формальность. Это обязательства, стандарты и полная ответственность за каждый результат.' },
+          { title: 'Долгосрочный результат', desc: 'Курс, а не разовые процедуры. Мы заинтересованы в том, чтобы Вы получили наилучший результат.' },
         ].map(({ title, desc }, i) => (
           <div class="value-item" data-reveal data-reveal-delay={String(i + 1)}>
             <h4>{title}</h4>
@@ -218,7 +286,7 @@ import { CLINICS } from '../consts';
       <div class="cta-box">
         <div data-reveal>
           <h2>Первая консультация бесплатно</h2>
-          <p>Специалист определит фототип кожи, подберёт аппарат и ответит на все вопросы.</p>
+          <p>Специалист определит фототип кожи, подберёт оборудование и ответит на все вопросы.</p>
         </div>
         <a href="/booking/" class="btn-primary" data-reveal data-reveal-delay="2">Записаться онлайн</a>
       </div>
@@ -231,12 +299,22 @@ import { CLINICS } from '../consts';
     padding: 2.5rem 0 4rem;
     background: var(--color-bg-soft);
     border-bottom: 1px solid var(--color-border);
+    position: relative;
+    overflow: hidden;
+  }
+  .about-hero-waves {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
   }
   .about-hero-inner {
     display: grid;
     grid-template-columns: 1fr;
     gap: 3rem;
     align-items: center;
+    position: relative;
   }
   @media (min-width: 1024px) { .about-hero-inner { grid-template-columns: 1fr 1fr; } }
 
@@ -282,11 +360,12 @@ import { CLINICS } from '../consts';
     border-radius: var(--radius-lg);
   }
   .big-stat strong {
-    font-size: 2rem;
+    font-size: clamp(1.25rem, 3vw, 2rem);
     font-weight: 800;
     color: var(--color-primary);
-    line-height: 1;
-    letter-spacing: -0.03em;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
   }
   .big-stat span {
     font-size: 0.875rem;
@@ -315,6 +394,12 @@ import { CLINICS } from '../consts';
     background: color-mix(in srgb, var(--color-primary) 6%, transparent);
     border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
     border-radius: var(--radius-lg);
+    text-decoration: none;
+    transition: background var(--transition-fast), border-color var(--transition-fast);
+  }
+  .license-badge-block:hover {
+    background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
   }
   .badge-icon {
     width: 48px;
@@ -367,54 +452,104 @@ import { CLINICS } from '../consts';
   .about-equipment h2 { margin: 0 0 0.75rem; }
   .section-desc { font-size: 1.0625rem; color: var(--color-text-muted); max-width: 600px; margin: 0 0 2.5rem; line-height: 1.6; }
 
-  .equipment-grid {
+  .aeq-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  @media (min-width: 1024px) { .equipment-grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1024px) {
+    .aeq-grid {
+      grid-template-columns: 1fr 1fr;
+      column-gap: 1.5rem;
+      row-gap: 0;
+    }
+    .aeq-card:nth-child(1) { grid-column: 1; grid-row: 1 / 5; display: grid; grid-template-rows: subgrid; }
+    .aeq-card:nth-child(2) { grid-column: 2; grid-row: 1 / 5; display: grid; grid-template-rows: subgrid; }
+  }
 
-  .equipment-card {
+  .aeq-card {
     border: 1px solid var(--color-border);
     border-radius: var(--radius-xl);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
-  .equipment-card--primary {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 10%, transparent);
-  }
-  .equip-header {
+
+  .aeq-photo {
+    position: relative;
+    height: 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
     padding: 1.75rem 2rem;
-    background: var(--color-primary);
-    color: #fff;
+    overflow: hidden;
   }
-  .equip-header--alt { background: var(--color-bg-dark); }
-  .equip-label {
+  @media (min-width: 1024px) { .aeq-photo { height: 300px; } }
+
+  .aeq-photo--candela {
+    background:
+      linear-gradient(to top, rgba(13,35,51,0.72) 0%, rgba(13,35,51,0.1) 60%, transparent 100%),
+      url('/candela-procedure.webp') center 68% / cover no-repeat;
+  }
+  .aeq-photo--diode {
+    background:
+      linear-gradient(to top, rgba(13,35,51,0.65) 0%, rgba(13,35,51,0.1) 50%, transparent 100%),
+      url('/inmotion-procedure.webp') center 40% / cover no-repeat;
+  }
+
+  .aeq-photo-title { position: relative; z-index: 1; }
+  .aeq-type {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.65);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 0.375rem;
+  }
+  .aeq-name {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 0.5rem;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .aeq-wave { font-size: 0.875rem; color: rgba(255,255,255,0.7); margin: 0; }
+
+  .aeq-desc-wrap {
+    padding: 2rem 2rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .aeq-desc { font-size: 0.9375rem; color: var(--color-text-muted); line-height: 1.65; margin: 0; }
+
+  .aeq-sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem 2rem 0;
+  }
+  @media (max-width: 480px) { .aeq-sections { grid-template-columns: 1fr; } }
+
+  .aeq-section h4 {
     font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: rgba(255,255,255,0.7);
-    margin-bottom: 0.5rem;
+    color: var(--color-text-muted);
+    margin: 0 0 0.75rem;
   }
-  .equip-header h3 {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: #fff;
-    margin: 0 0 0.375rem;
-    line-height: 1.2;
-  }
-  .equip-type { font-size: 0.875rem; color: rgba(255,255,255,0.75); }
-  .equip-body { padding: 2rem; }
-  .equip-body p { font-size: 0.9375rem; color: var(--color-text-muted); line-height: 1.65; margin: 0 0 1.25rem; }
-  .equip-body ul { list-style: none; padding: 0; margin: 0 0 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
-  .equip-body li {
+  .aeq-section ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+  .aeq-section li {
     display: flex;
     align-items: flex-start;
-    gap: 0.625rem;
-    font-size: 0.9375rem;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-text);
+    line-height: 1.5;
   }
-  .equip-body li::before {
+  .aeq-section li::before {
     content: '';
     display: block;
     width: 6px;
@@ -424,12 +559,22 @@ import { CLINICS } from '../consts';
     flex-shrink: 0;
     margin-top: 0.4em;
   }
-  .equip-link {
-    font-size: 0.9375rem;
-    font-weight: 600;
-    color: var(--color-primary);
-    text-decoration: none;
+
+  .aeq-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 1.5rem;
+    padding: 1.25rem 2rem 2rem;
+    border-top: 1px solid var(--color-border);
   }
+  .aeq-stat { display: flex; flex-direction: column; gap: 0.2rem; }
+  .aeq-stat strong {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    line-height: 1;
+  }
+  .aeq-stat span { font-size: 0.8125rem; color: var(--color-text-muted); }
 
   /* Team */
   .about-team { padding: 3.5rem 0; }
@@ -440,7 +585,7 @@ import { CLINICS } from '../consts';
     gap: 1.5rem;
   }
   @media (min-width: 640px) { .team-qualities { grid-template-columns: 1fr 1fr; } }
-  @media (min-width: 1024px) { .team-qualities { grid-template-columns: repeat(4, 1fr); } }
+  @media (min-width: 1024px) { .team-qualities { grid-template-columns: repeat(3, 1fr); } }
 
   .team-quality {
     padding: 1.5rem;
@@ -458,36 +603,51 @@ import { CLINICS } from '../consts';
     border-top: 1px solid var(--color-border);
   }
   .about-clinics h2 { margin: 0 0 2rem; }
-  .clinics-list { display: flex; flex-direction: column; gap: 1px; }
-  .clinic-row {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    padding: 2rem;
-    background: var(--color-bg);
+
+  .ac-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  @media (min-width: 768px) { .ac-grid { grid-template-columns: 1fr 1fr; } }
+
+  .ac-card {
     border: 1px solid var(--color-border);
     border-radius: var(--radius-xl);
-    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg);
+    overflow: hidden;
+    transition: box-shadow var(--transition-base), border-color var(--transition-base);
   }
-  @media (min-width: 768px) {
-    .clinic-row {
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0;
-    }
-    .clinics-list { gap: 1rem; }
+  .ac-card:hover { border-color: var(--color-primary); box-shadow: var(--shadow-md); }
+
+  .ac-map { width: 100%; height: 200px; flex-shrink: 0; }
+  .ac-map iframe { width: 100%; height: 100%; display: block; border: none; }
+
+  .ac-card-top { padding: 1.5rem 1.75rem 0; display: flex; flex-direction: column; gap: 0.5rem; }
+  .ac-card-top h3 { font-size: 1.125rem; font-weight: 700; margin: 0; color: var(--color-text); }
+  .ac-card-top address { font-style: normal; display: flex; flex-direction: column; gap: 0.1875rem; }
+  .ac-address { font-size: 0.9375rem; color: var(--color-text); margin: 0; }
+  .ac-metro { font-size: 0.875rem; color: var(--color-text-muted); margin: 0; }
+
+  .ac-hours { display: flex; flex-direction: column; gap: 0.375rem; padding: 1rem 1.75rem; }
+  .ac-hour-row { display: flex; gap: 1rem; align-items: center; }
+  .ac-hour-days { font-size: 0.8125rem; color: var(--color-text-muted); min-width: 3.5rem; }
+  .ac-hour-time { font-size: 0.875rem; font-weight: 500; color: var(--color-text); }
+
+  .ac-card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.75rem 1.75rem;
+    border-top: 1px solid var(--color-border);
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: auto;
   }
-  .clinic-info h3 { font-size: 1.1875rem; font-weight: 700; margin: 0 0 0.5rem; }
-  .clinic-info address { font-style: normal; }
-  .clinic-info address p { font-size: 0.9375rem; color: var(--color-text); margin: 0; }
-  .clinic-info .metro { font-size: 0.875rem; color: var(--color-text-muted); margin-top: 0.2rem; }
-  .hours { display: flex; flex-direction: column; gap: 0.2rem; margin-top: 0.625rem; }
-  .hours span { font-size: 0.875rem; color: var(--color-text-muted); }
-  .clinic-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 0.75rem; flex-shrink: 0; }
-  @media (min-width: 480px) { .clinic-actions { flex-direction: row; align-items: center; } }
-  .clinic-phone { font-weight: 700; font-size: 1rem; color: var(--color-text); text-decoration: none; white-space: nowrap; }
-  .clinic-phone:hover { color: var(--color-primary); }
+  .ac-phone { font-weight: 700; font-size: 1rem; color: var(--color-text); text-decoration: none; white-space: nowrap; }
+  .ac-phone:hover { color: var(--color-primary); }
 
   /* Values */
   .about-values { padding: 3.5rem 0; }
@@ -498,7 +658,7 @@ import { CLINICS } from '../consts';
     gap: 1.5rem;
   }
   @media (min-width: 640px) { .values-grid { grid-template-columns: 1fr 1fr; } }
-  @media (min-width: 1024px) { .values-grid { grid-template-columns: repeat(4, 1fr); } }
+  @media (min-width: 1024px) { .values-grid { grid-template-columns: repeat(3, 1fr); } }
 
   .value-item {
     padding: 1.5rem;

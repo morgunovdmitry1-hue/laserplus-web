@@ -1,0 +1,107 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SchemaBreadcrumbs from '../../components/seo/SchemaBreadcrumbs.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map(post => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const fmt = (d: Date) => d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<BaseLayout
+  title={post.data.metaTitle ?? post.data.title + ' | Laser Plus'}
+  description={post.data.metaDescription ?? post.data.excerpt}
+>
+  <div class="container">
+    <SchemaBreadcrumbs items={[
+      { name: 'Блог', href: '/blog/' },
+      { name: post.data.title, href: `/blog/${post.id}/` },
+    ]} />
+  </div>
+
+  <article class="post-page">
+    <div class="container">
+      <header class="post-header">
+        <a href="/blog/" class="post-back">← Блог</a>
+        <span class="post-cat">{post.data.category}</span>
+        <h1>{post.data.title}</h1>
+        <time class="post-date" datetime={post.data.date.toISOString()}>{fmt(post.data.date)}</time>
+      </header>
+
+      <div class="post-body prose">
+        <Content />
+      </div>
+
+      <footer class="post-footer">
+        <a href="/booking/" class="btn-cta">Записаться на процедуру</a>
+      </footer>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .post-page { padding: 2rem 0 5rem; }
+
+  .post-header { margin-bottom: 3rem; max-width: 760px; }
+  .post-back {
+    display: inline-block;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    margin-bottom: 1.25rem;
+  }
+  .post-back:hover { color: var(--color-primary); }
+  .post-cat {
+    display: inline-flex;
+    padding: 0.2rem 0.75rem;
+    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    color: var(--color-primary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 100px;
+    margin-bottom: 1rem;
+  }
+  .post-header h1 {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    line-height: 1.25;
+    margin: 0.5rem 0 1rem;
+  }
+  .post-date { font-size: 0.875rem; color: var(--color-text-muted); }
+
+  .post-body { max-width: 760px; }
+  .prose { line-height: 1.75; }
+  .prose :global(h2) { font-size: 1.375rem; margin: 2.5rem 0 1rem; }
+  .prose :global(h3) { font-size: 1.125rem; margin: 2rem 0 0.75rem; }
+  .prose :global(p) { margin: 0 0 1.25rem; color: var(--color-text); }
+  .prose :global(ul), .prose :global(ol) { margin: 0 0 1.25rem; padding-left: 1.5rem; }
+  .prose :global(li) { margin-bottom: 0.5rem; }
+  .prose :global(strong) { font-weight: 700; }
+
+  .post-footer {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .btn-cta {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.875rem 2rem;
+    background: var(--color-primary);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: background var(--transition-fast);
+  }
+  .btn-cta:hover { background: var(--color-primary-hover); color: #fff; }
+</style>

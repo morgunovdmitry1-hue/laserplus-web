@@ -13,6 +13,11 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 const d = entry.data;
+
+const clinicPhotos: Record<string, string> = {
+  'krasny-prospekt': '/images/clinic-krasny-prospekt.webp',
+  'oktyabrskaya': '/images/clinic-oktyabrskaya.webp',
+};
 ---
 
 <ClinicPageLayout
@@ -26,6 +31,9 @@ const d = entry.data;
   workingHours={d.workingHours}
   equipment={d.equipment}
   geo={d.geo}
+  photo={clinicPhotos[entry.id]}
+  award={d.award}
+  parkingNote={d.parkingNote}
 >
   <Content />
 </ClinicPageLayout>

@@ -1,14 +1,12 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SchemaBreadcrumbs from '../../components/seo/SchemaBreadcrumbs.astro';
-
-const clinics = await getCollection('clinics');
+import { CLINICS } from '../../consts';
 ---
 
 <BaseLayout
   title="Контакты и адреса клиник"
-  description="Адреса клиник Laser Plus в Новосибирске. Красный Проспект, 94 и ул. Октябрьская. Телефоны, режим работы, как добраться."
+  description="Адреса клиник Laser Plus в Новосибирске. Красный Проспект, 94 и ул. Сакко и Ванцетти 25/1. Телефоны, режим работы, как добраться."
 >
   <div class="container">
     <SchemaBreadcrumbs items={[{ name: 'Контакты', href: '/contacts/' }]} />
@@ -18,22 +16,47 @@ const clinics = await getCollection('clinics');
     <div class="container">
       <h1 data-reveal>Наши клиники</h1>
       <div class="clinics-grid">
-        {clinics.map((clinic, i) => (
+        {CLINICS.map((clinic, i) => (
           <div class="clinic-card" data-reveal data-reveal-delay={String(i + 1)}>
-            <h2><a href={`/contacts/${clinic.id}/`}>{clinic.data.name}</a></h2>
-            <address>
-              <p>{clinic.data.address}, {clinic.data.city}</p>
-              {clinic.data.metro && <p>м. {clinic.data.metro}</p>}
-            </address>
-            <div class="hours">
-              <p>Пн–Пт: {clinic.data.workingHours.weekdays}</p>
-              <p>Сб–Вс: {clinic.data.workingHours.weekends}</p>
+            <div class="clinic-map">
+              <iframe
+                src={`https://yandex.ru/map-widget/v1/?ll=${clinic.geo.lng},${clinic.geo.lat}&z=16&ol=biz&oid=${clinic.yandexOrgId}`}
+                width="100%"
+                height="100%"
+                frameborder="0"
+                loading="lazy"
+                title={`Карта — клиника ${clinic.name}`}
+                allowfullscreen
+              />
             </div>
-            <a href={'tel:' + clinic.data.phone.replace(/\D/g, '')} class="phone-link">
-              {clinic.data.phone}
-            </a>
-            <div class="card-actions">
-              <a href={`/contacts/${clinic.id}/`} class="btn-secondary">Подробнее</a>
+            <div class="clinic-card-top">
+              <h2><a href={`/contacts/${clinic.id}/`}>{clinic.name}</a></h2>
+              <address>
+                <p class="clinic-address">{clinic.address}</p>
+                <p class="clinic-metro">м. {clinic.metro}</p>
+              </address>
+            </div>
+            <div class="clinic-hours">
+              {clinic.workingHours.weekdays === clinic.workingHours.weekends ? (
+                <div class="clinic-hour-row">
+                  <span class="clinic-hour-days">Ежедневно</span>
+                  <span class="clinic-hour-time">{clinic.workingHours.weekdays}</span>
+                </div>
+              ) : (
+                <>
+                  <div class="clinic-hour-row">
+                    <span class="clinic-hour-days">Пн–Пт</span>
+                    <span class="clinic-hour-time">{clinic.workingHours.weekdays}</span>
+                  </div>
+                  <div class="clinic-hour-row">
+                    <span class="clinic-hour-days">Сб–Вс</span>
+                    <span class="clinic-hour-time">{clinic.workingHours.weekends}</span>
+                  </div>
+                </>
+              )}
+            </div>
+            <div class="clinic-card-bottom">
+              <a href={`tel:+${clinic.phone.replace(/\D/g, '')}`} class="clinic-phone">{clinic.phone}</a>
               <a href={`/booking/?clinic=${clinic.id}`} class="btn-primary">Записаться</a>
             </div>
           </div>
@@ -46,6 +69,7 @@ const clinics = await getCollection('clinics');
 <style>
   .contacts-page { padding: 1rem 0 4rem; }
   .contacts-page h1 { margin-bottom: 2rem; }
+
   .clinics-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -54,42 +78,57 @@ const clinics = await getCollection('clinics');
   @media (min-width: 768px) { .clinics-grid { grid-template-columns: 1fr 1fr; } }
 
   .clinic-card {
-    padding: 2rem;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-xl);
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    background: var(--color-bg);
+    overflow: hidden;
+    transition: box-shadow var(--transition-base), border-color var(--transition-base);
   }
-  .clinic-card h2 { font-size: 1.375rem; margin: 0; }
-  .clinic-card h2 a { color: var(--color-text); text-decoration: none; }
-  .clinic-card h2 a:hover { color: var(--color-primary); }
-  .clinic-card address { font-style: normal; color: var(--color-text-muted); font-size: 0.9375rem; }
-  .clinic-card address p { margin: 0; }
-  .hours { display: flex; flex-direction: column; gap: 0.25rem; }
-  .hours p { font-size: 0.875rem; color: var(--color-text-muted); margin: 0; }
-  .phone-link { font-weight: 700; font-size: 1.0625rem; color: var(--color-text); text-decoration: none; }
-  .phone-link:hover { color: var(--color-primary); }
-  .card-actions {
+  .clinic-card:hover { border-color: var(--color-primary); box-shadow: var(--shadow-md); }
+
+  .clinic-map { width: 100%; height: 200px; flex-shrink: 0; }
+  .clinic-map iframe { width: 100%; height: 100%; display: block; border: none; }
+
+  .clinic-card-top { padding: 1.5rem 1.75rem 0; display: flex; flex-direction: column; gap: 0.5rem; }
+  .clinic-card-top h2 { font-size: 1.125rem; font-weight: 700; margin: 0; }
+  .clinic-card-top h2 a { color: var(--color-text); text-decoration: none; }
+  .clinic-card-top h2 a:hover { color: var(--color-primary); }
+  .clinic-card-top address { font-style: normal; display: flex; flex-direction: column; gap: 0.1875rem; }
+  .clinic-address { font-size: 0.9375rem; color: var(--color-text); margin: 0; }
+  .clinic-metro { font-size: 0.875rem; color: var(--color-text-muted); margin: 0; }
+
+  .clinic-hours { display: flex; flex-direction: column; gap: 0.375rem; padding: 1rem 1.75rem; }
+  .clinic-hour-row { display: flex; gap: 1rem; align-items: center; }
+  .clinic-hour-days { font-size: 0.8125rem; color: var(--color-text-muted); min-width: 3.5rem; }
+  .clinic-hour-time { font-size: 0.875rem; font-weight: 500; color: var(--color-text); }
+
+  .clinic-card-bottom {
     display: flex;
-    gap: 0.75rem;
-    margin-top: auto;
-    padding-top: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.75rem 1.75rem;
     border-top: 1px solid var(--color-border);
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: auto;
   }
-  .btn-primary, .btn-secondary {
+  .clinic-phone { font-weight: 700; font-size: 1rem; color: var(--color-text); text-decoration: none; white-space: nowrap; }
+  .clinic-phone:hover { color: var(--color-primary); }
+
+  .btn-primary {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    padding: 0.625rem 1.25rem;
-    border-radius: var(--radius-md);
-    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-primary);
+    color: #fff;
+    font-weight: 700;
     font-size: 0.9375rem;
+    border-radius: 100px;
     text-decoration: none;
-    transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+    white-space: nowrap;
+    transition: background var(--transition-fast);
   }
-  .btn-primary { background: var(--color-primary); color: var(--color-text-inverse); }
-  .btn-primary:hover { background: var(--color-primary-hover); color: var(--color-text-inverse); }
-  .btn-secondary { border: 1.5px solid var(--color-border-strong); color: var(--color-text); }
-  .btn-secondary:hover { border-color: var(--color-primary); color: var(--color-primary); }
+  .btn-primary:hover { background: var(--color-primary-hover); color: #fff; }
 </style>

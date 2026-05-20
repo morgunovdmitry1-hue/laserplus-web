@@ -48,7 +48,7 @@ const pathname = Astro.url.pathname;
 
       <!-- Actions -->
       <div class="header-actions">
-        <a href={'tel:' + SITE.phone.replace(/\D/g, '')} class="header-phone" aria-label="Позвонить">
+        <a href={'tel:+' + SITE.phone.replace(/\D/g, '')} class="header-phone" aria-label="Позвонить">
           {SITE.phone}
         </a>
         <a href="/booking/" class="btn-booking">Записаться</a>
@@ -84,7 +84,7 @@ const pathname = Astro.url.pathname;
       }
     </ul>
     <div class="mobile-actions">
-      <a href={'tel:' + SITE.phone.replace(/\D/g, '')} class="mobile-phone">{SITE.phone}</a>
+      <a href={'tel:+' + SITE.phone.replace(/\D/g, '')} class="mobile-phone">{SITE.phone}</a>
       <a href="/booking/" class="btn-booking btn-booking--full">Записаться онлайн</a>
     </div>
   </nav>

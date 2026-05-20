@@ -15,7 +15,7 @@ const { Content } = await render(entry);
 const { title, metaTitle, metaDescription, price, duration, sessionsRequired, technologies, availableIn, gender } =
   entry.data;
 
-const description = metaDescription.split('.')[0] + '.';
+const description = `${title} со скидкой 40% на первый визит`;
 ---
 
 <ServicePageLayout

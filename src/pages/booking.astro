@@ -3,10 +3,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SchemaBreadcrumbs from '../components/seo/SchemaBreadcrumbs.astro';
 import { CLINICS, SITE } from '../consts';
 
-const params = Astro.url.searchParams;
-const prefilledService = params.get('service') ?? '';
-const prefilledClinic = params.get('clinic') ?? '';
-
 const yclientsId = import.meta.env.PUBLIC_YCLIENTS_COMPANY_ID ?? '';
 ---
 
@@ -35,67 +31,41 @@ const yclientsId = import.meta.env.PUBLIC_YCLIENTS_COMPANY_ID ?? '';
               <strong>Бесплатная консультация</strong>
               <span>Ответим на любые вопросы</span>
             </div>
-            <div class="benefit" data-reveal data-reveal-delay="4">
-              <strong>Гибкая отмена</strong>
-              <span>Перенос записи в любое время</span>
-            </div>
           </div>
           <div class="booking-clinics">
             <p class="clinics-label">Выберите клинику:</p>
             {CLINICS.map((clinic) => (
-              <a
-                href={`/contacts/${clinic.id}/`}
-                class:list={['clinic-option', { 'clinic-option--selected': prefilledClinic === clinic.id }]}
+              <button
+                type="button"
+                class="clinic-option ms_booking"
+                data-clinic={clinic.id}
               >
                 <strong>{clinic.name}</strong>
                 <span>{clinic.address}</span>
                 <span class="hours">{clinic.workingHours.weekdays}</span>
-              </a>
+              </button>
             ))}
           </div>
         </div>
 
         <!-- YClients widget -->
-        <div class="widget-container" id="yclients-widget-container">
-          {yclientsId ? (
-            <div id="yclients-widget" class="widget-frame" />
-          ) : (
-            <div class="widget-placeholder">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-              </svg>
-              <p>Загрузка формы записи…</p>
-              <p class="widget-note">Укажите <code>PUBLIC_YCLIENTS_COMPANY_ID</code> в <code>.env</code> для подключения виджета</p>
-            </div>
-          )}
+        <div class="widget-container">
+          <div class="widget-inner">
+            <p class="widget-label">Нажмите кнопку, чтобы открыть форму записи</p>
+            <a href="#" class="ms_booking btn-open-widget">Записаться онлайн</a>
+            <p class="widget-hint">Займёт 2 минуты — выберите услугу, мастера и удобное время</p>
+          </div>
         </div>
       </div>
 
       <p class="booking-contact">
-        Предпочитаете звонок? <a href={'tel:' + SITE.phone.replace(/\D/g, '')}>{SITE.phone}</a>
+        Предпочитаете звонок? <a href={'tel:+' + SITE.phone.replace(/\D/g, '')}>{SITE.phone}</a>
       </p>
     </div>
   </section>
 </BaseLayout>
 
-{yclientsId && (
-  <script slot="scripts" is:inline define:vars={{ companyId: yclientsId }}>
-    (function() {
-      var script = document.createElement('script');
-      script.src = 'https://api.yclients.com/api/v1/widget/loader.js';
-      script.async = true;
-      script.onload = function() {
-        if (typeof YClientsWidget !== 'undefined') {
-          new YClientsWidget({
-            company_id: companyId,
-            container: '#yclients-widget',
-          });
-        }
-      };
-      document.head.appendChild(script);
-    })();
-  </script>
-)}
+
 
 <style>
   .booking-page { padding: 1rem 0 4rem; }
@@ -127,6 +97,11 @@ const yclientsId = import.meta.env.PUBLIC_YCLIENTS_COMPANY_ID ?? '';
     border: 1.5px solid var(--color-border);
     border-radius: var(--radius-md);
     text-decoration: none;
+    text-align: left;
+    background: none;
+    width: 100%;
+    cursor: pointer;
+    font-family: inherit;
     transition: border-color var(--transition-fast), background var(--transition-fast);
   }
   .clinic-option:hover { border-color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 4%, transparent); }
@@ -140,23 +115,42 @@ const yclientsId = import.meta.env.PUBLIC_YCLIENTS_COMPANY_ID ?? '';
     top: 80px;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-xl);
-    min-height: 500px;
     overflow: hidden;
   }
-  .widget-placeholder {
+  .widget-inner {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 500px;
-    gap: 1rem;
-    color: var(--color-text-muted);
-    padding: 2rem;
+    gap: 1.25rem;
+    padding: 3.5rem 2rem;
     text-align: center;
+    min-height: 320px;
   }
-  .widget-placeholder svg { opacity: 0.4; }
-  .widget-placeholder p { margin: 0; font-size: 1rem; }
-  .widget-note { font-size: 0.8125rem; opacity: 0.7; }
+  .widget-label {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+  }
+  .widget-hint {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+  .btn-open-widget {
+    display: inline-flex;
+    align-items: center;
+    padding: 1rem 2.5rem;
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    font-weight: 700;
+    font-size: 1.0625rem;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: background var(--transition-fast);
+  }
+  .btn-open-widget:hover { background: var(--color-primary-hover); }
 
   .booking-contact {
     margin-top: 2.5rem;
