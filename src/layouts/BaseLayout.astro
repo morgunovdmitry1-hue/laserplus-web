@@ -7,7 +7,8 @@ import SchemaOrganization from '../components/seo/SchemaOrganization.astro';
 import YandexMetrika from '../components/seo/YandexMetrika.astro';
 import '../styles/global.css';
 
-const metrikaId = import.meta.env.PUBLIC_YANDEX_METRIKA_ID ?? '';
+const metrikaId: string =
+  (import.meta.env.PUBLIC_YANDEX_METRIKA_ID as string | undefined) || '52399276';
 
 interface Props {
   title: string;
@@ -26,7 +27,8 @@ const {
 } = Astro.props;
 
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, SITE.url).href;
-const fullTitle = title === SITE.name || title.includes(SITE.name) ? title : `${title} — ${SITE.name}`;
+const fullTitle =
+  title === SITE.name || title.includes(SITE.name) ? title : `${title} — ${SITE.name}`;
 ---
 
 <!doctype html>
@@ -85,10 +87,14 @@ const fullTitle = title === SITE.name || title.includes(SITE.name) ? title : `${
     <script is:inline>
       (function () {
         function initBookingLinks() {
-          document.querySelectorAll('a[href*="/booking/"], a[href="/booking"]').forEach(function (el) {
-            el.classList.add('ms_booking');
-            el.addEventListener('click', function (e) { e.preventDefault(); });
-          });
+          document
+            .querySelectorAll('a[href*="/booking/"], a[href="/booking"]')
+            .forEach(function (el) {
+              el.classList.add('ms_booking');
+              el.addEventListener('click', function (e) {
+                e.preventDefault();
+              });
+            });
         }
         if (document.readyState !== 'loading') {
           initBookingLinks();
@@ -128,7 +134,9 @@ const fullTitle = title === SITE.name || title.includes(SITE.name) ? title : `${
             entries.forEach(function (e) {
               if (e.isIntersecting) {
                 e.target.querySelectorAll('path').forEach(function (p, i) {
-                  setTimeout(function () { p.style.strokeDashoffset = '0'; }, i * 350);
+                  setTimeout(function () {
+                    p.style.strokeDashoffset = '0';
+                  }, i * 350);
                 });
                 waveObs.unobserve(e.target);
               }
