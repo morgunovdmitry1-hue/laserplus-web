@@ -7,8 +7,8 @@ import SchemaOrganization from '../components/seo/SchemaOrganization.astro';
 import YandexMetrika from '../components/seo/YandexMetrika.astro';
 import '../styles/global.css';
 
-const metrikaId: string =
-  (import.meta.env.PUBLIC_YANDEX_METRIKA_ID as string | undefined) || '52399276';
+const METRIKA_ID = '52399276';
+const metrikaId: string = METRIKA_ID;
 
 interface Props {
   title: string;
