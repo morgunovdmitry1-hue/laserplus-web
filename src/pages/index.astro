@@ -4,16 +4,23 @@ import { SITE, CLINICS } from '../consts';
 import { sanityClient, isSanityConfigured } from '../lib/sanity';
 import { getCollection } from 'astro:content';
 
+interface SanityHomePage {
+  hero?: { title?: string; titleAccent?: string; ctaPrimary?: string };
+  cta?: { button?: string };
+}
+
 // Fetch homepage content from Sanity (with fallback)
-const homePage = isSanityConfigured()
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+const homePageRaw = isSanityConfigured()
   ? await sanityClient.fetch(`*[_type == "homePage"][0]{ hero, stats, cta }`)
   : null;
+const homePage = homePageRaw as SanityHomePage | null;
 
 const hero = homePage?.hero;
 const stats: { value: string; label: string }[] = [
-  { value: '7+',     label: 'лет работы' },
-  { value: '8 000+', label: 'клиентов' },
-  { value: '2',      label: 'клиники в городе' },
+  { value: '7+', label: 'лет работы' },
+  { value: '9 000+', label: 'клиентов' },
+  { value: '2', label: 'клиники в городе' },
   { value: 'Большой парк', label: 'оборудования' },
 ];
 const cta = homePage?.cta;
@@ -22,39 +29,47 @@ const cta = homePage?.cta;
 const allServices = await getCollection('services');
 const svcMap = Object.fromEntries(allServices.map((s) => [s.id, s.data]));
 
-const cardPrice = (p: number) => Math.round(p * 0.6 / 10) * 10;
+const cardPrice = (p: number) => Math.round((p * 0.6) / 10) * 10;
 
-const bodyItems  = [
-  { id: 'podmyshki',       label: 'Подмышки' },
+const bodyItems = [
+  { id: 'podmyshki', label: 'Подмышки' },
   { id: 'bikini-klassika', label: 'Бикини классика' },
-  { id: 'goleni',          label: 'Голени' },
-  { id: 'byodra',          label: 'Бёдра' },
-  { id: 'ruki',            label: 'Руки полностью' },
-  { id: 'nogi-polnostyu',  label: 'Ноги полностью' },
+  { id: 'goleni', label: 'Голени' },
+  { id: 'byodra', label: 'Бёдра' },
+  { id: 'ruki', label: 'Руки полностью' },
+  { id: 'nogi-polnostyu', label: 'Ноги полностью' },
 ];
 const faceItems = [
   { id: 'verhnyaya-guba', label: 'Верхняя губа' },
-  { id: 'podborodok',     label: 'Подбородок' },
-  { id: 'shey',           label: 'Шея' },
+  { id: 'podborodok', label: 'Подбородок' },
+  { id: 'shey', label: 'Шея' },
   { id: 'lico-polnostyu', label: 'Лицо полностью' },
 ];
 const menItems = [
   { id: 'men-boroda', label: 'Борода / лицо' },
-  { id: 'men-grud',   label: 'Грудь' },
+  { id: 'men-grud', label: 'Грудь' },
   { id: 'men-zhivot', label: 'Живот' },
-  { id: 'men-spina',  label: 'Спина' },
-  { id: 'men-nogi',   label: 'Ноги полностью' },
+  { id: 'men-spina', label: 'Спина' },
+  { id: 'men-nogi', label: 'Ноги полностью' },
 ];
 
-const toDiode  = ({ id, label }: { id: string; label: string }) => ({ id, label, price: svcMap[id]?.price.diode  ?? svcMap[id]?.price.single ?? 0 });
-const toAlex   = ({ id, label }: { id: string; label: string }) => ({ id, label, price: svcMap[id]?.price.single ?? 0 });
+const toDiode = ({ id, label }: { id: string; label: string }) => ({
+  id,
+  label,
+  price: svcMap[id]?.price.diode ?? svcMap[id]?.price.single ?? 0,
+});
+const toAlex = ({ id, label }: { id: string; label: string }) => ({
+  id,
+  label,
+  price: svcMap[id]?.price.single ?? 0,
+});
 
-const bodyDiode  = bodyItems.map(toDiode);
-const faceDiode  = faceItems.map(toDiode);
-const menDiode   = menItems.map(toDiode);
-const bodyAlex   = bodyItems.map(toAlex);
-const faceAlex   = faceItems.map(toAlex);
-const menAlex    = menItems.map(toAlex);
+const bodyDiode = bodyItems.map(toDiode);
+const faceDiode = faceItems.map(toDiode);
+const menDiode = menItems.map(toDiode);
+const bodyAlex = bodyItems.map(toAlex);
+const faceAlex = faceItems.map(toAlex);
+const menAlex = menItems.map(toAlex);
 ---
 
 <BaseLayout
@@ -63,27 +78,47 @@ const menAlex    = menItems.map(toAlex);
 >
   <!-- Hero -->
   <section class="hero">
-    <svg class="hero-waves" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
-      <path d="M -30 120 Q 200 60 480 180 Q 660 240 830 180" stroke="var(--color-primary)" stroke-opacity="0.08" stroke-width="10" stroke-linecap="round" fill="none"/>
-      <path d="M -30 420 Q 250 350 540 460 Q 700 520 830 475" stroke="var(--color-primary)" stroke-opacity="0.13" stroke-width="10" stroke-linecap="round" fill="none"/>
+    <svg
+      class="hero-waves"
+      viewBox="0 0 800 600"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      preserveAspectRatio="xMidYMid slice"
+    >
+      <path
+        d="M -30 120 Q 200 60 480 180 Q 660 240 830 180"
+        stroke="var(--color-primary)"
+        stroke-opacity="0.08"
+        stroke-width="10"
+        stroke-linecap="round"
+        fill="none"></path>
+      <path
+        d="M -30 420 Q 250 350 540 460 Q 700 520 830 475"
+        stroke="var(--color-primary)"
+        stroke-opacity="0.13"
+        stroke-width="10"
+        stroke-linecap="round"
+        fill="none"></path>
     </svg>
-    <div class="container hero-container">
-
+    <div class="hero-container container">
       <!-- Left: text -->
       <div class="hero-content" data-reveal>
         <h1 class="hero-title">
           {hero?.title ?? 'Лазерная эпиляция'}<br />
-          <span class="hero-title-nowrap hero-title-accent">{hero?.titleAccent ?? 'в Новосибирске'}</span>
+          <span class="hero-title-nowrap hero-title-accent"
+            >{hero?.titleAccent ?? 'в Новосибирске'}</span
+          >
         </h1>
         <p class="hero-desc">
-          Скидка 40% на первый визит. Избавьтесь от нежелательных волос навсегда. Александритовый лазер Candela — мировой стандарт качества.<br />Результат с первой процедуры.
+          Скидка 40% на первый визит. Избавьтесь от нежелательных волос навсегда. Александритовый
+          лазер Candela — мировой стандарт качества.<br />Результат с первой процедуры.
         </p>
         <a href="/booking/" class="hero-cta">{hero?.ctaPrimary ?? 'Записаться на приём'}</a>
       </div>
 
       <!-- Right: bento photo grid -->
       <div class="hero-bento" aria-hidden="true" data-reveal data-reveal-delay="2">
-
         <!-- Large top card -->
         <div class="hb-top">
           <div class="hb-img hb-img--main"></div>
@@ -106,9 +141,7 @@ const menAlex    = menItems.map(toAlex);
             <p>Бережный подход и специалисты, которым доверяют клиенты</p>
           </div>
         </div>
-
       </div>
-
     </div>
   </section>
 
@@ -116,12 +149,14 @@ const menAlex    = menItems.map(toAlex);
   <section class="trust">
     <div class="container">
       <div class="trust-grid">
-        {stats.map((s, i) => (
-          <div class="trust-item" data-reveal data-reveal-delay={String(i + 1)}>
-            <span class="trust-num">{s.value}</span>
-            <p class="trust-label">{s.label}</p>
-          </div>
-        ))}
+        {
+          stats.map((s, i) => (
+            <div class="trust-item" data-reveal data-reveal-delay={String(i + 1)}>
+              <span class="trust-num">{s.value}</span>
+              <p class="trust-label">{s.label}</p>
+            </div>
+          ))
+        }
       </div>
     </div>
   </section>
@@ -152,63 +187,79 @@ const menAlex    = menItems.map(toAlex);
         </div>
         <!-- Category tabs -->
         <div class="price-tabs" role="tablist" aria-label="Категории услуг">
-          <button class="ptab ptab--active" data-cat="body" role="tab" aria-selected="true">Тело</button>
+          <button class="ptab ptab--active" data-cat="body" role="tab" aria-selected="true"
+            >Тело</button
+          >
           <button class="ptab" data-cat="face" role="tab" aria-selected="false">Лицо</button>
           <button class="ptab" data-cat="men" role="tab" aria-selected="false">Мужское</button>
         </div>
       </div>
 
       <!-- Panels: diode -->
-      {[
-        { id: 'panel-diode-body', items: bodyDiode },
-        { id: 'panel-diode-face', items: faceDiode, hidden: true },
-        { id: 'panel-diode-men',  items: menDiode,  hidden: true },
-      ].map(({ id, items, hidden }) => (
-        <div class:list={['price-panel', { 'price-panel--hidden': hidden }]} id={id} data-laser="diode" data-reveal data-reveal-delay="2">
-          <div class="pl-header">
-            <span class="pl-hname">Услуга</span>
-            <span class="pl-hprice">Цена</span>
-            <span class="pl-hsep">/</span>
-            <span class="pl-hcard">По карте −40%</span>
-            <span class="pl-harrow"></span>
+      {
+        [
+          { id: 'panel-diode-body', items: bodyDiode },
+          { id: 'panel-diode-face', items: faceDiode, hidden: true },
+          { id: 'panel-diode-men', items: menDiode, hidden: true },
+        ].map(({ id, items, hidden }) => (
+          <div
+            class:list={['price-panel', { 'price-panel--hidden': hidden }]}
+            id={id}
+            data-laser="diode"
+            data-reveal
+            data-reveal-delay="2"
+          >
+            <div class="pl-header">
+              <span class="pl-hname">Услуга</span>
+              <span class="pl-hprice">Цена</span>
+              <span class="pl-hsep">/</span>
+              <span class="pl-hcard">По карте −40%</span>
+              <span class="pl-harrow" />
+            </div>
+            {items.map(({ id: sid, label, price }) => (
+              <a href={`/services/${sid}/`} class="price-row">
+                <span class="pr-name">{label}</span>
+                <span class="pr-price">{price.toLocaleString('ru-RU')} ₽</span>
+                <span class="pr-sep">/</span>
+                <span class="pr-card">{cardPrice(price).toLocaleString('ru-RU')} ₽</span>
+                <span class="pr-arrow" aria-hidden="true">
+                  →
+                </span>
+              </a>
+            ))}
           </div>
-          {items.map(({ id: sid, label, price }) => (
-            <a href={`/services/${sid}/`} class="price-row">
-              <span class="pr-name">{label}</span>
-              <span class="pr-price">{price.toLocaleString('ru-RU')} ₽</span>
-              <span class="pr-sep">/</span>
-              <span class="pr-card">{cardPrice(price).toLocaleString('ru-RU')} ₽</span>
-              <span class="pr-arrow" aria-hidden="true">→</span>
-            </a>
-          ))}
-        </div>
-      ))}
+        ))
+      }
 
       <!-- Panels: alex -->
-      {[
-        { id: 'panel-alex-body', items: bodyAlex },
-        { id: 'panel-alex-face', items: faceAlex },
-        { id: 'panel-alex-men',  items: menAlex  },
-      ].map(({ id, items }) => (
-        <div class="price-panel price-panel--hidden" id={id} data-laser="alex">
-          <div class="pl-header">
-            <span class="pl-hname">Услуга</span>
-            <span class="pl-hprice">Цена</span>
-            <span class="pl-hsep">/</span>
-            <span class="pl-hcard">По карте −40%</span>
-            <span class="pl-harrow"></span>
+      {
+        [
+          { id: 'panel-alex-body', items: bodyAlex },
+          { id: 'panel-alex-face', items: faceAlex },
+          { id: 'panel-alex-men', items: menAlex },
+        ].map(({ id, items }) => (
+          <div class="price-panel price-panel--hidden" id={id} data-laser="alex">
+            <div class="pl-header">
+              <span class="pl-hname">Услуга</span>
+              <span class="pl-hprice">Цена</span>
+              <span class="pl-hsep">/</span>
+              <span class="pl-hcard">По карте −40%</span>
+              <span class="pl-harrow" />
+            </div>
+            {items.map(({ id: sid, label, price }) => (
+              <a href={`/services/${sid}/`} class="price-row">
+                <span class="pr-name">{label}</span>
+                <span class="pr-price">{price.toLocaleString('ru-RU')} ₽</span>
+                <span class="pr-sep">/</span>
+                <span class="pr-card">{cardPrice(price).toLocaleString('ru-RU')} ₽</span>
+                <span class="pr-arrow" aria-hidden="true">
+                  →
+                </span>
+              </a>
+            ))}
           </div>
-          {items.map(({ id: sid, label, price }) => (
-            <a href={`/services/${sid}/`} class="price-row">
-              <span class="pr-name">{label}</span>
-              <span class="pr-price">{price.toLocaleString('ru-RU')} ₽</span>
-              <span class="pr-sep">/</span>
-              <span class="pr-card">{cardPrice(price).toLocaleString('ru-RU')} ₽</span>
-              <span class="pr-arrow" aria-hidden="true">→</span>
-            </a>
-          ))}
-        </div>
-      ))}
+        ))
+      }
 
       <div class="services-footer" data-reveal data-reveal-delay="3">
         <a href="/services/" class="btn-outline">Полный прайс-лист</a>
@@ -219,9 +270,28 @@ const menAlex    = menItems.map(toAlex);
 
   <!-- Why Laser Plus -->
   <section class="why-section">
-    <svg class="why-waves" viewBox="0 0 1200 500" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
-      <path d="M -50 80 Q 200 20 500 120 Q 750 200 1000 100 Q 1150 50 1280 120" stroke="var(--color-primary)" stroke-opacity="0.07" stroke-width="14" stroke-linecap="round" fill="none"/>
-      <path d="M -50 370 Q 250 300 580 400 Q 820 480 1060 380 Q 1180 330 1280 400" stroke="var(--color-primary)" stroke-opacity="0.09" stroke-width="12" stroke-linecap="round" fill="none"/>
+    <svg
+      class="why-waves"
+      viewBox="0 0 1200 500"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      preserveAspectRatio="xMidYMid slice"
+    >
+      <path
+        d="M -50 80 Q 200 20 500 120 Q 750 200 1000 100 Q 1150 50 1280 120"
+        stroke="var(--color-primary)"
+        stroke-opacity="0.07"
+        stroke-width="14"
+        stroke-linecap="round"
+        fill="none"></path>
+      <path
+        d="M -50 370 Q 250 300 580 400 Q 820 480 1060 380 Q 1180 330 1280 400"
+        stroke="var(--color-primary)"
+        stroke-opacity="0.09"
+        stroke-width="12"
+        stroke-linecap="round"
+        fill="none"></path>
     </svg>
     <div class="container">
       <div class="section-head" data-reveal>
@@ -233,18 +303,29 @@ const menAlex    = menItems.map(toAlex);
       </div>
 
       <div class="why-bento">
-
         <!-- Card 1: Candela — wide top-left -->
         <a href="/technology/" class="wc wc-1" data-reveal data-reveal-delay="1">
           <div class="wc-bg wc-bg--candela"></div>
           <div class="wc-overlay"></div>
           <div class="wc-tag">
             Технологии
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"></path></svg
+            >
           </div>
           <div class="wc-body">
             <h3>Александрит Candela GentlePro</h3>
-            <p>Американский лазер 755 нм с системой охлаждения DCD. Мировой стандарт эффективности.</p>
+            <p>
+              Американский лазер 755 нм с системой охлаждения DCD. Мировой стандарт эффективности.
+            </p>
           </div>
         </a>
 
@@ -254,7 +335,17 @@ const menAlex    = menItems.map(toAlex);
           <div class="wc-overlay"></div>
           <div class="wc-tag">
             О клинике
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"></path></svg
+            >
           </div>
           <div class="wc-body">
             <h3>Медицинская лицензия с 2020 года</h3>
@@ -279,14 +370,23 @@ const menAlex    = menItems.map(toAlex);
           <div class="wc-overlay"></div>
           <div class="wc-tag">
             Цены
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"></path></svg
+            >
           </div>
           <div class="wc-body">
             <h3>Скидка 40% на первый визит</h3>
             <p>Прозрачные цены без скрытых платежей.</p>
           </div>
         </a>
-
       </div>
     </div>
   </section>
@@ -301,53 +401,57 @@ const menAlex    = menItems.map(toAlex);
         </div>
       </div>
       <div class="clinics-grid">
-        {CLINICS.map((clinic, i) => (
-          <div class="clinic-card" data-reveal data-reveal-delay={String(i + 1)}>
-            <div class="clinic-map">
-              <iframe
-                src={`https://yandex.ru/map-widget/v1/?ll=${clinic.geo.lng},${clinic.geo.lat}&z=16&ol=biz&oid=${clinic.yandexOrgId}`}
-                width="100%"
-                height="100%"
-                frameborder="0"
-                loading="lazy"
-                title={`Карта — клиника ${clinic.name}`}
-                allowfullscreen
-              />
-            </div>
-            <div class="clinic-card-top">
-              <h3>{clinic.name}</h3>
-              <address>
-                <p class="clinic-address">{clinic.address}</p>
-                <p class="clinic-metro">м. {clinic.metro}</p>
-              </address>
-            </div>
-            <div class="clinic-hours">
-              {clinic.workingHours.weekdays === clinic.workingHours.weekends ? (
-                <div class="clinic-hour-row">
-                  <span class="clinic-hour-days">Ежедневно</span>
-                  <span class="clinic-hour-time">{clinic.workingHours.weekdays}</span>
-                </div>
-              ) : (
-                <>
+        {
+          CLINICS.map((clinic, i) => (
+            <div class="clinic-card" data-reveal data-reveal-delay={String(i + 1)}>
+              <div class="clinic-map">
+                <iframe
+                  src={`https://yandex.ru/map-widget/v1/?ll=${clinic.geo.lng},${clinic.geo.lat}&z=16&ol=biz&oid=${clinic.yandexOrgId}`}
+                  width="100%"
+                  height="100%"
+                  frameborder="0"
+                  loading="lazy"
+                  title={`Карта — клиника ${clinic.name}`}
+                  allowfullscreen
+                />
+              </div>
+              <div class="clinic-card-top">
+                <h3>{clinic.name}</h3>
+                <address>
+                  <p class="clinic-address">{clinic.address}</p>
+                  <p class="clinic-metro">м. {clinic.metro}</p>
+                </address>
+              </div>
+              <div class="clinic-hours">
+                {clinic.workingHours.weekdays === clinic.workingHours.weekends ? (
                   <div class="clinic-hour-row">
-                    <span class="clinic-hour-days">Пн–Пт</span>
+                    <span class="clinic-hour-days">Ежедневно</span>
                     <span class="clinic-hour-time">{clinic.workingHours.weekdays}</span>
                   </div>
-                  <div class="clinic-hour-row">
-                    <span class="clinic-hour-days">Сб–Вс</span>
-                    <span class="clinic-hour-time">{clinic.workingHours.weekends}</span>
-                  </div>
-                </>
-              )}
+                ) : (
+                  <>
+                    <div class="clinic-hour-row">
+                      <span class="clinic-hour-days">Пн–Пт</span>
+                      <span class="clinic-hour-time">{clinic.workingHours.weekdays}</span>
+                    </div>
+                    <div class="clinic-hour-row">
+                      <span class="clinic-hour-days">Сб–Вс</span>
+                      <span class="clinic-hour-time">{clinic.workingHours.weekends}</span>
+                    </div>
+                  </>
+                )}
+              </div>
+              <div class="clinic-card-bottom">
+                <a href={`tel:${clinic.phone.replace(/\D/g, '')}`} class="clinic-phone">
+                  {clinic.phone}
+                </a>
+                <a href="/booking/" class="btn-cta btn-cta--sm">
+                  Записаться
+                </a>
+              </div>
             </div>
-            <div class="clinic-card-bottom">
-              <a href={`tel:${clinic.phone.replace(/\D/g, '')}`} class="clinic-phone">
-                {clinic.phone}
-              </a>
-              <a href="/booking/" class="btn-cta btn-cta--sm">Записаться</a>
-            </div>
-          </div>
-        ))}
+          ))
+        }
       </div>
     </div>
   </section>
@@ -355,13 +459,29 @@ const menAlex    = menItems.map(toAlex);
   <!-- CTA Banner -->
   <section class="cta-section">
     <div class="cta-inner">
-
       <!-- Brand wavy lines (from clinic entrance visual identity) -->
-      <svg class="cta-waves" viewBox="0 0 1200 520" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+      <svg
+        class="cta-waves"
+        viewBox="0 0 1200 520"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+        preserveAspectRatio="xMidYMid slice"
+      >
         <!-- Thin diagonal line (top area) -->
-        <path d="M 320 -10 Q 680 80 1210 200" stroke="rgba(255,255,255,0.18)" stroke-width="12" stroke-linecap="round" fill="none"/>
+        <path
+          d="M 320 -10 Q 680 80 1210 200"
+          stroke="rgba(255,255,255,0.18)"
+          stroke-width="12"
+          stroke-linecap="round"
+          fill="none"></path>
         <!-- Thick sweeping arc (main brand element) -->
-        <path d="M -20 310 Q 280 260 560 370 Q 840 480 1210 440" stroke="rgba(255,255,255,0.55)" stroke-width="22" stroke-linecap="round" fill="none"/>
+        <path
+          d="M -20 310 Q 280 260 560 370 Q 840 480 1210 440"
+          stroke="rgba(255,255,255,0.55)"
+          stroke-width="22"
+          stroke-linecap="round"
+          fill="none"></path>
       </svg>
 
       <!-- Left: text -->
@@ -370,13 +490,16 @@ const menAlex    = menItems.map(toAlex);
           {'Первое посещение со скидкой 40%'}
         </h2>
         <p class="cta-text">
-          <>Убедитесь в результате лично. Запишитесь на пробную процедуру или <strong>бесплатную консультацию&nbsp;специалиста</strong>.</>
+          <
+            >Убедитесь в результате лично. Запишитесь на пробную процедуру или <strong
+              >бесплатную консультацию&nbsp;специалиста</strong
+            >.</
+          >
         </p>
         <a href="/booking/" class="cta-btn">{cta?.button ?? 'Записаться на приём'} →</a>
       </div>
 
       <!-- Right: decorative card -->
-
     </div>
   </section>
 </BaseLayout>
@@ -414,7 +537,10 @@ const menAlex    = menItems.map(toAlex);
     }
   }
 
-  .hero-content { display: flex; flex-direction: column; }
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+  }
 
   .hero-title {
     font-family: var(--font-display);
@@ -426,8 +552,12 @@ const menAlex    = menItems.map(toAlex);
     color: var(--color-text);
     margin: 0 0 1.25rem;
   }
-  .hero-title-nowrap { white-space: nowrap; }
-  .hero-title-accent { color: var(--color-primary); }
+  .hero-title-nowrap {
+    white-space: nowrap;
+  }
+  .hero-title-accent {
+    color: var(--color-primary);
+  }
 
   .hero-desc {
     font-family: var(--font-sans);
@@ -451,7 +581,9 @@ const menAlex    = menItems.map(toAlex);
     text-decoration: none;
     white-space: nowrap;
     box-shadow: var(--shadow-primary);
-    transition: background var(--transition-fast), box-shadow var(--transition-fast);
+    transition:
+      background var(--transition-fast),
+      box-shadow var(--transition-fast);
   }
   .hero-cta:hover {
     background: var(--color-primary-hover);
@@ -474,7 +606,11 @@ const menAlex    = menItems.map(toAlex);
     height: 260px;
     background: linear-gradient(135deg, #b8dce8 0%, #7ec5d8 50%, #4fa8bf 100%);
   }
-  @media (min-width: 1024px) { .hb-top { height: 320px; } }
+  @media (min-width: 1024px) {
+    .hb-top {
+      height: 320px;
+    }
+  }
 
   .hb-img {
     width: 100%;
@@ -516,7 +652,10 @@ const menAlex    = menItems.map(toAlex);
     text-decoration: none;
     transition: background var(--transition-fast);
   }
-  .hb-top-btn:hover { background: var(--color-primary-hover); color: #fff; }
+  .hb-top-btn:hover {
+    background: var(--color-primary-hover);
+    color: #fff;
+  }
 
   /* Bottom row */
   .hb-bottom {
@@ -525,7 +664,11 @@ const menAlex    = menItems.map(toAlex);
     gap: 0.625rem;
     height: 170px;
   }
-  @media (min-width: 1024px) { .hb-bottom { height: 190px; } }
+  @media (min-width: 1024px) {
+    .hb-bottom {
+      height: 190px;
+    }
+  }
 
   .hb-card {
     border-radius: var(--radius-xl);
@@ -573,7 +716,7 @@ const menAlex    = menItems.map(toAlex);
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, transparent 55%);
     pointer-events: none;
   }
   .hb-card--solid p {
@@ -587,8 +730,12 @@ const menAlex    = menItems.map(toAlex);
     z-index: 1;
   }
 
-  .hb-avatars { display: none; }
-  .hb-avatar  { display: none; }
+  .hb-avatars {
+    display: none;
+  }
+  .hb-avatar {
+    display: none;
+  }
 
   /* ── Trust ── */
   .trust {
@@ -601,7 +748,11 @@ const menAlex    = menItems.map(toAlex);
     display: grid;
     grid-template-columns: repeat(2, 1fr);
   }
-  @media (min-width: 768px) { .trust-grid { grid-template-columns: repeat(4, 1fr); } }
+  @media (min-width: 768px) {
+    .trust-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
 
   .trust-item {
     display: flex;
@@ -610,11 +761,19 @@ const menAlex    = menItems.map(toAlex);
     padding: 2rem 1.75rem;
     border-right: 1px solid var(--color-border);
   }
-  .trust-item:last-child { border-right: none; }
-  .trust-item:nth-child(2n) { border-right: none; }
+  .trust-item:last-child {
+    border-right: none;
+  }
+  .trust-item:nth-child(2n) {
+    border-right: none;
+  }
   @media (min-width: 768px) {
-    .trust-item:nth-child(2n) { border-right: 1px solid var(--color-border); }
-    .trust-item:last-child { border-right: none; }
+    .trust-item:nth-child(2n) {
+      border-right: 1px solid var(--color-border);
+    }
+    .trust-item:last-child {
+      border-right: none;
+    }
   }
   .trust-label--solo {
     font-size: clamp(1.25rem, 2.5vw, 1.75rem);
@@ -651,7 +810,9 @@ const menAlex    = menItems.map(toAlex);
     flex-wrap: wrap;
     gap: 1rem;
   }
-  .section-head h2 { margin: 0; }
+  .section-head h2 {
+    margin: 0;
+  }
   .section-label {
     font-family: var(--font-sans);
     font-size: 0.75rem;
@@ -672,7 +833,9 @@ const menAlex    = menItems.map(toAlex);
     padding-bottom: 2px;
     border-bottom: 1px solid currentColor;
   }
-  .link-all:hover { color: var(--color-primary-dark); }
+  .link-all:hover {
+    color: var(--color-primary-dark);
+  }
 
   /* ── Services / Price list ── */
   .services-section {
@@ -687,11 +850,18 @@ const menAlex    = menItems.map(toAlex);
     margin-bottom: 1.25rem;
   }
   @media (min-width: 640px) {
-    .price-controls { flex-direction: row; align-items: center; justify-content: space-between; }
+    .price-controls {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
   }
 
   /* Laser toggle */
-  .laser-tabs { display: flex; gap: 0.5rem; }
+  .laser-tabs {
+    display: flex;
+    gap: 0.5rem;
+  }
   .ltab {
     display: flex;
     flex-direction: column;
@@ -703,16 +873,31 @@ const menAlex    = menItems.map(toAlex);
     border-radius: 100px;
     cursor: pointer;
     text-align: left;
-    transition: border-color var(--transition-fast), background var(--transition-fast);
+    transition:
+      border-color var(--transition-fast),
+      background var(--transition-fast);
   }
-  .ltab:hover { border-color: var(--color-primary); }
+  .ltab:hover {
+    border-color: var(--color-primary);
+  }
   .ltab--active {
     border-color: var(--color-primary);
     background: color-mix(in srgb, var(--color-primary) 8%, white);
   }
-  .ltab-main { font-size: 0.875rem; font-weight: 600; color: var(--color-text); line-height: 1; }
-  .ltab--active .ltab-main { color: var(--color-primary); }
-  .ltab-sub  { font-size: 0.6875rem; color: var(--color-text-muted); line-height: 1; }
+  .ltab-main {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text);
+    line-height: 1;
+  }
+  .ltab--active .ltab-main {
+    color: var(--color-primary);
+  }
+  .ltab-sub {
+    font-size: 0.6875rem;
+    color: var(--color-text-muted);
+    line-height: 1;
+  }
 
   .price-tabs {
     display: flex;
@@ -729,7 +914,10 @@ const menAlex    = menItems.map(toAlex);
     font-weight: 400;
     color: var(--color-text-muted);
     cursor: pointer;
-    transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
+    transition:
+      border-color var(--transition-fast),
+      color var(--transition-fast),
+      background var(--transition-fast);
   }
   .ptab:hover {
     border-color: var(--color-primary);
@@ -747,8 +935,11 @@ const menAlex    = menItems.map(toAlex);
     color: #fff;
   }
 
-  .price-panel { }
-  .price-panel--hidden { display: none; }
+  .price-panel {
+  }
+  .price-panel--hidden {
+    display: none;
+  }
 
   /* Header row */
   .pl-header {
@@ -759,16 +950,28 @@ const menAlex    = menItems.map(toAlex);
     border-bottom: 2px solid var(--color-border);
     gap: 0;
   }
-  .pl-hname, .pl-hprice, .pl-hsep, .pl-hcard, .pl-harrow {
+  .pl-hname,
+  .pl-hprice,
+  .pl-hsep,
+  .pl-hcard,
+  .pl-harrow {
     font-size: 0.6875rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.07em;
     color: var(--color-text-muted);
   }
-  .pl-hprice { text-align: right; }
-  .pl-hsep   { text-align: center; color: var(--color-border); }
-  .pl-hcard  { text-align: right; color: color-mix(in srgb, var(--color-primary) 75%, black); }
+  .pl-hprice {
+    text-align: right;
+  }
+  .pl-hsep {
+    text-align: center;
+    color: var(--color-border);
+  }
+  .pl-hcard {
+    text-align: right;
+    color: color-mix(in srgb, var(--color-primary) 75%, black);
+  }
 
   .price-row {
     display: grid;
@@ -781,7 +984,9 @@ const menAlex    = menItems.map(toAlex);
     transition: color var(--transition-fast);
     gap: 0;
   }
-  .price-row:hover { color: var(--color-primary); }
+  .price-row:hover {
+    color: var(--color-primary);
+  }
 
   .pr-name {
     font-size: 1rem;
@@ -813,21 +1018,30 @@ const menAlex    = menItems.map(toAlex);
     font-size: 0.875rem;
     color: var(--color-text-muted);
     text-align: right;
-    transition: transform var(--transition-fast), color var(--transition-fast);
+    transition:
+      transform var(--transition-fast),
+      color var(--transition-fast);
   }
   .price-row:hover .pr-arrow {
     transform: translateX(3px);
     color: var(--color-primary);
   }
-  .price-row:hover .pr-price { color: var(--color-text); }
+  .price-row:hover .pr-price {
+    color: var(--color-text);
+  }
 
   @media (max-width: 600px) {
     .pl-header,
     .price-row {
       grid-template-columns: 1fr 88px 14px 96px 22px;
     }
-    .pr-name { font-size: 0.9rem; }
-    .pr-price, .pr-card { font-size: 0.9rem; }
+    .pr-name {
+      font-size: 0.9rem;
+    }
+    .pr-price,
+    .pr-card {
+      font-size: 0.9rem;
+    }
   }
 
   .services-footer {
@@ -868,20 +1082,44 @@ const menAlex    = menItems.map(toAlex);
       grid-template-columns: 1fr 1fr;
       grid-template-rows: 220px 220px;
     }
-    .wc-1 { grid-column: 1 / 3; grid-row: 1; }
-    .wc-2 { display: none; }
-    .wc-3 { grid-column: 1; grid-row: 2; }
-    .wc-4 { grid-column: 2; grid-row: 2; }
+    .wc-1 {
+      grid-column: 1 / 3;
+      grid-row: 1;
+    }
+    .wc-2 {
+      display: none;
+    }
+    .wc-3 {
+      grid-column: 1;
+      grid-row: 2;
+    }
+    .wc-4 {
+      grid-column: 2;
+      grid-row: 2;
+    }
   }
   @media (min-width: 1024px) {
     .why-bento {
       grid-template-columns: 1fr 1fr 1fr;
       grid-template-rows: 230px 230px;
     }
-    .wc-1 { grid-column: 1 / 3; grid-row: 1; }
-    .wc-2 { display: flex; grid-column: 3; grid-row: 1 / 3; }
-    .wc-3 { grid-column: 1; grid-row: 2; }
-    .wc-4 { grid-column: 2; grid-row: 2; }
+    .wc-1 {
+      grid-column: 1 / 3;
+      grid-row: 1;
+    }
+    .wc-2 {
+      display: flex;
+      grid-column: 3;
+      grid-row: 1 / 3;
+    }
+    .wc-3 {
+      grid-column: 1;
+      grid-row: 2;
+    }
+    .wc-4 {
+      grid-column: 2;
+      grid-row: 2;
+    }
   }
 
   .wc {
@@ -896,7 +1134,9 @@ const menAlex    = menItems.map(toAlex);
     min-height: 200px;
     transition: transform var(--transition-base);
   }
-  .wc:hover { transform: scale(1.01); }
+  .wc:hover {
+    transform: scale(1.01);
+  }
 
   .wc-bg {
     position: absolute;
@@ -908,12 +1148,12 @@ const menAlex    = menItems.map(toAlex);
     background-size: cover;
     background-position: center 30%;
   }
-  .wc-bg--license  {
+  .wc-bg--license {
     background-image: url('/about-sofa.webp');
     background-size: cover;
     background-position: center 20%;
   }
-  .wc-bg--comfort  {
+  .wc-bg--comfort {
     background-image: url('/comfort-hands.webp');
     background-size: cover;
     background-position: center 35%;
@@ -928,7 +1168,12 @@ const menAlex    = menItems.map(toAlex);
     position: absolute;
     inset: 0;
     z-index: 1;
-    background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 50%, transparent 100%);
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.55) 0%,
+      rgba(0, 0, 0, 0.1) 50%,
+      transparent 100%
+    );
   }
 
   .wc-tag {
@@ -950,7 +1195,9 @@ const menAlex    = menItems.map(toAlex);
     align-self: flex-start;
     transition: background var(--transition-fast);
   }
-  .wc:hover .wc-tag { background: rgba(255, 255, 255, 0.28); }
+  .wc:hover .wc-tag {
+    background: rgba(255, 255, 255, 0.28);
+  }
 
   .wc-body {
     position: relative;
@@ -984,7 +1231,11 @@ const menAlex    = menItems.map(toAlex);
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  @media (min-width: 768px) { .clinics-grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 768px) {
+    .clinics-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
 
   .clinic-card {
     padding: 0;
@@ -994,7 +1245,9 @@ const menAlex    = menItems.map(toAlex);
     flex-direction: column;
     gap: 0;
     background: var(--color-bg);
-    transition: box-shadow var(--transition-base), border-color var(--transition-base);
+    transition:
+      box-shadow var(--transition-base),
+      border-color var(--transition-base);
     overflow: hidden;
   }
   .clinic-map {
@@ -1014,20 +1267,34 @@ const menAlex    = menItems.map(toAlex);
     padding-left: 1.75rem;
     padding-right: 1.75rem;
   }
-  .clinic-card-top { padding-top: 1.5rem; padding-bottom: 0; }
-  .clinic-card-bottom { padding-bottom: 1.75rem; }
+  .clinic-card-top {
+    padding-top: 1.5rem;
+    padding-bottom: 0;
+  }
+  .clinic-card-bottom {
+    padding-bottom: 1.75rem;
+  }
   .clinic-card:hover {
     border-color: var(--color-primary);
     box-shadow: var(--shadow-md);
   }
-  .clinic-card-top { display: flex; flex-direction: column; gap: 0.5rem; }
+  .clinic-card-top {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
   .clinic-card h3 {
     font-size: 1.125rem;
     font-weight: 700;
     margin: 0;
     color: var(--color-text);
   }
-  .clinic-card address { font-style: normal; display: flex; flex-direction: column; gap: 0.1875rem; }
+  .clinic-card address {
+    font-style: normal;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1875rem;
+  }
   .clinic-address {
     font-family: var(--font-sans);
     font-size: 0.9375rem;
@@ -1040,8 +1307,17 @@ const menAlex    = menItems.map(toAlex);
     color: var(--color-text-muted);
     margin: 0;
   }
-  .clinic-hours { display: flex; flex-direction: column; gap: 0.375rem; padding: 1rem 1.75rem; }
-  .clinic-hour-row { display: flex; gap: 1rem; align-items: center; }
+  .clinic-hours {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    padding: 1rem 1.75rem;
+  }
+  .clinic-hour-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
   .clinic-hour-days {
     font-family: var(--font-sans);
     font-size: 0.8125rem;
@@ -1086,9 +1362,15 @@ const menAlex    = menItems.map(toAlex);
     transition: opacity var(--transition-fast);
     flex-shrink: 0;
   }
-  .clinic-icon-btn:hover { opacity: 0.85; }
-  .clinic-icon-btn--phone { background: var(--color-primary); }
-  .clinic-icon-btn--wa { background: var(--color-primary); }
+  .clinic-icon-btn:hover {
+    opacity: 0.85;
+  }
+  .clinic-icon-btn--phone {
+    background: var(--color-primary);
+  }
+  .clinic-icon-btn--wa {
+    background: var(--color-primary);
+  }
   .clinic-2gis-btn {
     display: inline-flex;
     align-items: center;
@@ -1103,8 +1385,14 @@ const menAlex    = menItems.map(toAlex);
     transition: opacity var(--transition-fast);
     white-space: nowrap;
   }
-  .clinic-2gis-btn:hover { opacity: 0.85; color: #fff; }
-  .clinic-2gis-sep { opacity: 0.5; margin: 0 0.125rem; }
+  .clinic-2gis-btn:hover {
+    opacity: 0.85;
+    color: #fff;
+  }
+  .clinic-2gis-sep {
+    opacity: 0.5;
+    margin: 0 0.125rem;
+  }
   .clinic-card-bottom {
     display: flex;
     align-items: center;
@@ -1124,7 +1412,9 @@ const menAlex    = menItems.map(toAlex);
     letter-spacing: -0.01em;
     transition: color var(--transition-fast);
   }
-  .clinic-phone:hover { color: var(--color-primary); }
+  .clinic-phone:hover {
+    color: var(--color-primary);
+  }
 
   /* ── CTA Section ── */
   .cta-section {
@@ -1143,7 +1433,7 @@ const menAlex    = menItems.map(toAlex);
     grid-template-columns: 1fr;
     gap: 3rem;
     padding: clamp(3rem, 8vw, 5rem) var(--container-padding-mobile);
-    background: linear-gradient(130deg, #4a9ab5 0%, #64B0C7 40%, #a8d8e8 75%, #c8ecf5 100%);
+    background: linear-gradient(130deg, #4a9ab5 0%, #64b0c7 40%, #a8d8e8 75%, #c8ecf5 100%);
     border-radius: var(--radius-xl);
     margin-inline: var(--container-padding-mobile);
     margin-bottom: var(--space-20);
@@ -1190,7 +1480,10 @@ const menAlex    = menItems.map(toAlex);
     line-height: 1.65;
     max-width: 380px;
   }
-  .cta-text strong { color: #fff; font-weight: 600; }
+  .cta-text strong {
+    color: #fff;
+    font-weight: 600;
+  }
   .cta-btn {
     display: inline-flex;
     align-items: center;
@@ -1222,7 +1515,11 @@ const menAlex    = menItems.map(toAlex);
     height: 260px;
     z-index: 2;
   }
-  @media (min-width: 768px) { .cta-deco { display: flex; } }
+  @media (min-width: 768px) {
+    .cta-deco {
+      display: flex;
+    }
+  }
 
   .cta-card {
     width: 220px;
@@ -1263,8 +1560,12 @@ const menAlex    = menItems.map(toAlex);
     background: var(--color-border);
     border-radius: 2px;
   }
-  .cta-card-lines span:nth-child(3) { width: 65%; }
-  .cta-card-lines span:nth-child(5) { width: 80%; }
+  .cta-card-lines span:nth-child(3) {
+    width: 65%;
+  }
+  .cta-card-lines span:nth-child(5) {
+    width: 80%;
+  }
 
   .cta-bubble {
     position: absolute;
@@ -1307,7 +1608,9 @@ const menAlex    = menItems.map(toAlex);
     font-size: 1rem;
     border-radius: 100px;
     text-decoration: none;
-    transition: background var(--transition-fast), box-shadow var(--transition-fast);
+    transition:
+      background var(--transition-fast),
+      box-shadow var(--transition-fast);
     white-space: nowrap;
     box-shadow: var(--shadow-primary);
   }
@@ -1333,7 +1636,9 @@ const menAlex    = menItems.map(toAlex);
     border-radius: 100px;
     border: 1.5px solid var(--color-border-strong);
     text-decoration: none;
-    transition: border-color var(--transition-fast), color var(--transition-fast);
+    transition:
+      border-color var(--transition-fast),
+      color var(--transition-fast);
     white-space: nowrap;
   }
   .btn-outline:hover {
@@ -1354,26 +1659,33 @@ const menAlex    = menItems.map(toAlex);
     transition: color var(--transition-fast);
     white-space: nowrap;
   }
-  .btn-ghost:hover { color: var(--color-primary-dark); }
+  .btn-ghost:hover {
+    color: var(--color-primary-dark);
+  }
 </style>
 
 <script>
   let activeLaser = 'diode';
-  let activeCat   = 'body';
+  let activeCat = 'body';
 
   const laserBtns = document.querySelectorAll<HTMLButtonElement>('.ltab');
-  const catBtns   = document.querySelectorAll<HTMLButtonElement>('.ptab');
-  const panels    = document.querySelectorAll<HTMLElement>('.price-panel');
+  const catBtns = document.querySelectorAll<HTMLButtonElement>('.ptab');
+  const panels = document.querySelectorAll<HTMLElement>('.price-panel');
 
   function showPanel() {
     panels.forEach((p) => p.classList.add('price-panel--hidden'));
-    document.getElementById(`panel-${activeLaser}-${activeCat}`)?.classList.remove('price-panel--hidden');
+    document
+      .getElementById(`panel-${activeLaser}-${activeCat}`)
+      ?.classList.remove('price-panel--hidden');
   }
 
   laserBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       activeLaser = btn.dataset.laser!;
-      laserBtns.forEach((b) => { b.classList.remove('ltab--active'); b.setAttribute('aria-selected', 'false'); });
+      laserBtns.forEach((b) => {
+        b.classList.remove('ltab--active');
+        b.setAttribute('aria-selected', 'false');
+      });
       btn.classList.add('ltab--active');
       btn.setAttribute('aria-selected', 'true');
       showPanel();
@@ -1383,7 +1695,10 @@ const menAlex    = menItems.map(toAlex);
   catBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       activeCat = btn.dataset.cat!;
-      catBtns.forEach((b) => { b.classList.remove('ptab--active'); b.setAttribute('aria-selected', 'false'); });
+      catBtns.forEach((b) => {
+        b.classList.remove('ptab--active');
+        b.setAttribute('aria-selected', 'false');
+      });
       btn.classList.add('ptab--active');
       btn.setAttribute('aria-selected', 'true');
       showPanel();
