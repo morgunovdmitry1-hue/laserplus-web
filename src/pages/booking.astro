@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SchemaBreadcrumbs from '../components/seo/SchemaBreadcrumbs.astro';
 import { CLINICS, SITE } from '../consts';
 
-const yclientsId = import.meta.env.PUBLIC_YCLIENTS_COMPANY_ID ?? '';
+// yclientsId reserved for future YClients widget integration
 ---
 
 <BaseLayout
@@ -20,7 +20,8 @@ const yclientsId = import.meta.env.PUBLIC_YCLIENTS_COMPANY_ID ?? '';
         <div class="booking-info">
           <h1 data-reveal>Запись онлайн</h1>
           <p data-reveal data-reveal-delay="1">
-            Выберите клинику, услугу и удобное время. Запись подтверждается в течение нескольких секунд.
+            Выберите клинику, услугу и удобное время. Запись подтверждается в течение нескольких
+            секунд.
           </p>
           <div class="booking-benefits">
             <div class="benefit" data-reveal data-reveal-delay="2">
@@ -34,17 +35,15 @@ const yclientsId = import.meta.env.PUBLIC_YCLIENTS_COMPANY_ID ?? '';
           </div>
           <div class="booking-clinics">
             <p class="clinics-label">Выберите клинику:</p>
-            {CLINICS.map((clinic) => (
-              <button
-                type="button"
-                class="clinic-option ms_booking"
-                data-clinic={clinic.id}
-              >
-                <strong>{clinic.name}</strong>
-                <span>{clinic.address}</span>
-                <span class="hours">{clinic.workingHours.weekdays}</span>
-              </button>
-            ))}
+            {
+              CLINICS.map((clinic) => (
+                <button type="button" class="clinic-option ms_booking" data-clinic={clinic.id}>
+                  <strong>{clinic.name}</strong>
+                  <span>{clinic.address}</span>
+                  <span class="hours">{clinic.workingHours.weekdays}</span>
+                </button>
+              ))
+            }
           </div>
         </div>
 
@@ -65,10 +64,10 @@ const yclientsId = import.meta.env.PUBLIC_YCLIENTS_COMPANY_ID ?? '';
   </section>
 </BaseLayout>
 
-
-
 <style>
-  .booking-page { padding: 1rem 0 4rem; }
+  .booking-page {
+    padding: 1rem 0 4rem;
+  }
   .booking-inner {
     display: grid;
     grid-template-columns: 1fr;
@@ -76,19 +75,54 @@ const yclientsId = import.meta.env.PUBLIC_YCLIENTS_COMPANY_ID ?? '';
     align-items: start;
   }
   @media (min-width: 1024px) {
-    .booking-inner { grid-template-columns: 1fr 1fr; }
+    .booking-inner {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 
-  .booking-info h1 { margin: 0 0 1rem; }
-  .booking-info > p { font-size: 1.0625rem; color: var(--color-text-muted); margin: 0 0 2rem; line-height: 1.65; }
+  .booking-info h1 {
+    margin: 0 0 1rem;
+  }
+  .booking-info > p {
+    font-size: 1.0625rem;
+    color: var(--color-text-muted);
+    margin: 0 0 2rem;
+    line-height: 1.65;
+  }
 
-  .booking-benefits { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2.5rem; }
-  .benefit { display: flex; flex-direction: column; gap: 0.2rem; }
-  .benefit strong { font-size: 0.9375rem; font-weight: 700; }
-  .benefit span { font-size: 0.875rem; color: var(--color-text-muted); }
+  .booking-benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  .benefit {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .benefit strong {
+    font-size: 0.9375rem;
+    font-weight: 700;
+  }
+  .benefit span {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
 
-  .clinics-label { font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-muted); margin: 0 0 0.75rem; }
-  .booking-clinics { display: flex; flex-direction: column; gap: 0.75rem; }
+  .clinics-label {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+    margin: 0 0 0.75rem;
+  }
+  .booking-clinics {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
   .clinic-option {
     display: flex;
     flex-direction: column;
@@ -102,13 +136,30 @@ const yclientsId = import.meta.env.PUBLIC_YCLIENTS_COMPANY_ID ?? '';
     width: 100%;
     cursor: pointer;
     font-family: inherit;
-    transition: border-color var(--transition-fast), background var(--transition-fast);
+    transition:
+      border-color var(--transition-fast),
+      background var(--transition-fast);
   }
-  .clinic-option:hover { border-color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 4%, transparent); }
-  .clinic-option--selected { border-color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 6%, transparent); }
-  .clinic-option strong { font-size: 0.9375rem; font-weight: 700; color: var(--color-text); }
-  .clinic-option span { font-size: 0.875rem; color: var(--color-text-muted); }
-  .clinic-option .hours { font-size: 0.8125rem; }
+  .clinic-option:hover {
+    border-color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 4%, transparent);
+  }
+  .clinic-option--selected {
+    border-color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+  }
+  .clinic-option strong {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+  .clinic-option span {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+  .clinic-option .hours {
+    font-size: 0.8125rem;
+  }
 
   .widget-container {
     position: sticky;
@@ -150,7 +201,9 @@ const yclientsId = import.meta.env.PUBLIC_YCLIENTS_COMPANY_ID ?? '';
     text-decoration: none;
     transition: background var(--transition-fast);
   }
-  .btn-open-widget:hover { background: var(--color-primary-hover); }
+  .btn-open-widget:hover {
+    background: var(--color-primary-hover);
+  }
 
   .booking-contact {
     margin-top: 2.5rem;
@@ -158,5 +211,9 @@ const yclientsId = import.meta.env.PUBLIC_YCLIENTS_COMPANY_ID ?? '';
     color: var(--color-text-muted);
     text-align: center;
   }
-  .booking-contact a { font-weight: 700; color: var(--color-primary); text-decoration: none; }
+  .booking-contact a {
+    font-weight: 700;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
 </style>
