@@ -25,6 +25,10 @@ const stats: { value: string; label: string }[] = [
 ];
 const cta = homePage?.cta;
 
+// Reviews
+const allReviews = await getCollection('reviews');
+const featuredReviews = allReviews.slice(0, 6);
+
 // Services for price list
 const allServices = await getCollection('services');
 const svcMap = Object.fromEntries(allServices.map((s) => [s.id, s.data]));
@@ -448,6 +452,38 @@ const menAlex = menItems.map(toAlex);
                 <a href="/booking/" class="btn-cta btn-cta--sm">
                   Записаться
                 </a>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Reviews -->
+  <section class="reviews-section">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <div>
+          <p class="section-label">Отзывы</p>
+          <h2>Что говорят клиенты</h2>
+        </div>
+        <div class="reviews-rating-summary">
+          <span class="reviews-stars" aria-label="5 звёзд">★★★★★</span>
+          <span class="reviews-score">5.0</span>
+          <span class="reviews-count">· {allReviews.length} отзывов</span>
+        </div>
+      </div>
+      <div class="reviews-grid">
+        {
+          featuredReviews.map((review, i) => (
+            <div class="review-card" data-reveal data-reveal-delay={String(Math.min(i + 1, 4))}>
+              <div class="review-stars" aria-label={`${review.data.rating} из 5`}>
+                {'★'.repeat(review.data.rating)}
+              </div>
+              <p class="review-text">{review.data.text}</p>
+              <div class="review-footer">
+                <span class="review-name">{review.data.name}</span>
               </div>
             </div>
           ))
@@ -1412,6 +1448,96 @@ const menAlex = menItems.map(toAlex);
   }
   .clinic-phone:hover {
     color: var(--color-primary);
+  }
+
+  /* ── Reviews ── */
+  .reviews-section {
+    padding-block: var(--space-20);
+    background: var(--color-bg-soft);
+    border-top: 1px solid var(--color-border);
+  }
+  .reviews-rating-summary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .reviews-stars {
+    color: #f5a623;
+    font-size: 1.125rem;
+    letter-spacing: 0.05em;
+  }
+  .reviews-score {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+  .reviews-count {
+    font-size: 0.9375rem;
+    color: var(--color-text-muted);
+  }
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  @media (min-width: 640px) {
+    .reviews-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 1024px) {
+    .reviews-grid {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+  .review-card {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    transition:
+      box-shadow var(--transition-base),
+      border-color var(--transition-base);
+  }
+  .review-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: color-mix(in srgb, var(--color-primary) 30%, var(--color-border));
+  }
+  .review-stars {
+    color: #f5a623;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+  .review-text {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    color: var(--color-text);
+    line-height: 1.65;
+    margin: 0;
+    flex: 1;
+  }
+  .review-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .review-name {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .review-date {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
   }
 
   /* ── CTA Section ── */
