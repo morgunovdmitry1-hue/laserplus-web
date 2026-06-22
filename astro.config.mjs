@@ -7,12 +7,12 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://laserplusnsk.ru',
   server: { host: true },
-  integrations: [
-    preact({ compat: true }),
-    sitemap(),
-  ],
+  integrations: [preact({ compat: true }), sitemap()],
   vite: {
     plugins: [tailwindcss()],
+  },
+  redirects: {
+    '/reklama': '/',
   },
   output: 'static',
   compressHTML: true,
