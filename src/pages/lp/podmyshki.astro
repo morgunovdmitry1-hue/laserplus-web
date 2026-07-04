@@ -46,12 +46,12 @@ const METRIKA_ID = '52399276';
 
       <div class="lp-container lp-hero-inner">
         <div class="lp-hero-copy">
-          <div class="lp-new-badge">Только для новых клиентов</div>
-          <h1 class="lp-h1">
+          <div class="lp-new-badge" data-reveal>Только для новых клиентов</div>
+          <h1 class="lp-h1" data-reveal data-reveal-delay="1">
             3 бесплатных сеанса<br />
             <span class="lp-h1-accent">лазерной эпиляции подмышек</span>
           </h1>
-          <p class="lp-subtitle">
+          <p class="lp-subtitle" data-reveal data-reveal-delay="2">
             Попробуйте лазерную эпиляцию на александритовом Candela GentlePro или диодном IN-MOTION
             D1. Оставьте заявку, администратор свяжется в течение 10 минут.
           </p>
@@ -124,19 +124,19 @@ const METRIKA_ID = '52399276';
     <!-- How it works -->
     <section class="lp-steps">
       <div class="lp-container">
-        <h2 class="lp-section-title">Как получить бесплатные сеансы</h2>
+        <h2 class="lp-section-title" data-reveal>Как получить бесплатные сеансы</h2>
         <div class="lp-steps-grid">
-          <div class="lp-step">
+          <div class="lp-step" data-reveal data-reveal-delay="1">
             <div class="lp-step-num">1</div>
             <h3 class="lp-step-title">Оставьте заявку</h3>
             <p class="lp-step-text">Укажите имя и телефон — форма выше</p>
           </div>
-          <div class="lp-step">
+          <div class="lp-step" data-reveal data-reveal-delay="2">
             <div class="lp-step-num">2</div>
             <h3 class="lp-step-title">Администратор позвонит</h3>
             <p class="lp-step-text">Подберём удобное время в течение 10 минут</p>
           </div>
-          <div class="lp-step">
+          <div class="lp-step" data-reveal data-reveal-delay="3">
             <div class="lp-step-num">3</div>
             <h3 class="lp-step-title">Приходите на процедуру</h3>
             <p class="lp-step-text">3 сеанса на подмышки — совершенно бесплатно</p>
@@ -148,9 +148,9 @@ const METRIKA_ID = '52399276';
     <!-- Trust -->
     <section class="lp-trust">
       <div class="lp-container">
-        <h2 class="lp-section-title">Почему Laser Plus</h2>
+        <h2 class="lp-section-title" data-reveal>Почему Laser Plus</h2>
         <div class="lp-trust-grid">
-          <div class="lp-trust-item">
+          <div class="lp-trust-item" data-reveal>
             <div class="lp-trust-icon">
               <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
                 <path
@@ -166,7 +166,7 @@ const METRIKA_ID = '52399276';
               IN-MOTION D1 — работает с любым фототипом и загаром.
             </p>
           </div>
-          <div class="lp-trust-item">
+          <div class="lp-trust-item" data-reveal>
             <div class="lp-trust-icon">
               <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
                 <rect
@@ -191,7 +191,7 @@ const METRIKA_ID = '52399276';
               официальной сертификацией.
             </p>
           </div>
-          <div class="lp-trust-item">
+          <div class="lp-trust-item" data-reveal>
             <div class="lp-trust-icon">
               <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
                 <circle cx="14" cy="14" r="10" stroke="currentColor" stroke-width="1.8"></circle>
@@ -208,7 +208,7 @@ const METRIKA_ID = '52399276';
               Яндекс.Картах и 2ГИС.
             </p>
           </div>
-          <div class="lp-trust-item">
+          <div class="lp-trust-item" data-reveal>
             <div class="lp-trust-icon">
               <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
                 <path
@@ -231,11 +231,13 @@ const METRIKA_ID = '52399276';
     <!-- CTA repeat -->
     <section class="lp-cta">
       <div class="lp-container">
-        <h2 class="lp-cta-title">Записаться на 3 бесплатных сеанса</h2>
-        <p class="lp-cta-sub">
+        <h2 class="lp-cta-title" data-reveal>Записаться на 3 бесплатных сеанса</h2>
+        <p class="lp-cta-sub" data-reveal data-reveal-delay="1">
           Акция действует только для новых клиентов. Количество мест ограничено.
         </p>
-        <a href="#form" class="lp-btn lp-btn--inline">Оставить заявку</a>
+        <a href="#form" class="lp-btn lp-btn--inline" data-reveal data-reveal-delay="2"
+          >Оставить заявку</a
+        >
       </div>
     </section>
 
@@ -288,6 +290,40 @@ const METRIKA_ID = '52399276';
           btn.textContent = 'Получить 3 бесплатных сеанса';
         }
       });
+    </script>
+
+    <script>
+      const reveal = (el) => el.classList.add('is-visible');
+      const revealItems = Array.from(document.querySelectorAll('[data-reveal]'));
+      if ('IntersectionObserver' in window) {
+        const revealObs = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              if (e.isIntersecting) {
+                reveal(e.target);
+                revealObs.unobserve(e.target);
+              }
+            });
+          },
+          { threshold: 0.1, rootMargin: '0px 0px -30px 0px' }
+        );
+        revealItems.forEach((el) => revealObs.observe(el));
+        // Страховка: элементы в зоне первого экрана (hero) обязаны появиться,
+        // даже если observer по какой-то причине не сработал.
+        const showInView = () => {
+          revealItems.forEach((el) => {
+            if (
+              !el.classList.contains('is-visible') &&
+              el.getBoundingClientRect().top < window.innerHeight
+            ) {
+              reveal(el);
+            }
+          });
+        };
+        window.addEventListener('load', () => setTimeout(showInView, 700));
+      } else {
+        revealItems.forEach(reveal);
+      }
     </script>
   </body>
 </html>
