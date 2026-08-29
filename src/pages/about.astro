@@ -6,7 +6,7 @@ import { CLINICS } from '../consts';
 
 <BaseLayout
   title="О клинике Laser Plus — медицинская лицензия, оборудование, команда"
-  description="Laser Plus — сеть клиник лазерной эпиляции в Новосибирске с 2018 года. Медицинская лицензия, Candela GentlePro, 7 опытных специалистов. Два адреса."
+  description="Laser Plus — сеть клиник лазерной эпиляции в Новосибирске с 2018 года. Медицинская лицензия, три лазера — Candela GentlePro, DEKA Motus AX Moveo и IN-MOTION D1. Два адреса."
 >
   <div class="container">
     <SchemaBreadcrumbs items={[{ name: 'О клинике', href: '/about/' }]} />
@@ -129,8 +129,8 @@ import { CLINICS } from '../consts';
     <div class="container">
       <h2 data-reveal>Оборудование</h2>
       <p class="section-desc" data-reveal data-reveal-delay="1">
-        Два лазерных аппарата — для разных типов кожи и задач. Подбор технологии происходит на
-        консультации.
+        Три лазерных аппарата — для разных типов кожи и задач. Два александритовых и диодный. Подбор
+        технологии происходит на консультации.
       </p>
       <div class="aeq-grid">
         <!-- Candela -->
@@ -182,8 +182,57 @@ import { CLINICS } from '../consts';
           </div>
         </div>
 
-        <!-- In-Motion D1 -->
+        <!-- DEKA Motus AX Moveo -->
         <div class="aeq-card" data-reveal data-reveal-delay="2">
+          <div class="aeq-photo aeq-photo--motus">
+            <div class="aeq-photo-title">
+              <p class="aeq-type">Александритовый лазер</p>
+              <h3 class="aeq-name">DEKA Motus AX Moveo</h3>
+              <p class="aeq-wave">Технология Moveo</p>
+            </div>
+          </div>
+          <div class="aeq-desc-wrap">
+            <p class="aeq-desc">
+              Александритовый лазер DEKA Motus AX (Италия) с фирменной технологией Moveo. Вместо
+              отдельных импульсов по точкам мастер плавно скользит сапфировым наконечником по зоне,
+              а аппарат подаёт частые мягкие импульсы плотностью 2–8 Дж/см².
+            </p>
+            <p class="aeq-desc">
+              Кожа успевает остыть между импульсами, а фолликул накапливает тепло от прохода к
+              проходу. За счёт этого лазер безопасно работает на любом фототипе — включая смуглую и
+              загорелую кожу.
+            </p>
+          </div>
+          <div class="aeq-sections">
+            <div class="aeq-section">
+              <h4>Показания</h4>
+              <ul>
+                <li>Все фототипы кожи, от I до VI</li>
+                <li>Смуглая и загорелая кожа</li>
+                <li>Тонкие и слабопигментированные волосы</li>
+                <li>Чувствительная кожа и низкий болевой порог</li>
+              </ul>
+            </div>
+            <div class="aeq-section">
+              <h4>Преимущества</h4>
+              <ul>
+                <li>Загар: достаточно паузы в 1 день до и после</li>
+                <li>Работает на смуглой коже — фототипы V–VI</li>
+                <li>Скользящая обработка без резких щелчков</li>
+                <li>Сапфировое охлаждение наконечника до 15 °C</li>
+              </ul>
+            </div>
+          </div>
+          <div class="aeq-stats">
+            <div class="aeq-stat">
+              <strong>1</strong><span>день паузы по загару — самое мягкое правило</span>
+            </div>
+            <div class="aeq-stat"><strong>6–7</strong><span>процедур стандартный курс</span></div>
+          </div>
+        </div>
+
+        <!-- In-Motion D1 -->
+        <div class="aeq-card" data-reveal data-reveal-delay="3">
           <div class="aeq-photo aeq-photo--diode">
             <div class="aeq-photo-title">
               <p class="aeq-type">Диодный лазер</p>
@@ -234,8 +283,8 @@ import { CLINICS } from '../consts';
     <div class="container">
       <h2 data-reveal>Наши мастера</h2>
       <p class="section-desc" data-reveal data-reveal-delay="1">
-        Каждый прошёл обучение и имеет опыт работы на оборудовании Candela и IN-MOTION D1 не менее
-        3х лет.
+        Каждый прошёл обучение и имеет опыт работы на оборудовании Candela, DEKA Motus AX и
+        IN-MOTION D1 не менее 3х лет.
       </p>
       <p class="section-desc" data-reveal data-reveal-delay="2">
         Каждый мастер имеет медицинское образование и регулярно проходит аттестацию по повышению
@@ -591,22 +640,14 @@ import { CLINICS } from '../consts';
   }
   @media (min-width: 1024px) {
     .aeq-grid {
-      grid-template-columns: 1fr 1fr;
-      column-gap: 1.5rem;
-      row-gap: 0;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 1.5rem;
+      align-items: stretch;
     }
-    .aeq-card:nth-child(1) {
-      grid-column: 1;
-      grid-row: 1 / 5;
-      display: grid;
-      grid-template-rows: subgrid;
-    }
-    .aeq-card:nth-child(2) {
-      grid-column: 2;
-      grid-row: 1 / 5;
-      display: grid;
-      grid-template-rows: subgrid;
-    }
+  }
+
+  .aeq-stats {
+    margin-top: auto;
   }
 
   .aeq-card {
@@ -642,6 +683,17 @@ import { CLINICS } from '../consts';
       ),
       url('/candela-procedure.webp') center 68% / cover no-repeat;
   }
+  .aeq-photo--motus {
+    background:
+      linear-gradient(
+        to top,
+        rgba(13, 35, 51, 0.72) 0%,
+        rgba(13, 35, 51, 0.12) 55%,
+        transparent 100%
+      ),
+      url('/motus-procedure.webp') center 40% / cover no-repeat;
+  }
+
   .aeq-photo--diode {
     background:
       linear-gradient(
