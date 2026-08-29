@@ -10,7 +10,7 @@ interface SanityHomePage {
 }
 
 // Fetch homepage content from Sanity (with fallback)
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
 const homePageRaw = isSanityConfigured()
   ? await sanityClient.fetch(`*[_type == "homePage"][0]{ hero, stats, cta }`)
   : null;
@@ -78,7 +78,7 @@ const menAlex = menItems.map(toAlex);
 
 <BaseLayout
   title={SITE.name + ' — лазерная эпиляция в Новосибирске'}
-  description="Сеть клиник лазерной эпиляции в Новосибирске. Александритовый лазер Candela GentlePro, медицинская лицензия. Записаться онлайн."
+  description="Сеть клиник лазерной эпиляции в Новосибирске. Два александритовых лазера — Candela GentlePro и DEKA Motus AX Moveo — и диодный IN-MOTION D1. Медицинская лицензия. Записаться онлайн."
 >
   <!-- Hero -->
   <section class="hero">
@@ -115,8 +115,9 @@ const menAlex = menItems.map(toAlex);
           >
         </h1>
         <p class="hero-desc">
-          Скидка 40% на первый визит. Избавьтесь от нежелательных волос навсегда. Александритовый
-          лазер Candela — мировой стандарт качества.<br />Результат с первой процедуры.
+          Скидка 40% на первый визит. Избавьтесь от нежелательных волос навсегда. Три лазера в двух
+          филиалах: александритовые Candela GentlePro и DEKA Motus AX Moveo, диодный IN-MOTION D1.<br
+          />Результат с первой процедуры.
         </p>
         <a href="/booking/" class="hero-cta">{hero?.ctaPrimary ?? 'Записаться на приём'}</a>
       </div>
@@ -186,7 +187,7 @@ const menAlex = menItems.map(toAlex);
           </button>
           <button class="ltab" data-laser="alex" role="tab" aria-selected="false">
             <span class="ltab-main">Александрит</span>
-            <span class="ltab-sub">Candela GentlePro</span>
+            <span class="ltab-sub">Candela и DEKA Motus AX</span>
           </button>
         </div>
         <!-- Category tabs -->
@@ -326,9 +327,10 @@ const menAlex = menItems.map(toAlex);
             >
           </div>
           <div class="wc-body">
-            <h3>Александрит Candela GentlePro</h3>
+            <h3>Три лазера: два александрита и диодный</h3>
             <p>
-              Американский лазер 755 нм с системой охлаждения DCD. Мировой стандарт эффективности.
+              Candela GentlePro на Красном проспекте, DEKA Motus AX Moveo на Октябрьской и диодный
+              IN-MOTION D1 в обоих филиалах.
             </p>
           </div>
         </a>
