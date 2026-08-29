@@ -45,7 +45,6 @@ export const SOCIAL = {
 
 export const NAV_LINKS = [
   { href: '/services/', label: 'Услуги' },
-  { href: '/packages/', label: 'Абонементы' },
   { href: '/technology/', label: 'Оборудование' },
   { href: '/before-after/', label: 'До/после' },
   { href: '/about/', label: 'О клинике' },
