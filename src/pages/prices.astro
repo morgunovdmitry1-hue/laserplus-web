@@ -5,6 +5,9 @@ import SchemaBreadcrumbs from '../components/seo/SchemaBreadcrumbs.astro';
 
 const services = await getCollection('services');
 
+// На сайте показываем только цены по скидочной карте (−40% от базовой).
+const cardPrice = (p: number) => Math.round((p * 0.6) / 10) * 10;
+
 const categoryOrder = ['basic', 'intimate', 'face', 'premium'];
 const categoryLabels: Record<string, string> = {
   basic: 'Основные зоны',
@@ -13,13 +16,15 @@ const categoryLabels: Record<string, string> = {
   premium: 'Премиум зоны',
 };
 
-const femaleByCategory = categoryOrder.map((cat) => ({
-  category: cat,
-  label: categoryLabels[cat] ?? cat,
-  services: services
-    .filter((s) => s.data.gender !== 'male' && s.data.category === cat)
-    .sort((a, b) => a.data.price.single - b.data.price.single),
-})).filter((g) => g.services.length > 0);
+const femaleByCategory = categoryOrder
+  .map((cat) => ({
+    category: cat,
+    label: categoryLabels[cat] ?? cat,
+    services: services
+      .filter((s) => s.data.gender !== 'male' && s.data.category === cat)
+      .sort((a, b) => a.data.price.single - b.data.price.single),
+  }))
+  .filter((g) => g.services.length > 0);
 
 const maleServices = services
   .filter((s) => s.data.gender !== 'female')
@@ -38,12 +43,23 @@ const maleServices = services
     <div class="container">
       <div class="page-header">
         <h1 data-reveal>Цены на лазерную эпиляцию</h1>
-        <p data-reveal data-reveal-delay="1">Прозрачные тарифы без скрытых платежей. Курсовые пакеты выгоднее разовых процедур.</p>
+        <p data-reveal data-reveal-delay="1">
+          Прозрачные тарифы без скрытых платежей. Курсовые пакеты выгоднее разовых процедур.
+        </p>
+        <p class="price-card-note" data-reveal data-reveal-delay="2">
+          Все цены указаны по скидочной карте. Карту получает каждый клиент после первого визита.
+        </p>
       </div>
 
       <!-- Tabs -->
       <div class="tabs" role="tablist">
-        <button role="tab" aria-selected="true" aria-controls="panel-f" id="tab-f" class="tab active">
+        <button
+          role="tab"
+          aria-selected="true"
+          aria-controls="panel-f"
+          id="tab-f"
+          class="tab active"
+        >
           Женские услуги
         </button>
         <button role="tab" aria-selected="false" aria-controls="panel-m" id="tab-m" class="tab">
@@ -53,74 +69,96 @@ const maleServices = services
 
       <!-- Female -->
       <div id="panel-f" role="tabpanel" aria-labelledby="tab-f">
-        {femaleByCategory.map(({ label, services: srvs }, i) => (
-          <div class="price-group" data-reveal data-reveal-delay={String(Math.min(i + 1, 5))}>
-            <h2 class="group-title">{label}</h2>
-            <div class="price-table">
-              <div class="price-table-head">
-                <span>Зона</span>
-                <span>1 процедура</span>
-                <span class="hide-mobile">Курс 6</span>
-                <span class="hide-mobile">Курс 8</span>
-                <span></span>
-              </div>
-              {srvs.map((s) => (
-                <div class="price-table-row">
-                  <a href={`/services/${s.id}/`} class="zone-name">{s.data.title.replace('Лазерная эпиляция ', '')}</a>
-                  <span class="price-val">{s.data.price.single.toLocaleString('ru-RU')} ₽</span>
-                  <span class="price-val hide-mobile">
-                    {s.data.price.course6 ? s.data.price.course6.toLocaleString('ru-RU') + ' ₽' : '—'}
-                  </span>
-                  <span class="price-val hide-mobile">
-                    {s.data.price.course8 ? s.data.price.course8.toLocaleString('ru-RU') + ' ₽' : '—'}
-                  </span>
-                  <a href={`/booking/?service=${s.id}`} class="book-link">Записаться</a>
+        {
+          femaleByCategory.map(({ label, services: srvs }, i) => (
+            <div class="price-group" data-reveal data-reveal-delay={String(Math.min(i + 1, 5))}>
+              <h2 class="group-title">{label}</h2>
+              <div class="price-table">
+                <div class="price-table-head">
+                  <span>Зона</span>
+                  <span>1 процедура</span>
+                  <span class="hide-mobile">Курс 6</span>
+                  <span class="hide-mobile">Курс 8</span>
+                  <span />
                 </div>
-              ))}
+                {srvs.map((s) => (
+                  <div class="price-table-row">
+                    <a href={`/services/${s.id}/`} class="zone-name">
+                      {s.data.title.replace('Лазерная эпиляция ', '')}
+                    </a>
+                    <span class="price-val">
+                      {cardPrice(s.data.price.single).toLocaleString('ru-RU')} ₽
+                    </span>
+                    <span class="price-val hide-mobile">
+                      {s.data.price.course6
+                        ? cardPrice(s.data.price.course6).toLocaleString('ru-RU') + ' ₽'
+                        : '—'}
+                    </span>
+                    <span class="price-val hide-mobile">
+                      {s.data.price.course8
+                        ? cardPrice(s.data.price.course8).toLocaleString('ru-RU') + ' ₽'
+                        : '—'}
+                    </span>
+                    <a href={`/booking/?service=${s.id}`} class="book-link">
+                      Записаться
+                    </a>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
-        {femaleByCategory.length === 0 && (
-          <p class="empty">Прайс-лист скоро появится</p>
-        )}
+          ))
+        }
+        {femaleByCategory.length === 0 && <p class="empty">Прайс-лист скоро появится</p>}
       </div>
 
       <!-- Male -->
       <div id="panel-m" role="tabpanel" aria-labelledby="tab-m" hidden>
-        {maleServices.length > 0 ? (
-          <div class="price-group" data-reveal data-reveal-delay="1">
-            <h2 class="group-title">Мужские зоны</h2>
-            <div class="price-table">
-              <div class="price-table-head">
-                <span>Зона</span>
-                <span>1 процедура</span>
-                <span class="hide-mobile">Курс 6</span>
-                <span class="hide-mobile">Курс 8</span>
-                <span></span>
-              </div>
-              {maleServices.map((s) => (
-                <div class="price-table-row">
-                  <a href={`/services/${s.id}/`} class="zone-name">{s.data.title.replace('Лазерная эпиляция ', '')}</a>
-                  <span class="price-val">{s.data.price.single.toLocaleString('ru-RU')} ₽</span>
-                  <span class="price-val hide-mobile">
-                    {s.data.price.course6 ? s.data.price.course6.toLocaleString('ru-RU') + ' ₽' : '—'}
-                  </span>
-                  <span class="price-val hide-mobile">
-                    {s.data.price.course8 ? s.data.price.course8.toLocaleString('ru-RU') + ' ₽' : '—'}
-                  </span>
-                  <a href={`/booking/?service=${s.id}`} class="book-link">Записаться</a>
+        {
+          maleServices.length > 0 ? (
+            <div class="price-group" data-reveal data-reveal-delay="1">
+              <h2 class="group-title">Мужские зоны</h2>
+              <div class="price-table">
+                <div class="price-table-head">
+                  <span>Зона</span>
+                  <span>1 процедура</span>
+                  <span class="hide-mobile">Курс 6</span>
+                  <span class="hide-mobile">Курс 8</span>
+                  <span />
                 </div>
-              ))}
+                {maleServices.map((s) => (
+                  <div class="price-table-row">
+                    <a href={`/services/${s.id}/`} class="zone-name">
+                      {s.data.title.replace('Лазерная эпиляция ', '')}
+                    </a>
+                    <span class="price-val">
+                      {cardPrice(s.data.price.single).toLocaleString('ru-RU')} ₽
+                    </span>
+                    <span class="price-val hide-mobile">
+                      {s.data.price.course6
+                        ? cardPrice(s.data.price.course6).toLocaleString('ru-RU') + ' ₽'
+                        : '—'}
+                    </span>
+                    <span class="price-val hide-mobile">
+                      {s.data.price.course8
+                        ? cardPrice(s.data.price.course8).toLocaleString('ru-RU') + ' ₽'
+                        : '—'}
+                    </span>
+                    <a href={`/booking/?service=${s.id}`} class="book-link">
+                      Записаться
+                    </a>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ) : (
-          <p class="empty">Мужской прайс-лист скоро появится</p>
-        )}
+          ) : (
+            <p class="empty">Мужской прайс-лист скоро появится</p>
+          )
+        }
       </div>
 
       <p class="prices-note">
-        Цены действительны для обеих клиник. Оплата: наличные, карты, СБП.
-        При покупке курса — скидка 15–20%. Уточняйте актуальные акции при записи.
+        Цены действительны для обеих клиник. Оплата: наличные, карты, СБП. При покупке курса —
+        скидка 15–20%. Уточняйте актуальные акции при записи.
       </p>
     </div>
   </section>
@@ -132,7 +170,10 @@ const maleServices = services
   tabs.forEach((tab) => {
     tab.addEventListener('click', () => {
       const target = tab.getAttribute('aria-controls');
-      tabs.forEach((t) => { t.setAttribute('aria-selected', 'false'); t.classList.remove('active'); });
+      tabs.forEach((t) => {
+        t.setAttribute('aria-selected', 'false');
+        t.classList.remove('active');
+      });
       panels.forEach((p) => p.setAttribute('hidden', ''));
       tab.setAttribute('aria-selected', 'true');
       tab.classList.add('active');
@@ -142,10 +183,27 @@ const maleServices = services
 </script>
 
 <style>
-  .prices-page { padding: 1rem 0 4rem; }
-  .page-header { margin-bottom: 2.5rem; }
-  .page-header h1 { margin: 0 0 0.75rem; }
-  .page-header p { font-size: 1.0625rem; color: var(--color-text-muted); margin: 0; }
+  .prices-page {
+    padding: 1rem 0 4rem;
+  }
+  .price-card-note {
+    margin-top: 0.75rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+
+  .page-header {
+    margin-bottom: 2.5rem;
+  }
+  .page-header h1 {
+    margin: 0 0 0.75rem;
+  }
+  .page-header p {
+    font-size: 1.0625rem;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
 
   .tabs {
     display: flex;
@@ -162,19 +220,30 @@ const maleServices = services
     font-weight: 600;
     color: var(--color-text-muted);
     cursor: pointer;
-    transition: color var(--transition-fast), border-color var(--transition-fast);
+    transition:
+      color var(--transition-fast),
+      border-color var(--transition-fast);
   }
-  .tab.active { color: var(--color-primary); border-bottom-color: var(--color-primary); }
+  .tab.active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+  }
 
-  .price-group { margin-bottom: 2.5rem; }
-  .group-title { font-size: 1.25rem; margin: 0 0 1rem; }
+  .price-group {
+    margin-bottom: 2.5rem;
+  }
+  .group-title {
+    font-size: 1.25rem;
+    margin: 0 0 1rem;
+  }
 
   .price-table {
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     overflow: hidden;
   }
-  .price-table-head, .price-table-row {
+  .price-table-head,
+  .price-table-row {
     display: grid;
     grid-template-columns: 1fr auto auto;
     gap: 0;
@@ -182,7 +251,8 @@ const maleServices = services
     align-items: center;
   }
   @media (min-width: 768px) {
-    .price-table-head, .price-table-row {
+    .price-table-head,
+    .price-table-row {
       grid-template-columns: 1fr 140px 120px 120px 100px;
     }
   }
@@ -200,8 +270,12 @@ const maleServices = services
     border-bottom: 1px solid var(--color-border);
     transition: background var(--transition-fast);
   }
-  .price-table-row:last-child { border-bottom: none; }
-  .price-table-row:hover { background: var(--color-bg-soft); }
+  .price-table-row:last-child {
+    border-bottom: none;
+  }
+  .price-table-row:hover {
+    background: var(--color-bg-soft);
+  }
 
   .zone-name {
     font-size: 0.9375rem;
@@ -210,10 +284,21 @@ const maleServices = services
     text-decoration: none;
     transition: color var(--transition-fast);
   }
-  .zone-name:hover { color: var(--color-primary); }
-  .price-val { font-size: 0.9375rem; font-weight: 600; }
-  .hide-mobile { display: none; }
-  @media (min-width: 768px) { .hide-mobile { display: block; } }
+  .zone-name:hover {
+    color: var(--color-primary);
+  }
+  .price-val {
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+  .hide-mobile {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .hide-mobile {
+      display: block;
+    }
+  }
   .book-link {
     font-size: 0.875rem;
     font-weight: 600;
@@ -221,7 +306,9 @@ const maleServices = services
     text-decoration: none;
     white-space: nowrap;
   }
-  .book-link:hover { text-decoration: underline; }
+  .book-link:hover {
+    text-decoration: underline;
+  }
 
   .prices-note {
     margin-top: 2rem;

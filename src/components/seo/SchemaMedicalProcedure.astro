@@ -12,11 +12,15 @@ interface Props {
 
 const { title, slug, description, price, clinicIds, rating } = Astro.props;
 
+// В разметке для поисковиков отдаём те же цены, что видит клиент на странице,
+// то есть по скидочной карте (−40%). Иначе цена в выдаче разойдётся с ценой на сайте.
+const cardPrice = (p: number) => Math.round((p * 0.6) / 10) * 10;
+
 const offers = [
   {
     '@type': 'Offer',
     name: 'Разовая процедура',
-    price: price.single,
+    price: cardPrice(price.single),
     priceCurrency: 'RUB',
     availability: 'https://schema.org/InStock',
   },
@@ -25,7 +29,7 @@ const offers = [
         {
           '@type': 'Offer',
           name: 'Курс 6 процедур',
-          price: price.course6,
+          price: cardPrice(price.course6),
           priceCurrency: 'RUB',
           availability: 'https://schema.org/InStock',
         },
@@ -36,7 +40,7 @@ const offers = [
         {
           '@type': 'Offer',
           name: 'Курс 8 процедур',
-          price: price.course8,
+          price: cardPrice(price.course8),
           priceCurrency: 'RUB',
           availability: 'https://schema.org/InStock',
         },

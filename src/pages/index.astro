@@ -216,16 +216,12 @@ const menAlex = menItems.map(toAlex);
           >
             <div class="pl-header">
               <span class="pl-hname">Услуга</span>
-              <span class="pl-hprice">Цена</span>
-              <span class="pl-hsep">/</span>
-              <span class="pl-hcard">По карте −40%</span>
+              <span class="pl-hcard">Цена по карте</span>
               <span class="pl-harrow" />
             </div>
             {items.map(({ id: sid, label, price }) => (
               <a href={`/services/${sid}/`} class="price-row">
                 <span class="pr-name">{label}</span>
-                <span class="pr-price">{price.toLocaleString('ru-RU')} ₽</span>
-                <span class="pr-sep">/</span>
                 <span class="pr-card">{cardPrice(price).toLocaleString('ru-RU')} ₽</span>
                 <span class="pr-arrow" aria-hidden="true">
                   →
@@ -246,16 +242,12 @@ const menAlex = menItems.map(toAlex);
           <div class="price-panel price-panel--hidden" id={id} data-laser="alex">
             <div class="pl-header">
               <span class="pl-hname">Услуга</span>
-              <span class="pl-hprice">Цена</span>
-              <span class="pl-hsep">/</span>
-              <span class="pl-hcard">По карте −40%</span>
+              <span class="pl-hcard">Цена по карте</span>
               <span class="pl-harrow" />
             </div>
             {items.map(({ id: sid, label, price }) => (
               <a href={`/services/${sid}/`} class="price-row">
                 <span class="pr-name">{label}</span>
-                <span class="pr-price">{price.toLocaleString('ru-RU')} ₽</span>
-                <span class="pr-sep">/</span>
                 <span class="pr-card">{cardPrice(price).toLocaleString('ru-RU')} ₽</span>
                 <span class="pr-arrow" aria-hidden="true">
                   →
@@ -996,15 +988,13 @@ const menAlex = menItems.map(toAlex);
   /* Header row */
   .pl-header {
     display: grid;
-    grid-template-columns: 1fr 110px 18px 120px 28px;
+    grid-template-columns: 1fr 120px 28px;
     align-items: center;
     padding: 0.5rem 0;
     border-bottom: 2px solid var(--color-border);
     gap: 0;
   }
   .pl-hname,
-  .pl-hprice,
-  .pl-hsep,
   .pl-hcard,
   .pl-harrow {
     font-size: 0.6875rem;
@@ -1013,13 +1003,6 @@ const menAlex = menItems.map(toAlex);
     letter-spacing: 0.07em;
     color: var(--color-text-muted);
   }
-  .pl-hprice {
-    text-align: right;
-  }
-  .pl-hsep {
-    text-align: center;
-    color: var(--color-border);
-  }
   .pl-hcard {
     text-align: right;
     color: color-mix(in srgb, var(--color-primary) 75%, black);
@@ -1027,7 +1010,7 @@ const menAlex = menItems.map(toAlex);
 
   .price-row {
     display: grid;
-    grid-template-columns: 1fr 110px 18px 120px 28px;
+    grid-template-columns: 1fr 120px 28px;
     align-items: center;
     padding: 0.9rem 0;
     border-bottom: 1px solid var(--color-border);
@@ -1045,19 +1028,6 @@ const menAlex = menItems.map(toAlex);
     font-weight: 400;
     color: inherit;
     padding-right: 1rem;
-  }
-  .pr-price {
-    font-size: 1rem;
-    font-weight: 700;
-    white-space: nowrap;
-    text-align: right;
-    color: var(--color-text);
-    transition: color var(--transition-fast);
-  }
-  .pr-sep {
-    font-size: 0.875rem;
-    color: var(--color-text-muted);
-    text-align: center;
   }
   .pr-card {
     font-size: 1rem;
@@ -1078,19 +1048,15 @@ const menAlex = menItems.map(toAlex);
     transform: translateX(3px);
     color: var(--color-primary);
   }
-  .price-row:hover .pr-price {
-    color: var(--color-text);
-  }
-
   @media (max-width: 600px) {
     .pl-header,
     .price-row {
-      grid-template-columns: 1fr 88px 14px 96px 22px;
+      grid-template-columns: 1fr 96px 22px;
     }
     .pr-name {
       font-size: 0.9rem;
     }
-    .pr-price,
+
     .pr-card {
       font-size: 0.9rem;
     }

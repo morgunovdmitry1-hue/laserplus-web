@@ -105,8 +105,6 @@ const tabs = [
               <div class="services-list" data-reveal data-reveal-delay="1">
                 <div class="list-header">
                   <span class="lh-name">Услуга</span>
-                  <span class="lh-price">Цена</span>
-                  <span class="lh-sep">/</span>
                   <span class="lh-card">Цена по карте</span>
                   <span class="lh-gap" />
                 </div>
@@ -118,8 +116,6 @@ const tabs = [
                   return (
                     <a href={`/services/${service.id}/`} class="service-row">
                       <span class="sr-name">{service.data.title}</span>
-                      <span class="sr-price">{basePrice.toLocaleString('ru-RU')} ₽</span>
-                      <span class="sr-sep">/</span>
                       <span class="sr-card">{cardPrice.toLocaleString('ru-RU')} ₽</span>
                       <span class="sr-arrow" aria-hidden="true">
                         →
@@ -256,7 +252,7 @@ const tabs = [
   .list-header,
   .service-row {
     display: grid;
-    grid-template-columns: 1fr 100px 18px 110px 28px;
+    grid-template-columns: 1fr 110px 28px;
     align-items: center;
     gap: 0;
     padding: 0.625rem 1.25rem;
@@ -267,8 +263,6 @@ const tabs = [
     border-bottom: 2px solid var(--color-border);
   }
   .lh-name,
-  .lh-price,
-  .lh-sep,
   .lh-card,
   .lh-gap {
     font-size: 0.6875rem;
@@ -276,13 +270,6 @@ const tabs = [
     text-transform: uppercase;
     letter-spacing: 0.07em;
     color: var(--color-text-muted);
-  }
-  .lh-price {
-    text-align: right;
-  }
-  .lh-sep {
-    text-align: center;
-    color: var(--color-border);
   }
   .lh-card {
     text-align: right;
@@ -310,18 +297,6 @@ const tabs = [
     line-height: 1.35;
     padding-right: 1rem;
   }
-  .sr-price {
-    font-size: 0.9375rem;
-    font-weight: 700;
-    color: var(--color-text);
-    text-align: right;
-    white-space: nowrap;
-  }
-  .sr-sep {
-    font-size: 0.875rem;
-    color: var(--color-text-muted);
-    text-align: center;
-  }
   .sr-card {
     font-size: 0.9375rem;
     font-weight: 700;
@@ -345,13 +320,13 @@ const tabs = [
   @media (max-width: 600px) {
     .list-header,
     .service-row {
-      grid-template-columns: 1fr 80px 14px 88px 22px;
+      grid-template-columns: 1fr 88px 22px;
       padding: 0.75rem 1rem;
     }
     .sr-name {
       font-size: 0.875rem;
     }
-    .sr-price,
+
     .sr-card {
       font-size: 0.875rem;
     }

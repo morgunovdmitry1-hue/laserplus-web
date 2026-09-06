@@ -117,8 +117,6 @@ const faqItems = [
                 <div class="zone-laser">
                   <span class="laser-name">Александрит</span>
                   <div class="price-row-z">
-                    <span class="price-full">{svc.priceAlex.toLocaleString('ru-RU')} ₽</span>
-                    <span class="price-divider">/</span>
                     <span class="price-card">
                       {svc.cardPriceAlex.toLocaleString('ru-RU')} ₽ по карте
                     </span>
@@ -127,8 +125,6 @@ const faqItems = [
                 <div class="zone-laser">
                   <span class="laser-name">Диодный</span>
                   <div class="price-row-z">
-                    <span class="price-full">{svc.priceDiode.toLocaleString('ru-RU')} ₽</span>
-                    <span class="price-divider">/</span>
                     <span class="price-card">
                       {svc.cardPriceDiode.toLocaleString('ru-RU')} ₽ по карте
                     </span>
@@ -311,16 +307,6 @@ const faqItems = [
     display: flex;
     align-items: center;
     gap: 0.375rem;
-  }
-  .price-full {
-    font-size: 0.9375rem;
-    font-weight: 700;
-    color: var(--color-text);
-    white-space: nowrap;
-  }
-  .price-divider {
-    color: var(--color-text-muted);
-    font-size: 0.875rem;
   }
   .price-card {
     font-size: 0.875rem;
