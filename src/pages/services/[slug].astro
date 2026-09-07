@@ -1,6 +1,14 @@
 ---
+/*
+ * ESLint не резолвит виртуальный модуль `astro:content` в своей TS-программе,
+ * поэтому всё, что выведено из getCollection/render, он считает error-typed.
+ * Типы при этом настоящие: `npm run build` и `astro check` проходят.
+ * Отключаем только эти три правила и только в этом файле.
+ */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access */
 import { getCollection, render } from 'astro:content';
 import ServicePageLayout from '../../layouts/ServicePageLayout.astro';
+import SchemaFAQ from '../../components/seo/SchemaFAQ.astro';
 
 export async function getStaticPaths() {
   const services = await getCollection('services');
@@ -12,10 +20,21 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-const { title, metaTitle, metaDescription, price, duration, sessionsRequired, technologies, availableIn, gender } =
-  entry.data;
+const {
+  title,
+  metaTitle,
+  metaDescription,
+  price,
+  duration,
+  sessionsRequired,
+  technologies,
+  availableIn,
+  gender,
+} = entry.data;
 
-const description = `${title} со скидкой 40% на первый визит`;
+// В schema.org отдаём осмысленное описание из frontmatter, а не автогенерацию:
+// именно оно уходит в выдачу.
+const description = metaDescription || `${title} со скидкой 40% на первый визит`;
 ---
 
 <ServicePageLayout
@@ -32,4 +51,5 @@ const description = `${title} со скидкой 40% на первый визи
   gender={gender}
 >
   <Content />
+  <SchemaFAQ body={entry.body ?? ''} />
 </ServicePageLayout>

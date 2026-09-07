@@ -5,7 +5,7 @@ interface Props {
   title: string;
   slug: string;
   description: string;
-  price: { single: number; course6?: number; course8?: number };
+  price: { single: number; diode?: number; course6?: number; course8?: number };
   clinicIds: string[];
   rating?: { value: number; count: number };
 }
@@ -17,9 +17,21 @@ const { title, slug, description, price, clinicIds, rating } = Astro.props;
 const cardPrice = (p: number) => Math.round((p * 0.6) / 10) * 10;
 
 const offers = [
+  // Диод дешевле александрита — если он доступен, это и есть цена «от» на странице.
+  ...(price.diode
+    ? [
+        {
+          '@type': 'Offer',
+          name: 'Разовая процедура, диодный лазер',
+          price: cardPrice(price.diode),
+          priceCurrency: 'RUB',
+          availability: 'https://schema.org/InStock',
+        },
+      ]
+    : []),
   {
     '@type': 'Offer',
-    name: 'Разовая процедура',
+    name: price.diode ? 'Разовая процедура, александритовый лазер' : 'Разовая процедура',
     price: cardPrice(price.single),
     priceCurrency: 'RUB',
     availability: 'https://schema.org/InStock',
