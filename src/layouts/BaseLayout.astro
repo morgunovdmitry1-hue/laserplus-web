@@ -107,19 +107,46 @@ const fullTitle =
     <script is:inline>
       (function () {
         // Scroll Reveal
+        var revealItems = Array.prototype.slice.call(document.querySelectorAll('[data-reveal]'));
+        function reveal(el) {
+          el.classList.add('is-visible');
+        }
+
+        // Контент по умолчанию скрыт (opacity: 0), поэтому нужен путь, по которому
+        // он покажется, даже если наблюдатель не сработает.
+        if (!('IntersectionObserver' in window)) {
+          revealItems.forEach(reveal);
+          return;
+        }
+
         const revealObs = new IntersectionObserver(
           function (entries) {
             entries.forEach(function (e) {
               if (e.isIntersecting) {
-                e.target.classList.add('is-visible');
+                reveal(e.target);
                 revealObs.unobserve(e.target);
               }
             });
           },
           { threshold: 0.1, rootMargin: '0px 0px -30px 0px' }
         );
-        document.querySelectorAll('[data-reveal]').forEach(function (el) {
+        revealItems.forEach(function (el) {
           revealObs.observe(el);
+        });
+
+        // Страховка: если через секунду после загрузки не показалось ничего,
+        // значит наблюдатель молчит (скрытая вкладка при загрузке, вернувшийся
+        // из bfcache документ, экзотический движок) — показываем всё сами.
+        function failsafe() {
+          var shown = document.querySelectorAll('[data-reveal].is-visible').length;
+          if (shown === 0 && revealItems.length > 0) revealItems.forEach(reveal);
+        }
+        window.addEventListener('load', function () {
+          setTimeout(failsafe, 1000);
+        });
+        // Вкладку могли открыть в фоне: показываем контент, когда до неё дошли.
+        document.addEventListener('visibilitychange', function () {
+          if (!document.hidden) setTimeout(failsafe, 300);
         });
 
         // SVG Wave Draw animation
