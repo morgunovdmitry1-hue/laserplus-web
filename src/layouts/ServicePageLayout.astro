@@ -1,8 +1,15 @@
 ---
+/*
+ * ESLint не резолвит виртуальный модуль `astro:content` в своей TS-программе,
+ * поэтому всё, что выведено из getCollection, он считает error-typed.
+ * Типы при этом настоящие: `npm run build` и `astro check` проходят.
+ * Отключаем только эти три правила и только в этом файле.
+ */
+
 import BaseLayout from './BaseLayout.astro';
 import SchemaBreadcrumbs from '../components/seo/SchemaBreadcrumbs.astro';
 import SchemaMedicalProcedure from '../components/seo/SchemaMedicalProcedure.astro';
-import { CLINICS } from '../consts';
+import { getCollection } from 'astro:content';
 
 interface Props {
   title: string;
@@ -43,6 +50,20 @@ const techLabels: Record<string, string> = {
   alexandrite: 'Александрит Candela',
   diode: 'Диод IN-MOTION D1',
 };
+
+// Какой аппарат в каком филиале. Нейросети и поисковики путали это
+// (DEKA приписывали Гагаринской), потому что на страницах услуг
+// оборудование нигде не было привязано к адресу.
+const clinicEntries = await getCollection('clinics');
+const clinicsForService = clinicEntries
+  .filter((c) => availableIn.includes(c.id))
+  .map((c) => ({
+    id: c.id,
+    name: c.data.name,
+    address: c.data.address,
+    metro: c.data.metro,
+    equipment: c.data.equipment,
+  }));
 ---
 
 <BaseLayout title={metaTitle} description={metaDescription}>
@@ -189,14 +210,14 @@ const techLabels: Record<string, string> = {
         </div>
         <aside class="service-sidebar">
           <div class="sidebar-card">
-            <h4>Доступно в клиниках</h4>
-            <ul>
+            <h4>Где делают и на чём</h4>
+            <ul class="clinic-equipment-list">
               {
-                availableIn.map((id) => (
+                clinicsForService.map((c) => (
                   <li>
-                    <a href={`/contacts/${id}/`}>
-                      {CLINICS.find((c) => c.id === id)?.address ?? id}
-                    </a>
+                    <a href={`/contacts/${c.id}/`}>{c.address}</a>
+                    {c.metro ? <span class="ce-metro">м. {c.metro}</span> : null}
+                    <span class="ce-equipment">{c.equipment.join(' · ')}</span>
                   </li>
                 ))
               }
@@ -507,6 +528,23 @@ const techLabels: Record<string, string> = {
   }
 
   /* Sidebar */
+  .clinic-equipment-list li {
+    margin-bottom: 0.75rem;
+  }
+  .clinic-equipment-list li:last-child {
+    margin-bottom: 0;
+  }
+  .ce-metro,
+  .ce-equipment {
+    display: block;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+  .ce-equipment {
+    margin-top: 0.125rem;
+  }
+
   .sidebar-card {
     background: var(--color-bg-soft);
     border: 1px solid var(--color-border);

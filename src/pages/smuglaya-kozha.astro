@@ -1,0 +1,345 @@
+---
+/*
+ * ESLint не резолвит виртуальный модуль `astro:content` в своей TS-программе,
+ * поэтому всё, что выведено из getCollection, он считает error-typed.
+ * Типы при этом настоящие: `npm run build` и `astro check` проходят.
+ * Отключаем только эти три правила и только в этом файле.
+ */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SchemaBreadcrumbs from '../components/seo/SchemaBreadcrumbs.astro';
+
+// Аппараты берём из карточек филиалов: правило по загару и фототипы
+// привязаны к конкретному адресу, иначе человек приедет не туда.
+const clinics = await getCollection('clinics');
+const oktyabrskaya = clinics.find((c) => c.id === 'oktyabrskaya');
+const krasnyProspekt = clinics.find((c) => c.id === 'krasny-prospekt');
+
+const faq = [
+  {
+    q: 'Можно ли делать лазерную эпиляцию на смуглой коже?',
+    a: 'Да. Для фототипов IV–VI подходит александритовый DEKA Motus AX Moveo на Сакко и Ванцетти, 25/1 и диодный IN-MOTION D1 в обоих филиалах. Оба работают мягкими импульсами, которые не перегревают кожу с высоким содержанием собственного пигмента. Александрит Candela на Красном проспекте рассчитан на фототипы I–IV, на смуглой коже мастер его не предложит.',
+  },
+  {
+    q: 'Можно ли делать эпиляцию после загара или летом?',
+    a: 'Да. На DEKA Motus AX достаточно паузы в один день до процедуры и один день после — это самое мягкое правило среди наших аппаратов. На диодном IN-MOTION D1 нужно три дня. На александрите Candela — две недели. Поэтому летом и сразу после моря мы ведём курс на DEKA или на диоде.',
+  },
+  {
+    q: 'Почему на тёмной коже лазер работает иначе?',
+    a: 'Лазер находит цель по меланину. В смуглой и загорелой коже меланина много, и он конкурирует с волосом за энергию импульса: кожа нагревается сильнее, чем нужно. Технология Moveo обходит это так — мастер непрерывно скользит охлаждённым до 15 °C сапфировым наконечником и подаёт частые мягкие импульсы 2–8 Дж/см². Фолликул копит тепло от прохода к проходу, а кожа между импульсами успевает остыть.',
+  },
+  {
+    q: 'Сколько процедур нужно и сколько это стоит?',
+    a: 'Курс стандартный — 6–7 процедур с интервалом 4–6 недель, как и на светлой коже. Цены тоже не отличаются: тип кожи на стоимость не влияет, в прайсе разделение только по аппарату и зоне. Полный список цен — на странице «Цены».',
+  },
+  {
+    q: 'Нужна ли консультация перед записью?',
+    a: 'Да, и она бесплатная. Мастер определяет фототип по шкале Фицпатрика, смотрит на цвет и структуру волос и подбирает аппарат с параметрами. На первой процедуре делается тестовая обработка небольшого участка — так мы видим реакцию кожи до работы по всей зоне.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+};
+
+const lasers = [
+  {
+    name: 'DEKA Motus AX Moveo',
+    type: 'Александритовый, 755 нм',
+    phototypes: 'I–VI, включая смуглую',
+    pause: '1 день',
+    where: oktyabrskaya?.address ?? 'ул. Сакко и Ванцетти 25/1',
+    clinicId: 'oktyabrskaya',
+    best: true,
+  },
+  {
+    name: 'IN-MOTION D1',
+    type: 'Диодный, 810 нм',
+    phototypes: 'IV–VI, смуглая и загорелая',
+    pause: '3 дня',
+    where: 'Оба филиала',
+    clinicId: null,
+    best: false,
+  },
+  {
+    name: 'Candela GentlePro',
+    type: 'Александритовый, 755 нм',
+    phototypes: 'I–IV, светлая и средняя',
+    pause: '14 дней',
+    where: krasnyProspekt?.address ?? 'Красный проспект, 94',
+    clinicId: 'krasny-prospekt',
+    best: false,
+  },
+];
+---
+
+<BaseLayout
+  title="Лазерная эпиляция смуглой и загорелой кожи в Новосибирске"
+  description="Лазерная эпиляция на смуглой и загорелой коже в Новосибирске: DEKA Motus AX Moveo работает на всех фототипах I–VI, пауза по загару всего 1 день. Адреса, цены, запись."
+>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(faqSchema)} />
+
+  <div class="container">
+    <SchemaBreadcrumbs items={[{ name: 'Смуглая и загорелая кожа', href: '/smuglaya-kozha/' }]} />
+  </div>
+
+  <section class="sk-hero">
+    <div class="container">
+      <p class="sk-label">Тип кожи</p>
+      <h1 data-reveal>Лазерная эпиляция смуглой и загорелой кожи</h1>
+      <p class="sk-lead" data-reveal data-reveal-delay="1">
+        Делаем на всех фототипах, от I до VI. На александритовом DEKA Motus AX Moveo пауза по загару
+        — <strong>один день</strong> до процедуры и один после. Это значит, что курс можно вести летом
+        и начинать сразу после моря.
+      </p>
+      <a href="/booking/" class="sk-cta" data-reveal data-reveal-delay="2">Записаться</a>
+    </div>
+  </section>
+
+  <section class="sk-section">
+    <div class="container">
+      <h2 data-reveal>Какой аппарат подходит вашей коже</h2>
+      <div class="sk-table-wrap" data-reveal data-reveal-delay="1">
+        <table class="sk-table">
+          <thead>
+            <tr>
+              <th>Аппарат</th>
+              <th>Фототипы</th>
+              <th>Пауза по загару</th>
+              <th>Где стоит</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              lasers.map((l) => (
+                <tr class={l.best ? 'sk-row-best' : undefined}>
+                  <td>
+                    <strong>{l.name}</strong>
+                    <span class="sk-type">{l.type}</span>
+                  </td>
+                  <td>{l.phototypes}</td>
+                  <td>
+                    <strong>{l.pause}</strong>
+                  </td>
+                  <td>
+                    {l.clinicId ? <a href={`/contacts/${l.clinicId}/`}>{l.where}</a> : l.where}
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <p class="sk-note" data-reveal>
+        Фототип определяется на бесплатной консультации по шкале Фицпатрика. Если кожа смуглая от
+        природы или вы недавно загорали, мастер ведёт курс на DEKA или на диодном лазере.
+      </p>
+    </div>
+  </section>
+
+  <section class="sk-section sk-section--soft">
+    <div class="container">
+      <h2 data-reveal>Почему на тёмной коже нужен другой аппарат</h2>
+      <div class="sk-cols" data-reveal data-reveal-delay="1">
+        <p>
+          Лазер находит волос по меланину — пигменту, который красит его в тёмный цвет. В смуглой и
+          загорелой коже меланина много и в ней самой, поэтому она конкурирует с волосом за энергию
+          импульса и нагревается сильнее, чем нужно.
+        </p>
+        <p>
+          Технология Moveo решает это иначе, чем классический лазер. Мастер непрерывно скользит
+          сапфировым наконечником, охлаждённым до 15 °C, а аппарат подаёт частые мягкие импульсы
+          плотностью 2–8 Дж/см². Фолликул накапливает тепло от прохода к проходу и доходит до
+          температуры разрушения, а кожа между импульсами успевает остыть.
+        </p>
+      </div>
+      <p class="sk-note" data-reveal>
+        Подробнее о технологии — в статье про <a href="/blog/deka-motus-ax-moveo/">DEKA Motus AX</a>
+        и на странице <a href="/technology/">оборудования клиники</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="sk-section">
+    <div class="container">
+      <h2 data-reveal>Частые вопросы</h2>
+      <div class="sk-faq" data-reveal data-reveal-delay="1">
+        {
+          faq.map(({ q, a }) => (
+            <details class="sk-faq-item">
+              <summary>{q}</summary>
+              <p>{a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="sk-final">
+    <div class="container">
+      <div class="sk-final-box" data-reveal>
+        <div>
+          <h2>Консультация бесплатная</h2>
+          <p>
+            Мастер определит фототип, подберёт аппарат и сделает тестовую обработку участка — до
+            того, как начинать курс.
+          </p>
+        </div>
+        <a href="/booking/" class="sk-cta">Записаться</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .sk-hero {
+    padding: 3rem 0 2.5rem;
+    background: var(--color-bg-soft);
+  }
+  .sk-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    margin: 0 0 0.75rem;
+  }
+  .sk-hero h1 {
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    margin: 0 0 1.25rem;
+    max-width: 20ch;
+  }
+  .sk-lead {
+    max-width: 62ch;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin: 0 0 1.75rem;
+  }
+  .sk-lead strong {
+    color: var(--color-text);
+  }
+  .sk-cta {
+    display: inline-block;
+    padding: 0.85rem 1.75rem;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .sk-section {
+    padding: 3rem 0;
+  }
+  .sk-section--soft {
+    background: var(--color-bg-soft);
+  }
+  .sk-section h2 {
+    font-size: clamp(1.35rem, 2.5vw, 1.875rem);
+    margin: 0 0 1.5rem;
+  }
+
+  .sk-table-wrap {
+    overflow-x: auto;
+  }
+  .sk-table {
+    width: 100%;
+    min-width: 640px;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+  }
+  .sk-table th {
+    text-align: left;
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+    padding: 0 1rem 0.625rem 0;
+    border-bottom: 2px solid var(--color-border);
+  }
+  .sk-table td {
+    padding: 1rem 1rem 1rem 0;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: top;
+  }
+  .sk-row-best td {
+    background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+  }
+  .sk-type {
+    display: block;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    margin-top: 0.2rem;
+  }
+  .sk-note {
+    margin-top: 1.25rem;
+    max-width: 68ch;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+
+  .sk-cols {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 70ch;
+  }
+  .sk-cols p {
+    margin: 0;
+    line-height: 1.65;
+  }
+
+  .sk-faq {
+    max-width: 72ch;
+  }
+  .sk-faq-item {
+    border-bottom: 1px solid var(--color-border);
+    padding: 1rem 0;
+  }
+  .sk-faq-item summary {
+    cursor: pointer;
+    font-weight: 600;
+    line-height: 1.45;
+  }
+  .sk-faq-item p {
+    margin: 0.75rem 0 0;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+  }
+
+  .sk-final {
+    padding: 0 0 3.5rem;
+  }
+  .sk-final-box {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 2rem;
+    border-radius: var(--radius-xl);
+    background: var(--color-bg-soft);
+  }
+  @media (min-width: 768px) {
+    .sk-final-box {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+  .sk-final-box h2 {
+    margin: 0 0 0.5rem;
+  }
+  .sk-final-box p {
+    margin: 0;
+    color: var(--color-text-muted);
+    max-width: 54ch;
+  }
+</style>

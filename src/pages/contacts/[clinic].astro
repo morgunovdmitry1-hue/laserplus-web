@@ -1,4 +1,11 @@
 ---
+/*
+ * ESLint не резолвит виртуальный модуль `astro:content` в своей TS-программе,
+ * поэтому всё, что выведено из getCollection, он считает error-typed.
+ * Типы при этом настоящие: `npm run build` и `astro check` проходят.
+ * Отключаем только эти три правила и только в этом файле.
+ */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access */
 import { getCollection, render } from 'astro:content';
 import ClinicPageLayout from '../../layouts/ClinicPageLayout.astro';
 
@@ -16,7 +23,7 @@ const d = entry.data;
 
 const clinicPhotos: Record<string, string> = {
   'krasny-prospekt': '/images/clinic-krasny-prospekt.webp',
-  'oktyabrskaya': '/images/clinic-oktyabrskaya.webp',
+  oktyabrskaya: '/images/clinic-oktyabrskaya.webp',
 };
 ---
 
@@ -34,6 +41,9 @@ const clinicPhotos: Record<string, string> = {
   photo={clinicPhotos[entry.id]}
   award={d.award}
   parkingNote={d.parkingNote}
+  rating={d.rating}
+  maps={d.maps}
+  awards={d.awards}
 >
   <Content />
 </ClinicPageLayout>
