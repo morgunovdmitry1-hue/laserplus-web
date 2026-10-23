@@ -17,11 +17,29 @@ const homePageRaw = isSanityConfigured()
 const homePage = homePageRaw as SanityHomePage | null;
 
 const hero = homePage?.hero;
+
+// Рейтинг 2ГИС — главный аргумент доверия и единственный источник,
+// на который ссылаются поисковики и нейросети в вопросах «где лучше».
+// Цифры берём из карточек филиалов, чтобы они не расходились с разметкой.
+const clinicEntries = await getCollection('clinics');
+const ratedClinics = clinicEntries.filter((c) => c.data.rating);
+const totalRatings = ratedClinics.reduce((n, c) => n + (c.data.rating?.ratingCount ?? 0), 0);
+const ratingValue = ratedClinics.length
+  ? Math.min(...ratedClinics.map((c) => c.data.rating!.value))
+  : null;
+
 const stats: { value: string; label: string }[] = [
+  ...(ratingValue
+    ? [
+        {
+          value: ratingValue.toFixed(1).replace('.', ','),
+          label: `в 2ГИС, ${new Intl.NumberFormat('ru-RU').format(totalRatings)} оценок`,
+        },
+      ]
+    : []),
   { value: '8+', label: 'лет работы' },
   { value: '9 000+', label: 'клиентов' },
   { value: '2', label: 'клиники в городе' },
-  { value: 'Большой парк', label: 'оборудования' },
 ];
 const cta = homePage?.cta;
 

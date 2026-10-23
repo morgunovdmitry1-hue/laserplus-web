@@ -1,5 +1,13 @@
 ---
+import { getCollection } from 'astro:content';
 import { SITE, CLINICS, SOCIAL } from '../../consts';
+
+// Карточки на картах — часть профиля организации: по ним поисковик
+// и нейросеть связывают сайт с рейтингом, который там накоплен.
+const clinicEntries = await getCollection('clinics');
+const mapLinks = clinicEntries
+  .flatMap((c) => [c.data.maps?.twogis, c.data.maps?.yandex])
+  .filter((v): v is string => Boolean(v));
 
 const schema = {
   '@context': 'https://schema.org',
@@ -20,7 +28,7 @@ const schema = {
         areaServed: 'RU',
         availableLanguage: 'Russian',
       },
-      sameAs: [SOCIAL.vk, SOCIAL.telegram],
+      sameAs: [SOCIAL.vk, SOCIAL.telegram, ...mapLinks],
     },
     {
       '@type': 'WebSite',

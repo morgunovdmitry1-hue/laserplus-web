@@ -47,6 +47,27 @@ const clinics = defineCollection({
     equipment: z.array(z.string()),
     masters: z.array(z.string()).optional(),
     photos: z.array(z.string()).optional(),
+    // Рейтинг филиала на внешних площадках. Нужен и людям на странице,
+    // и поисковикам с нейросетями: без него клинику не видно в ответах
+    // на вопрос «где лучше» — там цитируют карты и агрегаторы.
+    rating: z
+      .object({
+        source: z.string(),
+        value: z.number(),
+        ratingCount: z.number(),
+        reviewCount: z.number().optional(),
+        url: z.string(),
+        checkedAt: z.string(),
+      })
+      .optional(),
+    // Ссылки на карточки организации — уходят в sameAs разметки
+    maps: z
+      .object({
+        twogis: z.string().optional(),
+        yandex: z.string().optional(),
+      })
+      .optional(),
+    awards: z.array(z.string()).optional(),
   }),
 });
 

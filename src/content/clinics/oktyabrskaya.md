@@ -20,6 +20,15 @@ equipment:
 photos:
   - 'clinic-ok-01.jpg'
   - 'clinic-ok-02.jpg'
+rating:
+  source: '2ГИС'
+  value: 5.0
+  ratingCount: 411
+  reviewCount: 373
+  url: 'https://2gis.ru/novosibirsk/firm/70000001034458833'
+  checkedAt: '2026-10-23'
+maps:
+  twogis: 'https://2gis.ru/novosibirsk/firm/70000001034458833'
 ---
 
 Клиника на Октябрьской — в историческом центре Новосибирска, на пересечении улиц Октябрьская и Сакко и Ванцетти. 5 минут от метро Октябрьская, собственная парковка.

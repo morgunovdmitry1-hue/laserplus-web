@@ -9,10 +9,24 @@ interface Props {
   workingHours: { weekdays: string; weekends: string };
   geo: { lat: number; lng: number };
   equipment: string[];
-  rating?: { value: number; count: number };
+  rating?: {
+    source: string;
+    value: number;
+    ratingCount: number;
+    reviewCount?: number;
+    url: string;
+  };
+  maps?: { twogis?: string; yandex?: string };
+  awards?: string[];
 }
 
-const { clinicId, name, address, phone, workingHours, geo, equipment, rating } = Astro.props;
+const { clinicId, name, address, phone, workingHours, geo, equipment, rating, maps, awards } =
+  Astro.props;
+
+// Ссылки на карточки организации: по ним поисковик и нейросеть связывают
+// сайт с рейтингом на картах. Без sameAs рейтинг 5,0 с тысячей оценок
+// остаётся для них невидимым.
+const sameAs = [maps?.twogis, maps?.yandex].filter(Boolean);
 
 const schema = {
   '@context': 'https://schema.org',
@@ -57,12 +71,15 @@ const schema = {
     '@type': 'City',
     name: 'Новосибирск',
   },
+  ...(sameAs.length ? { sameAs } : {}),
+  ...(awards?.length ? { award: awards } : {}),
   ...(rating
     ? {
         aggregateRating: {
           '@type': 'AggregateRating',
           ratingValue: rating.value,
-          reviewCount: rating.count,
+          ratingCount: rating.ratingCount,
+          ...(rating.reviewCount ? { reviewCount: rating.reviewCount } : {}),
           bestRating: 5,
           worstRating: 1,
         },
