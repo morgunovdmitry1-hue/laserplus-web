@@ -107,6 +107,8 @@ const blog = defineCollection({
     excerpt: z.string(),
     metaTitle: z.string().optional(),
     metaDescription: z.string().optional(),
+    // зоны (slug из services) для блока записи с ценами вверху и внизу статьи
+    bookingZones: z.array(z.string()).optional(),
   }),
 });
 

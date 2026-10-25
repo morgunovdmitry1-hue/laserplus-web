@@ -103,6 +103,16 @@ const fullTitle =
         }
       })();
     </script>
+    <!-- Цель Метрики booking_open: открыли окно записи YCLIENTS. Сама запись идёт внутри виджета
+         (другой домен), её Метрика не видит — поэтому меряем открытие окна и страницу, с которой открыли. -->
+    <script is:inline define:vars={{ ym_id: metrikaId }}>
+      document.addEventListener('click', function (e) {
+        var el = e.target && e.target.closest ? e.target.closest('.ms_booking') : null;
+        if (el && typeof window.ym === 'function') {
+          window.ym(ym_id, 'reachGoal', 'booking_open', { page: location.pathname });
+        }
+      });
+    </script>
 
     <script is:inline>
       (function () {

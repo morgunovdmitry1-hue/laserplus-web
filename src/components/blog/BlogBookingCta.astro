@@ -1,0 +1,192 @@
+---
+// Блок записи для статей блога: цены по скидочной карте и ссылки на страницы зон.
+// Цены берутся из карточек услуг (src/content/services) той же формулой, что и на сайте, —
+// чтобы цена в статье не расходилась с ценой на странице услуги.
+import { getCollection } from 'astro:content';
+import { SITE } from '../../consts';
+
+interface Props {
+  zones: string[];
+  variant?: 'top' | 'bottom';
+}
+const { zones, variant = 'bottom' } = Astro.props;
+
+const cardPrice = (p: number) => Math.round((p * 0.6) / 10) * 10;
+// Короткие названия зон для списка (в карточках услуг заголовки в родительном падеже: «…эпиляция подмышек»)
+const LABELS: Record<string, string> = {
+  podmyshki: 'Подмышки',
+  'bikini-klassika': 'Бикини классическое',
+  'glubokoye-bikini': 'Бикини глубокое',
+  'totalnoe-bikini': 'Бикини тотальное',
+  goleni: 'Голени',
+  'nogi-polnostyu': 'Ноги полностью',
+};
+const services = await getCollection('services');
+const items = zones
+  .map((slug) => services.find((s) => s.id === slug))
+  .filter((s): s is NonNullable<typeof s> => Boolean(s))
+  .map((s) => {
+    const base = Math.min(s.data.price.single, s.data.price.diode ?? s.data.price.single);
+    return {
+      href: `/services/${s.id}/`,
+      name:
+        LABELS[s.id] ??
+        s.data.title.replace(/^Лазерная эпиляция\s*/i, '').replace(/^./, (c) => c.toUpperCase()),
+      from: cardPrice(base),
+      sessions: s.data.sessionsRequired,
+    };
+  });
+const minFrom = items.length ? Math.min(...items.map((i) => i.from)) : null;
+const rub = (n: number) => n.toLocaleString('ru-RU') + ' ₽';
+const tel = '+' + SITE.phone.replace(/\D/g, '');
+---
+
+{
+  variant === 'top' ? (
+    <aside class="bcta-top" aria-label="Запись на процедуру">
+      <p>
+        <strong>Первая консультация — бесплатно.</strong>
+        {minFrom && <> Процедура от {rub(minFrom)} по карте.</>} Подберём аппарат под Вашу кожу и
+        волосы.
+      </p>
+      <a href="/booking/" class="bcta-btn">
+        Записаться
+      </a>
+    </aside>
+  ) : (
+    <aside class="bcta" aria-label="Запись на процедуру">
+      <p class="bcta-title">Записаться на лазерную эпиляцию в Laser Plus</p>
+      <p class="bcta-lead">
+        Первая консультация бесплатно: специалист посмотрит кожу и волосы, ответит на вопросы о
+        противопоказаниях и составит план курса. Цены — по скидочной карте, её получает каждый
+        клиент после первого визита.
+      </p>
+      <ul class="bcta-list">
+        {items.map((i) => (
+          <li>
+            <a href={i.href}>{i.name}</a>
+            <span class="bcta-meta">
+              от {rub(i.from)} · курс {i.sessions} процедур
+            </span>
+          </li>
+        ))}
+      </ul>
+      <div class="bcta-actions">
+        <a href="/booking/" class="bcta-btn">
+          Записаться онлайн
+        </a>
+        <a href={`tel:${tel}`} class="bcta-phone">
+          {SITE.phone}
+        </a>
+      </div>
+      <p class="bcta-more">
+        Все зоны и цены — в <a href="/prices/">прайсе</a>, для мужчин — в разделе{' '}
+        <a href="/men/">«Мужская эпиляция»</a>.
+      </p>
+    </aside>
+  )
+}
+
+<style>
+  .bcta-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.25rem;
+    max-width: 760px;
+    margin: -1.5rem 0 2.5rem;
+    padding: 1rem 1.25rem;
+    background: var(--color-bg-tinted);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+  }
+  .bcta-top p {
+    flex: 1 1 280px;
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--color-text);
+  }
+
+  .bcta {
+    max-width: 760px;
+    margin: 3rem 0 0;
+    padding: 1.75rem;
+    background: var(--color-bg-soft);
+    border: 1px solid var(--color-border-strong);
+    border-radius: 16px;
+  }
+  .bcta-title {
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0 0 0.75rem;
+    color: var(--color-text);
+  }
+  .bcta-lead {
+    margin: 0 0 1.25rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+  .bcta-list {
+    list-style: none;
+    margin: 0 0 1.5rem;
+    padding: 0;
+    border-top: 1px solid var(--color-border);
+  }
+  .bcta-list li {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.25rem 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .bcta-list a {
+    font-weight: 600;
+    color: var(--color-primary-dark);
+    text-decoration: none;
+  }
+  .bcta-list a:hover {
+    text-decoration: underline;
+  }
+  .bcta-meta {
+    font-size: 0.9375rem;
+    color: var(--color-text-muted);
+  }
+  .bcta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+  }
+  .bcta-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.75rem;
+    background: var(--color-primary);
+    color: #fff;
+    font-weight: 700;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: background var(--transition-fast);
+  }
+  .bcta-btn:hover {
+    background: var(--color-primary-hover);
+    color: #fff;
+  }
+  .bcta-phone {
+    font-weight: 600;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  .bcta-more {
+    margin: 1.25rem 0 0;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+  .bcta-more a {
+    color: var(--color-primary-dark);
+  }
+</style>

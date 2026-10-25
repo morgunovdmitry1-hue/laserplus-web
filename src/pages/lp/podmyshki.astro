@@ -59,7 +59,7 @@ const METRIKA_ID = '52399276';
 
         <!-- Form -->
         <div class="lp-form-wrap" id="form">
-          <form class="lp-form" id="leadForm" novalidate>
+          <form class="lp-form" id="leadForm" data-ym={METRIKA_ID} novalidate>
             <p class="lp-form-heading">Заберите свои 3 сеанса</p>
             <div class="lp-form-field">
               <label class="lp-label" for="name">Ваше имя</label>
@@ -279,6 +279,9 @@ const METRIKA_ID = '52399276';
             body: JSON.stringify(data),
           });
           if (res.ok) {
+            // Цель Метрики lead_form_sent — заявка ушла в CRM
+            const ym = (window as unknown as { ym?: (...args: unknown[]) => void }).ym;
+            ym?.(Number(form.dataset.ym), 'reachGoal', 'lead_form_sent');
             form.hidden = true;
             success.hidden = false;
           } else {
