@@ -86,6 +86,48 @@ const toAlex = ({ id, label }: { id: string; label: string }) => ({
   price: svcMap[id]?.price.single ?? 0,
 });
 
+// Минимальная цена по карте среди всех зон — для заголовка в поиске и текстового блока
+const minCardPrice = Math.min(
+  ...allServices.map((s) =>
+    cardPrice(Math.min(s.data.price.single, s.data.price.diode ?? s.data.price.single))
+  )
+);
+const rub = (n: number) => new Intl.NumberFormat('ru-RU').format(n) + ' ₽';
+const ratingText = ratingValue ? ratingValue.toFixed(1).replace('.', ',') : null;
+
+// Частые вопросы под запрос «лазерная эпиляция новосибирск»: текст на странице и FAQPage-разметка из одного источника
+const homeFaq = [
+  {
+    q: 'Сколько стоит лазерная эпиляция в Новосибирске?',
+    a: `В Laser Plus процедура стоит от ${rub(minCardPrice)} по скидочной карте — её получает каждый клиент после первого визита. Цена зависит от зоны и аппарата: диодный лазер дешевле, александритовый быстрее работает на тёмных волосах. Первое посещение — со скидкой 40%.`,
+  },
+  {
+    q: 'Какой лазер лучше — александритовый или диодный?',
+    a: 'Александритовый лазер даёт выраженный результат на тёмных и жёстких волосах светлой кожи, диодный подходит для большинства типов кожи и стоит дешевле. В Laser Plus есть оба: александритовые Candela GentlePro и DEKA Motus AX Moveo и диодный IN-MOTION D1. Аппарат подбирает специалист на бесплатной консультации.',
+  },
+  {
+    q: 'Сколько процедур нужно и как часто их делать?',
+    a: 'Обычно курс — 6–8 процедур с интервалом 4–8 недель в зависимости от зоны. Пропускать интервалы не стоит: волосы растут циклами, и лазер действует на волосы в активной фазе.',
+  },
+  {
+    q: 'Можно ли делать лазерную эпиляцию на загорелой или смуглой коже?',
+    a: 'Да, на аппарате DEKA Motus AX Moveo в клинике у метро Октябрьская — он рассчитан на все фототипы кожи.',
+  },
+  {
+    q: 'Где находятся клиники Laser Plus?',
+    a: `Две клиники в Новосибирске: ${CLINICS.map((c) => `${c.address}, м. ${c.metro}`).join('; ')}. Работаем ежедневно ${CLINICS[0].workingHours.weekdays}.`,
+  },
+];
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: homeFaq.map((x) => ({
+    '@type': 'Question',
+    name: x.q,
+    acceptedAnswer: { '@type': 'Answer', text: x.a },
+  })),
+};
+
 const bodyDiode = bodyItems.map(toDiode);
 const faceDiode = faceItems.map(toDiode);
 const menDiode = menItems.map(toDiode);
@@ -95,8 +137,8 @@ const menAlex = menItems.map(toAlex);
 ---
 
 <BaseLayout
-  title={SITE.name + ' — лазерная эпиляция в Новосибирске'}
-  description="Сеть клиник лазерной эпиляции в Новосибирске. Два александритовых лазера — Candela GentlePro и DEKA Motus AX Moveo — и диодный IN-MOTION D1. Медицинская лицензия. Записаться онлайн."
+  title={`Лазерная эпиляция в Новосибирске — цены от ${rub(minCardPrice)} | ${SITE.name}`}
+  description={`Лазерная эпиляция в Новосибирске: александритовые лазеры Candela и DEKA Moveo, диодный лазер. Цены по карте от ${rub(minCardPrice)}, первый визит −40%. Две клиники у метро Гагаринская и Октябрьская.`}
 >
   <!-- Hero -->
   <section class="hero">
@@ -503,6 +545,52 @@ const menAlex = menItems.map(toAlex);
     </div>
   </section>
 
+  <!-- SEO: лазерная эпиляция в Новосибирске — текст и частые вопросы -->
+  <section class="seo-section">
+    <div class="container">
+      <div class="seo-inner">
+        <h2>Лазерная эпиляция в Новосибирске</h2>
+        <p>
+          Laser Plus — сеть из двух клиник лазерной эпиляции в Новосибирске с медицинской лицензией:
+          на Красном проспекте у метро Гагаринская и на Сакко и Ванцетти у метро Октябрьская.
+          Работаем на александритовых лазерах Candela GentlePro и DEKA Motus AX Moveo и на диодном
+          лазере IN-MOTION D1, проводим женскую и <a href="/men/">мужскую эпиляцию</a> всех зон — от
+          <a href="/services/podmyshki/">подмышек</a> и <a href="/bikini/">бикини</a> до
+          <a href="/services/nogi-polnostyu/">ног полностью</a>. Для загорелой и смуглой кожи —
+          аппарат DEKA Moveo, подробнее в разделе <a href="/smuglaya-kozha/"
+            >«Смуглая и загорелая кожа»</a
+          >.
+        </p>
+        <p>
+          Цены по скидочной карте — от {rub(minCardPrice)} за процедуру, полный
+          <a href="/prices/">прайс по зонам</a> открыт на сайте.{
+            ratingText && (
+              <Fragment>
+                {' '}
+                Рейтинг клиник в 2ГИС — {ratingText} по{' '}
+                {new Intl.NumberFormat('ru-RU').format(totalRatings)} оценкам,{' '}
+                <a href="/reviews/">отзывы клиентов</a>.
+              </Fragment>
+            )
+          }
+        </p>
+
+        <h3 class="seo-faq-title">Частые вопросы</h3>
+        <div class="seo-faq">
+          {
+            homeFaq.map((x) => (
+              <details>
+                <summary>{x.q}</summary>
+                <p>{x.a}</p>
+              </details>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  </section>
+
   <!-- CTA Banner -->
   <section class="cta-section">
     <div class="cta-inner">
@@ -550,6 +638,42 @@ const menAlex = menItems.map(toAlex);
 </BaseLayout>
 
 <style>
+  .seo-section {
+    padding: 4rem 0 3rem;
+  }
+  .seo-inner {
+    max-width: 820px;
+  }
+  .seo-inner h2 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    margin: 0 0 1.25rem;
+  }
+  .seo-inner p {
+    line-height: 1.7;
+    color: var(--color-text);
+    margin: 0 0 1rem;
+  }
+  .seo-inner a {
+    color: var(--color-primary-dark);
+  }
+  .seo-faq-title {
+    font-size: 1.25rem;
+    margin: 2rem 0 0.75rem;
+  }
+  .seo-faq details {
+    border-bottom: 1px solid var(--color-border);
+    padding: 0.875rem 0;
+  }
+  .seo-faq summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--color-text);
+    list-style-position: outside;
+  }
+  .seo-faq details p {
+    margin: 0.625rem 0 0;
+    color: var(--color-text-muted);
+  }
   /* ── Hero ── */
   .hero {
     background: var(--color-bg);
