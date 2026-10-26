@@ -106,6 +106,12 @@ const currentYear = new Date().getFullYear();
       </div>
     </div>
 
+    <!-- Реквизиты: обязательны для подключения онлайн-оплаты ЮKassa (название, ИНН, ОГРН) -->
+    <p class="footer-requisites">
+      ООО «ЛАЗЕР ПЛЮС» · ИНН 5402072702 · КПП 540201001 · ОГРН 1225400017765 · 630105, г.
+      Новосибирск, Красный проспект, д. 94
+    </p>
+
     <!-- Bottom bar -->
     <div class="footer-bottom">
       <p>&copy; {currentYear} {SITE.name}. Все права защищены.</p>
@@ -309,8 +315,16 @@ const currentYear = new Date().getFullYear();
   }
 
   /* Bottom bar */
+  .footer-requisites {
+    margin: 3rem 0 0;
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: color-mix(in srgb, #fff 40%, transparent);
+  }
+
   .footer-bottom {
-    margin-top: 3rem;
+    margin-top: 1rem;
     padding-top: 1.5rem;
     border-top: 1px solid color-mix(in srgb, #fff 10%, transparent);
     display: flex;
