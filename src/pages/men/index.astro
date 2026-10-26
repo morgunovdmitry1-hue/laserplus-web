@@ -23,6 +23,10 @@ const byCategory = categoryOrder
   .filter((g) => g.services.length > 0);
 
 const cardPrice = (p: number) => Math.round((p * 0.6) / 10) * 10;
+// Цена «от» для заголовка — самая доступная мужская зона по карте
+const minMalePrice = Math.min(
+  ...maleServices.map((s) => cardPrice(s.data.price.diode ?? s.data.price.single))
+);
 
 const displayNames: Record<string, string> = {
   'men-areoly': 'Ареолы',
@@ -54,8 +58,8 @@ const shortTitle = (id: string, t: string) =>
 ---
 
 <BaseLayout
-  title="Лазерная эпиляция для мужчин"
-  description="Лазерная эпиляция для мужчин в Новосибирске. Спина, грудь, борода, ноги. Александрит Candela GentlePro. Без боли, без вросших волос."
+  title={`Мужская лазерная эпиляция в Новосибирске — цены от ${minMalePrice.toLocaleString('ru-RU')} ₽`}
+  description="Мужская лазерная эпиляция в Новосибирске: спина, грудь, борода, плечи, ноги. Цены по скидочной карте на диодном и александритовом лазере. Без раздражения и вросших волос. Запись онлайн."
 >
   <link rel="preload" as="image" href="/men-hero.webp" slot="head" />
   <link rel="preload" as="image" href="/men-consult.webp" slot="head" />
@@ -93,7 +97,7 @@ const shortTitle = (id: string, t: string) =>
         <div class="men-hero-content">
           <div class="men-badge">Мужская лазерная эпиляция</div>
           <h1 data-reveal>
-            Лазерная эпиляция<br /><span class="accent">для мужчин</span> со скидкой 40% на первый визит
+            Мужская лазерная эпиляция<br /><span class="accent">в Новосибирске</span>
           </h1>
           <p data-reveal data-reveal-delay="1">
             Растущий спрос — спорт, эстетика, профессии с публичной активностью. Александрит Candela
