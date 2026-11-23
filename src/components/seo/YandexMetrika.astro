@@ -5,6 +5,11 @@ interface Props {
 const { id } = Astro.props;
 ---
 
+<script>
+  import { rememberLeadAttribution } from '../../utils/leadAttribution';
+  rememberLeadAttribution();
+</script>
+
 {id && (
   <Fragment>
     <script is:inline define:vars={{ ym_id: id }}>

@@ -255,13 +255,17 @@ const METRIKA_ID = '52399276';
     <YandexMetrika id={METRIKA_ID} />
 
     <script>
+      import { rememberLeadAttribution } from '../../utils/leadAttribution';
+
       const form = document.getElementById('leadForm') as HTMLFormElement;
       const btn = document.getElementById('submitBtn') as HTMLButtonElement;
       const success = document.getElementById('successState') as HTMLElement;
       const errorMsg = document.getElementById('errorMsg') as HTMLElement;
+      let lastSubmission: { contents: string; id: string | undefined } | undefined;
 
       form?.addEventListener('submit', async (e) => {
         e.preventDefault();
+        if (btn.disabled) return;
         btn.disabled = true;
         btn.textContent = 'Отправляем...';
         errorMsg.hidden = true;
@@ -270,13 +274,18 @@ const METRIKA_ID = '52399276';
           name: (document.getElementById('name') as HTMLInputElement).value,
           phone: (document.getElementById('phone') as HTMLInputElement).value,
           source: 'LP — 3 бесплатных сеанса подмышек',
+          attribution: rememberLeadAttribution(),
         };
+        const contents = JSON.stringify(data);
+        if (lastSubmission?.contents !== contents) {
+          lastSubmission = { contents, id: globalThis.crypto?.randomUUID?.() };
+        }
 
         try {
           const res = await fetch('https://laser-plus-app.vercel.app/api/lead', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
+            body: JSON.stringify({ ...data, submission_id: lastSubmission.id }),
           });
           if (res.ok) {
             // Цель Метрики lead_form_sent — заявка ушла в CRM
